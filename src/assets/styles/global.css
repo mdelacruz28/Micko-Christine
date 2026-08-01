@@ -1,15 +1,140 @@
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; color: var(--ink); background: var(--ivory); font-family: var(--sans); }
-button, input, textarea, select { font: inherit; }
-button { cursor: pointer; }
-img { display: block; max-width: 100%; }
-a { color: inherit; }
-.site-shell { overflow: hidden; }
-.section { padding: var(--section-space) 1.25rem; }
-.section__inner { width: min(100%, var(--content-width)); margin: 0 auto; }
-.eyebrow { margin: 0 0 .75rem; color: var(--pomegranate); font-size: .75rem; letter-spacing: .22em; text-transform: uppercase; }
-.section-title { margin: 0; color: var(--van-gogh-blue); font-family: var(--serif); font-size: clamp(2.25rem, 5vw, 4.5rem); font-weight: 400; line-height: 1.05; }
-.section-copy { max-width: 680px; margin: 1.25rem auto 0; color: var(--muted); line-height: 1.8; }
-.placeholder-card { margin-top: 2.5rem; padding: 2rem; border: 1px solid rgba(41,76,115,.15); border-radius: 24px; background: rgba(255,255,255,.55); box-shadow: 0 18px 60px rgba(41,76,115,.07); }
-.text-center { text-align: center; }
+* { 
+    box-sizing: border-box; 
+}
+
+html { 
+    scroll-behavior: smooth; 
+}
+
+body { 
+    margin: 0; 
+    min-width: 320px; 
+    color: var(--ink); 
+    background: var(--ivory); 
+    font-family: var(--sans); 
+}
+
+button, input, textarea, select { 
+    font: inherit; 
+}
+
+button { 
+    cursor: pointer; 
+}
+
+img { 
+    display: block; 
+    max-width: 100%; 
+}
+
+a { 
+    color: inherit; 
+}
+
+.site-shell { 
+    overflow: hidden; 
+}
+
+.section { 
+    padding: var(--section-space) 1.25rem; 
+}
+
+.section__inner { 
+    width: min(100%, var(--content-width)); 
+    margin: 0 auto; 
+}
+
+.eyebrow { 
+    margin: 0 0 .75rem; 
+    color: var(--pomegranate); 
+    font-size: .75rem; 
+    letter-spacing: .22em; 
+    text-transform: uppercase; 
+}
+
+.section-title { 
+    margin: 0; 
+    color: var(--van-gogh-blue); 
+    font-family: var(--serif); 
+    font-size: clamp(2.25rem, 5vw, 4.5rem); 
+    font-weight: 400; 
+    line-height: 1.05; 
+}
+
+.section-copy { 
+    max-width: 680px; 
+    margin: 1.25rem auto 0; 
+    color: var(--muted); 
+    line-height: 1.8; 
+}
+
+.placeholder-card { 
+    margin-top: 2.5rem; 
+    padding: 2rem; 
+    border: 1px solid rgba(41,76,115,.15); 
+    border-radius: 24px; 
+    background: rgba(255,255,255,.55); 
+    box-shadow: 0 18px 60px rgba(41,76,115,.07); 
+}
+
+.text-center { 
+    text-align: center; 
+}
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  color: #18365f;
+  background-color: #f8f3e9;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #f8f3e9;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  color: #18365f;
+  background-color: transparent;
+
+  overflow-x: hidden;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.wedding-section {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+
+  display: flex;
+  align-items: center;
+
+  padding: clamp(5rem, 10vw, 9rem)
+    clamp(1.25rem, 6vw, 7rem);
+
+  background: transparent;
+}
+
+.wedding-section__content {
+  width: min(100%, 1200px);
+  margin-inline: auto;
+}
