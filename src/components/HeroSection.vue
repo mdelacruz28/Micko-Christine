@@ -7,7 +7,7 @@
       <p class="hero__eyebrow">Our story begins</p>
 
       <div class="hero__names" aria-label="Micko and Christine">
-        <span class="hero__name hero__name--first">Micko</span>
+        <span class="hero__name hero__name--first">Micko Dela Cruz</span>
         <span class="hero__ampersand">&amp;</span>
         <span class="hero__name hero__name--second">Christine</span>
       </div>
