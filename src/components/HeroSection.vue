@@ -166,10 +166,10 @@ onBeforeUnmount(() => {
   inset: -4%;
   z-index: -4;
   background: transparent;
-  background-image: url('/images/lafayette.png');
+  /* background-image: url('/images/lafayette.png');
   background-size: cover;
   background-position: center 45%;
-  /* animation: heroZoom 24s ease-in-out infinite alternate; */
+  animation: heroZoom 24s ease-in-out infinite alternate; */
 }
 
 .hero__overlay {
