@@ -1,0 +1,4 @@
+@keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-12px) rotate(2deg); } }
+.fade-up { animation: fadeUp .9s cubic-bezier(.22,1,.36,1) both; }
+.float { animation: float 5s ease-in-out infinite; }
