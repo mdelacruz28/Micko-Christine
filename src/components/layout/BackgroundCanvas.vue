@@ -24,7 +24,7 @@
   position: absolute;
   inset: -2%;
 
-  background-image: url('@/assets/backgrounds/Misty hills and white building view.png');
+  background-image: url('@/assets/backgrounds/lafayette-watercolor.png');
   background-repeat: no-repeat;
   background-position: top center;
   background-size: cover;
