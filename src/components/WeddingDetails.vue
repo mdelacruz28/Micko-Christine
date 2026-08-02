@@ -67,7 +67,7 @@ const events = [
     time: '2:30 PM',
     arrival: '2:00 PM',
     note: 'Please be seated before the processional begins. The ceremony will be held in an open-air garden setting.',
-    image: '/images/details/ceremony.jpg',
+    image: '/images/details/bellamp.png',
     imageAlt: 'Bell Amphitheater wedding ceremony venue',
     mapUrl: 'https://maps.google.com/?q=Bell+Amphitheater+Camp+John+Hay'
   },
@@ -79,7 +79,7 @@ const events = [
     time: '5:00 PM',
     arrival: '4:30 PM',
     note: 'Cocktails and light refreshments will be served before the reception program begins.',
-    image: '/images/details/reception.jpg',
+    image: '/images/details/lafaayetteee.png',
     imageAlt: 'Lafaayette Luxury Suites wedding reception venue',
     mapUrl: 'https://maps.google.com/?q=Lafaayette+Luxury+Suites+Baguio'
   }
@@ -172,16 +172,67 @@ onBeforeUnmount(() => observer?.disconnect())
   box-shadow: 0 24px 70px rgba(65, 56, 49, 0.1);
 }
 
-.event-card__image { position: relative; overflow: hidden; aspect-ratio: 16 / 11; }
-.event-card__image img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
-.event-card:hover .event-card__image img { transform: scale(1.04); }
-.event-card__image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,30,40,.58), transparent 55%); }
-.event-card__label { position: absolute; left: 1.5rem; bottom: 1.25rem; font-family: 'Manrope', sans-serif; font-size: .68rem; letter-spacing: .28em; text-transform: uppercase; color: #fff; }
+.event-card__image { 
+  position: relative; 
+  overflow: hidden; 
+  aspect-ratio: 16 / 11; 
+}
 
-.event-card__content { padding: clamp(1.7rem, 4vw, 3rem); }
-.event-card__date { margin: 0 0 .8rem; font-family: 'Manrope', sans-serif; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--pomegranate); }
-.event-card h3 { margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(2.4rem, 4.2vw, 4rem); font-style: italic; font-weight: 500; color: var(--blue); }
-.event-card__location { margin: .7rem 0 0; font-family: 'Manrope', sans-serif; color: rgba(36,49,58,.66); }
+.event-card__image img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  transition: transform 1s ease; 
+}
+
+.event-card:hover .event-card__image img { 
+  transform: scale(1.04); 
+}
+
+.event-card__image-overlay { 
+  position: absolute; 
+  inset: 0; 
+  background: linear-gradient(to top, rgba(15,30,40,.58), transparent 55%); 
+}
+
+.event-card__label { 
+  position: absolute; 
+  left: 1.5rem; 
+  bottom: 1.25rem; 
+  font-family: 'Manrope', sans-serif; 
+  font-size: .68rem; 
+  letter-spacing: .28em; 
+  text-transform: uppercase; 
+  color: #fff; 
+}
+
+
+.event-card__content { 
+  padding: clamp(1.7rem, 4vw, 3rem); 
+}
+
+.event-card__date { 
+  margin: 0 0 .8rem; 
+  font-family: 'Manrope', sans-serif; 
+  font-size: .7rem; 
+  letter-spacing: .2em; 
+  text-transform: uppercase; 
+  color: var(--pomegranate); 
+}
+
+.event-card h3 { 
+  margin: 0; 
+  font-family: 'Cormorant Garamond', serif; 
+  font-size: clamp(2.4rem, 4.2vw, 4rem); 
+  font-style: italic; 
+  font-weight: 500; 
+  color: var(--blue); 
+}
+
+.event-card__location { 
+  margin: .7rem 0 0; 
+  font-family: 'Manrope', sans-serif; color: rgba(36,49,58,.66); 
+}
 
 .event-card__meta {
   display: grid;
