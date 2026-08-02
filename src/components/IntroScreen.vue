@@ -319,12 +319,12 @@ const openInvitation = () => {
 .full-envelope__card {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 20%;
   z-index: 2;
   width: min(78vw, 760px);
   min-height: min(66vh, 610px);
   padding: clamp(0.8rem, 2vw, 1.2rem);
-  transform: translate(-20%, -50%);
+  transform: translate(-50%, -50%);
   background:
     linear-gradient(
       145deg,
