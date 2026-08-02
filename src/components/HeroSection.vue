@@ -1,57 +1,44 @@
 <template>
-  <section id="home" class="hero">
-    <div class="hero__background" aria-hidden="true"></div>
-    <div class="hero__overlay" aria-hidden="true"></div>
+  <section id="home" ref="heroRef" class="hero-section">
+    <div class="hero-section__background" aria-hidden="true"></div>
+    <div class="hero-section__overlay" aria-hidden="true"></div>
 
-    <div class="hero__content">
-      <p class="hero__eyebrow">Our story begins</p>
+    <div class="hero-content">
+      <p class="hero-content__eyebrow">Our story begins</p>
 
-      <div class="hero__names" aria-label="Micko and Christine">
-        <span class="hero__name hero__name--first">Micko</span>
-        <span class="hero__ampersand">&amp;</span>
-        <span class="hero__name hero__name--second">Christine</span>
+      <div class="hero-names" aria-label="Micko and Christine">
+        <span class="hero-names__first">Micko</span>
+        <i>&amp;</i>
+        <span class="hero-names__second">Christine</span>
       </div>
 
-      <p class="hero__caption">are getting married</p>
+      <p class="hero-content__caption">are getting married</p>
 
-      <div class="hero__divider" aria-hidden="true">
-        <span></span><i></i><span></span>
+      <div class="hero-content__ornament" aria-hidden="true">
+        <span></span>
+        <i></i>
+        <span></span>
       </div>
 
-      <div class="hero__details">
-        <p class="hero__date">January 17, 2027</p>
-        <p class="hero__venue">Bell Amphitheater · Camp John Hay, Baguio City</p>
+      <div class="hero-details">
+        <p class="hero-details__date">January 17, 2027</p>
+        <p class="hero-details__venue">
+          Bell Amphitheater · Camp John Hay, Baguio City
+        </p>
       </div>
 
       <div class="countdown" aria-label="Wedding countdown">
-        <div class="countdown__item">
-          <strong>{{ countdown.days }}</strong>
-          <span>Days</span>
-        </div>
-
-        <div class="countdown__separator">:</div>
-
-        <div class="countdown__item">
-          <strong>{{ countdown.hours }}</strong>
-          <span>Hours</span>
-        </div>
-
-        <div class="countdown__separator">:</div>
-
-        <div class="countdown__item">
-          <strong>{{ countdown.minutes }}</strong>
-          <span>Minutes</span>
-        </div>
-
-        <div class="countdown__separator">:</div>
-
-        <div class="countdown__item">
-          <strong>{{ countdown.seconds }}</strong>
-          <span>Seconds</span>
+        <div
+          v-for="item in countdownItems"
+          :key="item.label"
+          class="countdown__item"
+        >
+          <strong>{{ item.value }}</strong>
+          <span>{{ item.label }}</span>
         </div>
       </div>
 
-      <a class="hero__scroll" href="#story" aria-label="Scroll to our story">
+      <a class="hero-scroll" href="#story">
         <span>Discover our story</span>
         <i aria-hidden="true"></i>
       </a>
@@ -60,7 +47,11 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, reactive } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { useGsapContext } from '../composables/useGsapContext'
+import { splitTextIntoLetters } from '../composables/useScrollReveal'
+
+const heroRef = ref(null)
 
 const weddingDate = new Date('2027-01-17T14:30:00+08:00')
 
@@ -83,8 +74,6 @@ const updateCountdown = () => {
     countdown.hours = '00'
     countdown.minutes = '00'
     countdown.seconds = '00'
-
-    if (timerId) clearInterval(timerId)
     return
   }
 
@@ -94,6 +83,13 @@ const updateCountdown = () => {
   countdown.seconds = pad(Math.floor((distance / 1_000) % 60))
 }
 
+const countdownItems = computed(() => [
+  { label: 'Days', value: countdown.days },
+  { label: 'Hours', value: countdown.hours },
+  { label: 'Minutes', value: countdown.minutes },
+  { label: 'Seconds', value: countdown.seconds }
+])
+
 onMounted(() => {
   updateCountdown()
   timerId = window.setInterval(updateCountdown, 1000)
@@ -102,246 +98,387 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (timerId) window.clearInterval(timerId)
 })
+
+useGsapContext(heroRef, ({ gsap }) => {
+  const media = gsap.matchMedia()
+
+  media.add('(prefers-reduced-motion: no-preference)', () => {
+    const firstName = heroRef.value.querySelector('.hero-names__first')
+    const secondName = heroRef.value.querySelector('.hero-names__second')
+
+    const firstLetters = splitTextIntoLetters(firstName)
+    const secondLetters = splitTextIntoLetters(secondName)
+
+    const timeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: heroRef.value,
+        start: 'top 78%',
+        once: true
+      }
+    })
+
+    timeline
+      .from('.hero-section__background', {
+        scale: 1.08,
+        duration: 1.5,
+        ease: 'power2.out'
+      })
+      .from(
+        '.hero-content__eyebrow',
+        {
+          opacity: 0,
+          y: 24,
+          filter: 'blur(4px)',
+          duration: 0.8
+        },
+        0.15
+      )
+      .from(
+        firstLetters,
+        {
+          opacity: 0,
+          x: -28,
+          y: 18,
+          rotate: -8,
+          filter: 'blur(5px)',
+          duration: 0.75,
+          stagger: 0.055
+        },
+        0.3
+      )
+      .from(
+        '.hero-names > i',
+        {
+          opacity: 0,
+          scale: 0.6,
+          rotate: -18,
+          duration: 0.65,
+          ease: 'back.out(1.8)'
+        },
+        0.7
+      )
+      .from(
+        secondLetters,
+        {
+          opacity: 0,
+          x: 28,
+          y: 18,
+          rotate: -8,
+          filter: 'blur(5px)',
+          duration: 0.75,
+          stagger: 0.055
+        },
+        0.72
+      )
+      .from(
+        '.hero-content__caption',
+        {
+          opacity: 0,
+          y: 18,
+          duration: 0.7
+        },
+        1.05
+      )
+      .from(
+        '.hero-content__ornament span',
+        {
+          scaleX: 0,
+          transformOrigin: 'center',
+          duration: 0.65,
+          stagger: 0.08
+        },
+        1.15
+      )
+      .from(
+        '.hero-content__ornament > i',
+        {
+          opacity: 0,
+          scale: 0,
+          rotate: 0,
+          duration: 0.45,
+          ease: 'back.out(2)'
+        },
+        1.28
+      )
+      .from(
+        '.hero-details > *',
+        {
+          opacity: 0,
+          y: 16,
+          duration: 0.7,
+          stagger: 0.1
+        },
+        1.35
+      )
+      .from(
+        '.countdown__item',
+        {
+          opacity: 0,
+          y: 22,
+          scale: 0.94,
+          duration: 0.7,
+          stagger: 0.1
+        },
+        1.52
+      )
+      .from(
+        '.hero-scroll',
+        {
+          opacity: 0,
+          y: 14,
+          duration: 0.65
+        },
+        1.82
+      )
+
+    gsap.to('.hero-section__background', {
+      yPercent: 8,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: heroRef.value,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1
+      }
+    })
+
+    gsap.to('.hero-scroll i', {
+      scaleY: 0.55,
+      opacity: 0.25,
+      transformOrigin: 'top',
+      duration: 0.9,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    })
+  })
+
+  return () => media.revert()
+})
 </script>
 
 <style scoped>
-.countdown {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: clamp(0.45rem, 2vw, 1.25rem);
-  margin-top: clamp(2rem, 5vw, 3rem);
-  padding: 1.15rem clamp(1rem, 3vw, 2rem);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
-  background: rgba(10, 23, 31, 0.18);
-  backdrop-filter: blur(8px);
-  animation: fadeUp 1s 1.4s both;
-}
-
-.countdown__item {
-  min-width: clamp(3rem, 8vw, 5.2rem);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.countdown__item strong {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.65rem, 4vw, 3rem);
-  font-weight: 500;
-  line-height: 0.9;
-  letter-spacing: 0.04em;
-}
-
-.countdown__item span {
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(0.48rem, 1vw, 0.66rem);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(255, 250, 246, 0.7);
-}
-
-.countdown__separator {
-  padding-top: 0.2rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.5rem, 3.5vw, 2.6rem);
-  color: #f3b39c;
-}
-
-.hero {
+.hero-section {
   position: relative;
+  isolation: isolate;
   min-height: 100svh;
   display: grid;
   place-items: center;
   overflow: hidden;
-  isolation: isolate;
-  padding: clamp(5rem, 10vw, 8rem) 1.5rem;
-  color: #fffaf6;
+  padding: clamp(5rem, 9vw, 8rem) 1.25rem;
+  color: #fffaf5;
   text-align: center;
 }
 
-.hero__background {
+.hero-section__background {
   position: absolute;
-  inset: -4%;
+  inset: -8% -4%;
   z-index: -4;
-  background: transparent;
-  background-image: url('/images/lafayette.png');
+  background-image: url('/images/hero/lafayette.png');
   background-size: cover;
-  background-position: center 45%;
-  /* animation: heroZoom 24s ease-in-out infinite alternate; */
+  background-position: center;
+  will-change: transform;
 }
 
-.hero__overlay {
+.hero-section__overlay {
   position: absolute;
   inset: 0;
   z-index: -3;
   background:
-    linear-gradient(180deg, rgba(10,25,35,.28) 0%, rgba(10,24,34,.48) 55%, rgba(10,22,31,.70) 100%),
-    radial-gradient(circle at center, rgba(36,63,84,.08) 0%, rgba(10,20,28,.45) 100%);
+    linear-gradient(
+      180deg,
+      rgba(10, 25, 35, 0.34),
+      rgba(10, 24, 34, 0.58) 58%,
+      rgba(9, 22, 31, 0.78)
+    ),
+    radial-gradient(
+      circle at center,
+      rgba(239, 180, 159, 0.06),
+      rgba(8, 20, 28, 0.4)
+    );
 }
 
-.hero__content {
-  width: min(100%, 980px);
+.hero-content {
+  width: min(100%, 1000px);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.hero__eyebrow {
-  margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
-  font-family: 'Cormorant Garamond', cursive;
-  font-size: clamp(1.65rem, 3vw, 2.45rem);
-  font-style: oblique;
-  color: #fcc586;
-  transform: rotate(-4deg);
-  animation: fadeUp .9s .15s both;
+.hero-content__eyebrow {
+  margin: 0 0 clamp(1.3rem, 3vw, 2rem);
+  font-family: 'Allura', cursive;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  color: #efb49f;
+  transform: rotate(-3deg);
 }
 
-.hero__names {
+.hero-names {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   width: 100%;
   font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(4rem, 10vw, 8.8rem);
   font-style: italic;
-  line-height: .82;
-  letter-spacing: -.04em;
+  line-height: 0.82;
+  letter-spacing: -0.05em;
 }
 
-.hero__name {
-  display: block;
-  font-family: "Imperial Script", cursive;
-  font-size: clamp(4rem, 10vw, 8.5rem);
-  font-weight: 500;
-  text-shadow: 0 12px 34px rgba(0,0,0,.24);
-  white-space: nowrap;
-}
-
-.hero__name--first {
+.hero-names__first {
   justify-self: end;
-  transform: translateY(-.2em) rotate(-7deg);
-  animation: slideFromLeft 1.15s .3s both;
+  transform: translateY(-0.18em) rotate(-7deg);
 }
 
-.hero__name--second {
+.hero-names__second {
   justify-self: start;
-  transform: translateY(.2em) rotate(-7deg);
-  animation: slideFromRight 1.15s .45s both;
+  transform: translateY(0.18em) rotate(-7deg);
 }
 
-.hero__ampersand {
-  margin: 0 clamp(.35rem, 2vw, 1.2rem);
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.8rem, 5vw, 5rem);
-  font-style: italic;
-  color: #f3b39c;
+.hero-names > i {
+  margin: 0 clamp(0.35rem, 2vw, 1.25rem);
+  font-family: 'Allura', cursive;
+  font-size: 0.56em;
+  font-style: normal;
+  color: #efb49f;
   transform: rotate(-8deg);
-  animation: fadeIn 1s .8s both;
 }
 
-.hero__caption {
-  margin: clamp(1rem, 3vw, 1.8rem) 0 0;
-  padding-top: 25px;
+.hero-content__caption {
+  margin: clamp(1rem, 3vw, 1.7rem) 0 0;
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.25rem, 2.4vw, 2rem);
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
   font-style: italic;
-  letter-spacing: .08em;
-  animation: fadeUp 1s .9s both;
+  letter-spacing: 0.08em;
 }
 
-.hero__divider {
+.hero-content__ornament {
   display: flex;
   align-items: center;
-  gap: .8rem;
-  margin: clamp(2rem, 5vw, 3rem) 0 1.5rem;
-  animation: fadeIn 1s 1.05s both;
+  gap: 0.8rem;
+  margin: clamp(1.7rem, 4vw, 2.5rem) 0 1.3rem;
 }
 
-.hero__divider span {
+.hero-content__ornament span {
   width: clamp(2rem, 7vw, 5rem);
   height: 1px;
-  background: rgba(255,255,255,.7);
+  background: rgba(255, 255, 255, 0.7);
 }
 
-.hero__divider i {
-  width: 5px;
-  height: 5px;
-  border: 1px solid #f8c7b5;
+.hero-content__ornament > i {
+  width: 6px;
+  height: 6px;
+  border: 1px solid #efb49f;
   transform: rotate(45deg);
 }
 
-.hero__details { animation: fadeUp 1s 1.15s both; }
-.hero__date, .hero__venue { margin: 0; }
+.hero-details__date,
+.hero-details__venue {
+  margin: 0;
+}
 
-.hero__date {
+.hero-details__date {
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(.82rem, 1.5vw, 1rem);
+  font-size: clamp(0.78rem, 1.4vw, 0.96rem);
   font-weight: 500;
-  letter-spacing: .32em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
 }
 
-.hero__venue {
-  margin-top: .75rem;
+.hero-details__venue {
+  margin-top: 0.7rem;
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(.72rem, 1.3vw, .9rem);
+  font-size: clamp(0.7rem, 1.2vw, 0.86rem);
   font-weight: 300;
-  letter-spacing: .12em;
-  color: rgba(255,250,246,.78);
+  letter-spacing: 0.11em;
+  color: rgba(255, 250, 245, 0.74);
 }
 
-.hero__scroll {
+.countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(70px, 1fr));
+  gap: clamp(0.5rem, 2vw, 1rem);
+  width: min(100%, 620px);
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.countdown__item {
+  min-height: 105px;
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(10, 24, 34, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.countdown__item strong {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.countdown__item span {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.54rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 250, 245, 0.68);
+}
+
+.hero-scroll {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: .8rem;
-  margin-top: clamp(3rem, 7vw, 4.5rem);
-  color: rgba(255,250,246,.86);
+  gap: 0.75rem;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  color: rgba(255, 250, 245, 0.82);
   text-decoration: none;
   font-family: 'Manrope', sans-serif;
-  font-size: .68rem;
-  letter-spacing: .28em;
+  font-size: 0.6rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  animation: fadeIn 1s 1.4s both;
 }
 
-.hero__scroll i {
+.hero-scroll i {
   width: 1px;
-  height: 44px;
-  background: linear-gradient(to bottom, rgba(255,255,255,.9), transparent);
-  animation: scrollLine 1.8s ease-in-out infinite;
+  height: 42px;
+  display: block;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.85), transparent);
 }
-
-@keyframes heroZoom { from { transform: scale(1); } to { transform: scale(1.08); } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideFromLeft { from { opacity: 0; transform: translate(-45px,-.2em) rotate(-7deg); } to { opacity: 1; transform: translate(0,-.2em) rotate(-7deg); } }
-@keyframes slideFromRight { from { opacity: 0; transform: translate(45px,.2em) rotate(-7deg); } to { opacity: 1; transform: translate(0,.2em) rotate(-7deg); } }
-@keyframes scrollLine { 0%,100% { opacity:.25; transform:scaleY(.65); transform-origin:top; } 50% { opacity:1; transform:scaleY(1); transform-origin:top; } }
 
 @media (max-width: 760px) {
-  .hero { padding-inline: 1rem; }
-  .hero__names { grid-template-columns: 1fr; justify-items: center; row-gap: .1rem; }
-  .hero__name { white-space: normal; }
-  .hero__name--first, .hero__name--second { justify-self: center; transform: rotate(-7deg); }
-  .hero__ampersand { margin: -.1rem 0; }
-
-  @keyframes slideFromLeft {
-    from { opacity: 0; transform: translateX(-35px) rotate(-7deg); }
-    to { opacity: 1; transform: translateX(0) rotate(-7deg); }
+  .hero-section {
+    padding-inline: 1rem;
   }
 
-  @keyframes slideFromRight {
-    from { opacity: 0; transform: translateX(35px) rotate(-7deg); }
-    to { opacity: 1; transform: translateX(0) rotate(-7deg); }
+  .hero-names {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.1rem;
+  }
+
+  .hero-names__first,
+  .hero-names__second {
+    justify-self: center;
+    transform: rotate(-7deg);
+  }
+
+  .hero-names > i {
+    margin: -0.15rem 0;
+  }
+
+  .countdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 360px;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero__background, .hero__eyebrow, .hero__name, .hero__ampersand,
-  .hero__caption, .hero__divider, .hero__details, .hero__scroll, .hero__scroll i {
-    animation: none;
+@media (max-width: 390px) {
+  .countdown__item {
+    min-height: 92px;
   }
 }
 </style>
