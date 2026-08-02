@@ -3,7 +3,7 @@
     <div class="section__inner text-center">
       <p class="eyebrow">With grateful hearts</p>
       <div class="closing__monogram">M <span>&</span> C</div>
-      <h2 class="section-title">We cannot wait to celebrate with you.</h2>
+      <h2 class="section-title">We cannot wait to celebrate with youuuuuuuu.</h2>
       <p class="section-copy">January 17, 2027 · Baguio City</p>
     </div>
   </footer>
