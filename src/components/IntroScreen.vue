@@ -198,7 +198,7 @@ const openInvitation = () => {
     .to(
       '.full-envelope__card',
       {
-        yPercent: -8,
+        yPercent: -50,
         scale: 1,
         duration: 1.05,
         ease: 'power4.out'
@@ -319,7 +319,7 @@ const openInvitation = () => {
 .full-envelope__card {
   position: absolute;
   left: 50%;
-  top: 20%;
+  top: 50%;
   z-index: 2;
   width: min(78vw, 760px);
   min-height: min(66vh, 610px);
