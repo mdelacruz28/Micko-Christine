@@ -1,8 +1,8 @@
 <template>
   <section
+    v-if="isVisible"
     ref="introRef"
     class="intro-screen"
-    :class="{ 'is-leaving': isLeaving }"
     aria-label="Wedding invitation introduction"
   >
     <div class="intro-screen__background" aria-hidden="true"></div>
@@ -29,7 +29,12 @@
 
       <div class="intro-divider" aria-hidden="true"></div>
 
-      <button class="intro-button" type="button" @click="openInvitation">
+      <button
+        class="intro-button"
+        type="button"
+        :disabled="isOpening"
+        @click="openInvitation"
+      >
         <span>Open Invitation</span>
 
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -43,31 +48,28 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useGsapContext } from '../composables/useGsapContext'
-
-const emit = defineEmits(['opened'])
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { gsap } from '../plugins/gsap'
 
 const introRef = ref(null)
-const isLeaving = ref(false)
+const isOpening = ref(false)
+const isVisible = ref(true)
 const showMonogramImage = ref(true)
 
 const monogramUrl = '/images/intro/Monogram.png'
 
-let openingTimeline
+let context
 let idleTimeline
 
-useGsapContext(introRef, ({ gsap }) => {
-  const media = gsap.matchMedia()
+onMounted(() => {
+  document.documentElement.classList.add('invitation-locked')
 
-  media.add('(prefers-reduced-motion: no-preference)', () => {
-    openingTimeline = gsap.timeline({
-      defaults: {
-        ease: 'power3.out'
-      }
+  context = gsap.context(() => {
+    const timeline = gsap.timeline({
+      defaults: { ease: 'power3.out' }
     })
 
-    openingTimeline
+    timeline
       .from('.intro-screen__background', {
         scale: 1.12,
         duration: 1.8,
@@ -135,9 +137,7 @@ useGsapContext(introRef, ({ gsap }) => {
     idleTimeline = gsap.timeline({
       repeat: -1,
       yoyo: true,
-      defaults: {
-        ease: 'sine.inOut'
-      }
+      defaults: { ease: 'sine.inOut' }
     })
 
     idleTimeline
@@ -153,68 +153,59 @@ useGsapContext(introRef, ({ gsap }) => {
         },
         0
       )
-  })
+  }, introRef.value)
+})
 
-  return () => media.revert()
+onBeforeUnmount(() => {
+  document.documentElement.classList.remove('invitation-locked')
+  idleTimeline?.kill()
+  context?.revert()
 })
 
 const openInvitation = () => {
-  if (isLeaving.value) return
+  if (isOpening.value || !introRef.value) return
 
-  isLeaving.value = true
+  isOpening.value = true
   idleTimeline?.pause()
 
-  const gsap = openingTimeline?.constructor?.prototype
-    ? openingTimeline.vars?.parent?.data
-    : null
+  gsap.timeline({
+    onComplete: () => {
+      isVisible.value = false
+      document.documentElement.classList.remove('invitation-locked')
 
-  // Use the globally registered GSAP instance from the active timeline.
-  const timeline = openingTimeline?.timeline
-    ? openingTimeline.timeline()
-    : null
-
-  const root = introRef.value
-  if (!root) {
-    emit('opened')
-    document.querySelector('#home')?.scrollIntoView()
-    return
-  }
-
-  import('../plugins/gsap').then(({ gsap }) => {
-    gsap.timeline({
-      onComplete: () => {
-        emit('opened')
-        document.querySelector('#home')?.scrollIntoView({
-          behavior: 'auto',
-          block: 'start'
-        })
-      }
-    })
-      .to('.intro-content, .intro-hint', {
-        opacity: 0,
-        y: -18,
-        duration: 0.55,
-        ease: 'power2.in'
+      window.scrollTo({
+        top: 0,
+        behavior: 'auto'
       })
-      .to(
-        '.intro-screen__overlay',
-        {
-          opacity: 0.28,
-          duration: 0.65,
-          ease: 'power2.inOut'
-        },
-        0.05
-      )
-      .to(
-        root,
-        {
-          yPercent: -100,
-          duration: 1.05,
-          ease: 'power4.inOut'
-        },
-        0.32
-      )
+
+      window.dispatchEvent(new CustomEvent('invitation-opened'))
+    }
   })
+    .to('.intro-content, .intro-hint', {
+      opacity: 0,
+      y: -18,
+      duration: 0.5,
+      ease: 'power2.in'
+    })
+    .to(
+      '.intro-screen__frame',
+      {
+        opacity: 0,
+        scale: 0.97,
+        duration: 0.55,
+        ease: 'power2.inOut'
+      },
+      0.05
+    )
+    .to(
+      introRef.value,
+      {
+        yPercent: -100,
+        duration: 1,
+        ease: 'power4.inOut'
+      },
+      0.25
+    )
 }
 </script>
 
@@ -230,19 +221,16 @@ const openInvitation = () => {
   isolation: isolate;
   padding: 1.25rem;
   color: #fffaf5;
-}
-
-.intro-screen.is-leaving {
-  pointer-events: none;
+  background: #102634;
 }
 
 .intro-screen__background {
   position: absolute;
   inset: -4%;
   z-index: -4;
-  background-image: url('/images/intro/intro_bg.png');
-  background-size: cover;
-  background-position: center;
+  background:
+    linear-gradient(rgba(16, 38, 52, 0.3), rgba(16, 38, 52, 0.3)),
+    url('/images/intro/intro_bg.png') center / cover no-repeat;
   will-change: transform;
 }
 
@@ -291,14 +279,12 @@ const openInvitation = () => {
   display: grid;
   place-items: center;
   margin-bottom: 1.4rem;
-  will-change: transform, opacity, filter;
 }
 
 .intro-monogram img {
   width: clamp(150px, 22vw, 250px);
   max-height: 210px;
   object-fit: contain;
-  filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.32));
 }
 
 .intro-monogram__fallback {
@@ -307,7 +293,6 @@ const openInvitation = () => {
   font-style: italic;
   line-height: 0.8;
   letter-spacing: -0.1em;
-  text-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
 }
 
 .intro-monogram__fallback span {
@@ -327,7 +312,6 @@ const openInvitation = () => {
   letter-spacing: clamp(0.12em, 0.35vw, 0.28em);
   text-transform: uppercase;
   color: rgba(255, 250, 245, 0.9);
-  text-wrap: balance;
 }
 
 .intro-divider {
@@ -355,15 +339,10 @@ const openInvitation = () => {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 18px 46px rgba(4, 16, 24, 0.22);
-  transition:
-    background 0.25s ease,
-    transform 0.25s ease;
 }
 
-.intro-button:hover {
-  background: #fff;
-  transform: translateY(-2px);
+.intro-button:disabled {
+  cursor: default;
 }
 
 .intro-button svg {
@@ -386,21 +365,11 @@ const openInvitation = () => {
   text-transform: uppercase;
   color: rgba(255, 250, 245, 0.52);
 }
+</style>
 
-@media (max-width: 620px) {
-  .intro-screen {
-    padding-inline: 1rem;
-  }
-
-  .intro-copy {
-    max-width: 330px;
-    line-height: 1.9;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .intro-button {
-    transition: none;
-  }
+<style>
+html.invitation-locked,
+html.invitation-locked body {
+  overflow: hidden;
 }
 </style>

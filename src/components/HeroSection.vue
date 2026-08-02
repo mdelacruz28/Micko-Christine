@@ -47,8 +47,15 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { useGsapContext } from '../composables/useGsapContext'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref
+} from 'vue'
+import { gsap } from '../plugins/gsap'
 import { splitTextIntoLetters } from '../composables/useScrollReveal'
 
 const heroRef = ref(null)
@@ -63,6 +70,8 @@ const countdown = reactive({
 })
 
 let timerId
+let animationContext
+let hasAnimated = false
 
 const pad = (value, length = 2) => String(value).padStart(length, '0')
 
@@ -90,145 +99,181 @@ const countdownItems = computed(() => [
   { label: 'Seconds', value: countdown.seconds }
 ])
 
-onMounted(() => {
-  updateCountdown()
-  timerId = window.setInterval(updateCountdown, 1000)
-})
+const prepareHero = () => {
+  if (!heroRef.value) return
 
-onBeforeUnmount(() => {
-  if (timerId) window.clearInterval(timerId)
-})
+  gsap.set(
+    [
+      '.hero-content__eyebrow',
+      '.hero-content__caption',
+      '.hero-details > *',
+      '.countdown__item',
+      '.hero-scroll'
+    ],
+    { opacity: 0 }
+  )
 
-useGsapContext(heroRef, ({ gsap }) => {
-  const media = gsap.matchMedia()
+  gsap.set('.hero-content__ornament span', {
+    scaleX: 0,
+    transformOrigin: 'center'
+  })
 
-  media.add('(prefers-reduced-motion: no-preference)', () => {
+  gsap.set('.hero-content__ornament > i', {
+    opacity: 0,
+    scale: 0
+  })
+}
+
+const animateHero = async () => {
+  if (hasAnimated || !heroRef.value) return
+  hasAnimated = true
+
+  await nextTick()
+
+  animationContext = gsap.context(() => {
     const firstName = heroRef.value.querySelector('.hero-names__first')
     const secondName = heroRef.value.querySelector('.hero-names__second')
 
     const firstLetters = splitTextIntoLetters(firstName)
     const secondLetters = splitTextIntoLetters(secondName)
 
+    gsap.set(firstLetters, { opacity: 0 })
+    gsap.set(secondLetters, { opacity: 0 })
+    gsap.set('.hero-names > i', { opacity: 0 })
+
     const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: heroRef.value,
-        start: 'top 78%',
-        once: true
-      }
+      defaults: { ease: 'power3.out' }
     })
 
     timeline
-      .from('.hero-section__background', {
-        scale: 1.08,
-        duration: 1.5,
-        ease: 'power2.out'
-      })
-      .from(
+      .fromTo(
+        '.hero-section__background',
+        { scale: 1.08 },
+        {
+          scale: 1,
+          duration: 1.45,
+          ease: 'power2.out'
+        }
+      )
+      .to(
         '.hero-content__eyebrow',
         {
-          opacity: 0,
-          y: 24,
-          filter: 'blur(4px)',
-          duration: 0.8
+          opacity: 1,
+          y: 0,
+          filter: 'blur(0px)',
+          duration: 0.75
         },
         0.15
       )
-      .from(
+      .fromTo(
         firstLetters,
         {
           opacity: 0,
           x: -28,
           y: 18,
           rotate: -8,
-          filter: 'blur(5px)',
-          duration: 0.75,
+          filter: 'blur(5px)'
+        },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          rotate: 0,
+          filter: 'blur(0px)',
+          duration: 0.72,
           stagger: 0.055
         },
-        0.3
+        0.28
       )
-      .from(
+      .to(
         '.hero-names > i',
         {
-          opacity: 0,
-          scale: 0.6,
-          rotate: -18,
-          duration: 0.65,
+          opacity: 1,
+          scale: 1,
+          rotate: -8,
+          duration: 0.6,
           ease: 'back.out(1.8)'
         },
-        0.7
+        0.66
       )
-      .from(
+      .fromTo(
         secondLetters,
         {
           opacity: 0,
           x: 28,
           y: 18,
           rotate: -8,
-          filter: 'blur(5px)',
-          duration: 0.75,
+          filter: 'blur(5px)'
+        },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          rotate: 0,
+          filter: 'blur(0px)',
+          duration: 0.72,
           stagger: 0.055
         },
-        0.72
+        0.7
       )
-      .from(
+      .to(
         '.hero-content__caption',
         {
-          opacity: 0,
-          y: 18,
-          duration: 0.7
-        },
-        1.05
-      )
-      .from(
-        '.hero-content__ornament span',
-        {
-          scaleX: 0,
-          transformOrigin: 'center',
-          duration: 0.65,
-          stagger: 0.08
-        },
-        1.15
-      )
-      .from(
-        '.hero-content__ornament > i',
-        {
-          opacity: 0,
-          scale: 0,
-          rotate: 0,
-          duration: 0.45,
-          ease: 'back.out(2)'
-        },
-        1.28
-      )
-      .from(
-        '.hero-details > *',
-        {
-          opacity: 0,
-          y: 16,
-          duration: 0.7,
-          stagger: 0.1
-        },
-        1.35
-      )
-      .from(
-        '.countdown__item',
-        {
-          opacity: 0,
-          y: 22,
-          scale: 0.94,
-          duration: 0.7,
-          stagger: 0.1
-        },
-        1.52
-      )
-      .from(
-        '.hero-scroll',
-        {
-          opacity: 0,
-          y: 14,
+          opacity: 1,
+          y: 0,
           duration: 0.65
         },
-        1.82
+        1.02
+      )
+      .to(
+        '.hero-content__ornament span',
+        {
+          scaleX: 1,
+          duration: 0.6,
+          stagger: 0.08
+        },
+        1.12
+      )
+      .to(
+        '.hero-content__ornament > i',
+        {
+          opacity: 1,
+          scale: 1,
+          rotate: 45,
+          duration: 0.4,
+          ease: 'back.out(2)'
+        },
+        1.22
+      )
+      .to(
+        '.hero-details > *',
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.65,
+          stagger: 0.1
+        },
+        1.3
+      )
+      .to(
+        '.countdown__item',
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.65,
+          stagger: 0.09
+        },
+        1.45
+      )
+      .to(
+        '.hero-scroll',
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6
+        },
+        1.72
       )
 
     gsap.to('.hero-section__background', {
@@ -251,9 +296,31 @@ useGsapContext(heroRef, ({ gsap }) => {
       yoyo: true,
       ease: 'sine.inOut'
     })
-  })
+  }, heroRef.value)
+}
 
-  return () => media.revert()
+const handleInvitationOpened = () => {
+  animateHero()
+}
+
+onMounted(() => {
+  updateCountdown()
+  timerId = window.setInterval(updateCountdown, 1000)
+
+  prepareHero()
+  window.addEventListener('invitation-opened', handleInvitationOpened)
+
+  // Fallback for direct navigation or if IntroScreen is temporarily removed.
+  window.setTimeout(() => {
+    const introExists = document.querySelector('.intro-screen')
+    if (!introExists) animateHero()
+  }, 250)
+})
+
+onBeforeUnmount(() => {
+  if (timerId) window.clearInterval(timerId)
+  window.removeEventListener('invitation-opened', handleInvitationOpened)
+  animationContext?.revert()
 })
 </script>
 
@@ -268,15 +335,16 @@ useGsapContext(heroRef, ({ gsap }) => {
   padding: clamp(5rem, 9vw, 8rem) 1.25rem;
   color: #fffaf5;
   text-align: center;
+  background: #163246;
 }
 
 .hero-section__background {
   position: absolute;
   inset: -8% -4%;
   z-index: -4;
-  background-image: url('/images/hero/lafayette.png');
-  background-size: cover;
-  background-position: center;
+  background:
+    linear-gradient(rgba(22, 50, 70, 0.15), rgba(22, 50, 70, 0.15)),
+    url('/images/hero/lafayettte.png') center / cover no-repeat;
   will-change: transform;
 }
 
@@ -310,7 +378,8 @@ useGsapContext(heroRef, ({ gsap }) => {
   font-family: 'Allura', cursive;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
   color: #efb49f;
-  transform: rotate(-3deg);
+  transform: translateY(24px) rotate(-3deg);
+  filter: blur(4px);
 }
 
 .hero-names {
@@ -341,7 +410,6 @@ useGsapContext(heroRef, ({ gsap }) => {
   font-size: 0.56em;
   font-style: normal;
   color: #efb49f;
-  transform: rotate(-8deg);
 }
 
 .hero-content__caption {
@@ -350,6 +418,7 @@ useGsapContext(heroRef, ({ gsap }) => {
   font-size: clamp(1.3rem, 2.5vw, 2rem);
   font-style: italic;
   letter-spacing: 0.08em;
+  transform: translateY(18px);
 }
 
 .hero-content__ornament {
@@ -369,12 +438,12 @@ useGsapContext(heroRef, ({ gsap }) => {
   width: 6px;
   height: 6px;
   border: 1px solid #efb49f;
-  transform: rotate(45deg);
 }
 
 .hero-details__date,
 .hero-details__venue {
   margin: 0;
+  transform: translateY(16px);
 }
 
 .hero-details__date {
@@ -410,6 +479,7 @@ useGsapContext(heroRef, ({ gsap }) => {
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(10, 24, 34, 0.2);
   backdrop-filter: blur(8px);
+  transform: translateY(22px) scale(0.94);
 }
 
 .countdown__item strong {
@@ -440,6 +510,7 @@ useGsapContext(heroRef, ({ gsap }) => {
   font-size: 0.6rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
+  transform: translateY(14px);
 }
 
 .hero-scroll i {
@@ -473,12 +544,6 @@ useGsapContext(heroRef, ({ gsap }) => {
   .countdown {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 360px;
-  }
-}
-
-@media (max-width: 390px) {
-  .countdown__item {
-    min-height: 92px;
   }
 }
 </style>
