@@ -180,25 +180,25 @@ onMounted(() => {
         0.84
       )
 
-    idleTimeline = gsap.timeline({
-      repeat: -1,
-      yoyo: true,
-      defaults: { ease: 'sine.inOut' }
-    })
+    // idleTimeline = gsap.timeline({
+    //   repeat: -1,
+    //   yoyo: true,
+    //   defaults: { ease: 'sine.inOut' }
+    // })
 
-    idleTimeline
-      .to('.wax-seal', {
-        scale: 1.035,
-        duration: 1.7
-      })
-      .to(
-        '.intro-button svg',
-        {
-          x: 3,
-          duration: 1
-        },
-        0
-      )
+    // idleTimeline
+    //   .to('.wax-seal', {
+    //     scale: 1.035,
+    //     duration: 1.7
+    //   })
+    //   .to(
+    //     '.intro-button svg',
+    //     {
+    //       x: 3,
+    //       duration: 1
+    //     },
+    //     0
+    //   )
   }, introRef.value)
 })
 
