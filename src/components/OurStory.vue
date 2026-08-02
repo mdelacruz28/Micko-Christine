@@ -70,7 +70,7 @@ const chapters = [
     description:
       'Through changing seasons, long conversations, adventures, and everyday moments, we learned that love is not only found in grand gestures, but in choosing one another again and again.',
     accent: 'Together, even the ordinary became meaningful.',
-    image: '/images/story/story-02.jpg',
+    image: '/images/story/story2.png',
     alt: 'Micko and Christine sharing a meaningful moment together'
   },
   {
@@ -79,7 +79,7 @@ const chapters = [
     description:
       'With grateful hearts and faith in the life ahead, we said yes to a new chapter—one built on love, commitment, growth, and the promise to walk through every season together.',
     accent: 'This is where forever begins.',
-    image: '/images/story/story3.png',
+    image: '/images/story/story3.jpg',
     alt: 'Micko and Christine celebrating their engagement'
   }
 ]
