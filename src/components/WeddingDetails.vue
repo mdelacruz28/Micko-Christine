@@ -33,11 +33,16 @@
             </div>
           </div>
 
-          <p class="event-card__note">{{ event.note }}</p>
+          <a
+  class="event-card__button"
+  :href="event.mapUrl"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <span>{{ event.button }}</span>
 
-          <a class="event-card__button" :href="event.mapUrl" target="_blank" rel="noopener noreferrer">
-            View location
-          </a>
+
+</a>
         </div>
       </article>
     </div>
@@ -69,6 +74,7 @@ const events = [
     note: 'Please be seated before the processional begins. The ceremony will be held in an open-air garden setting.',
     image: '/images/details/bellamp.png',
     imageAlt: 'Bell Amphitheater wedding ceremony venue',
+    button: 'View Ceremony Location',
     mapUrl: 'https://maps.google.com/?q=Bell+Amphitheater+Camp+John+Hay'
   },
   {
@@ -81,7 +87,8 @@ const events = [
     note: 'Cocktails and light refreshments will be served before the reception program begins.',
     image: '/images/details/lafaayetteee.png',
     imageAlt: 'Lafaayette Luxury Suites wedding reception venue',
-    mapUrl: 'https://maps.google.com/?q=Lafaayette+Luxury+Suites+Baguio'
+    button: 'Get Direction to Reception',
+    mapUrl: 'https://www.google.com/maps/dir/?api=1&origin=Bell+Amphitheater+Camp+John+Hay+Baguio&destination=Lafaayette+Luxury+Suites+Baguio&travelmode=driving'
   }
 ]
 
