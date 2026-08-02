@@ -728,7 +728,7 @@ const openInvitation = () => {
   left: 50%;
   top: 50%;
   z-index: 12;
-
+  --seal-size: clamp(130px, 11vw, 170px);
   width: clamp(90px, 9vw, 130px);
   aspect-ratio: 1;
 
