@@ -79,13 +79,7 @@
       </div>
 
       <div class="wax-seal" aria-hidden="true">
-        <span class="wax-seal__ring"></span>
-
-        <span class="wax-seal__text">
-          <b>M</b>
-          <i>&amp;</i>
-          <b>C</b>
-        </span>
+        <img src="/images/intro/wax-seal.png" alt="" draggable="false"/>
       </div>
     </div>
 
@@ -729,40 +723,29 @@ const openInvitation = () => {
   transform-origin: center;
 }
 
-.wax-seal__ring {
+.wax-seal {
   position: absolute;
-  inset: 9px;
-  border: 1px solid rgba(255, 230, 218, 0.35);
-  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  z-index: 12;
+
+  width: clamp(90px, 9vw, 130px);
+  aspect-ratio: 1;
+
+  margin-left: calc(clamp(90px, 9vw, 130px) / -2);
+  margin-top: calc(clamp(90px, 9vw, 130px) / -2);
+
+  pointer-events: none;
 }
 
-.wax-seal__ring::before {
-  content: '';
-  position: absolute;
-  inset: 5px;
-  border: 1px solid rgba(255, 230, 218, 0.12);
-  border-radius: 50%;
-}
+.wax-seal img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
 
-.wax-seal__text {
-  display: flex;
-  align-items: center;
-  gap: 0.06rem;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.25rem, 2.7vw, 1.85rem);
-  font-style: italic;
-  color: #fbe9df;
-  text-shadow: 0 1px 0 rgba(80, 19, 25, 0.4);
-}
-
-.wax-seal__text b {
-  font-weight: 500;
-}
-
-.wax-seal__text i {
-  font-family: 'Allura', cursive;
-  font-size: 0.88em;
-  color: #f3c2ad;
+  filter:
+    drop-shadow(0 10px 18px rgba(0,0,0,.22));
 }
 
 .intro-actions {
