@@ -79,7 +79,7 @@ const chapters = [
     description:
       'With grateful hearts and faith in the life ahead, we said yes to a new chapter—one built on love, commitment, growth, and the promise to walk through every season together.',
     accent: 'This is where forever begins.',
-    image: '/images/story/story3.HEIC',
+    image: '/images/story/story3.png',
     alt: 'Micko and Christine celebrating their engagement'
   }
 ]
