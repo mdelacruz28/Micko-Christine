@@ -12,7 +12,6 @@ import FAQSection from './components/FAQSection.vue'
 import ClosingSection from './components/ClosingSection.vue'
 import BackgroundCanvas from './components/layout/BackgroundCanvas.vue'
 import DressCodeSection from './components/DressCodeSection.vue'
-import MotionDemosection from './components/MotionDemoSection.vue'
 
 const invitationOpened = ref(false)
 </script>
@@ -23,7 +22,6 @@ const invitationOpened = ref(false)
   <main v-else class="site-shell">
     
     <HeroSection />
-    <MotionDemosection />
     <OurStory />
     <WeddingDetails />
     <WeddingTimeline />
