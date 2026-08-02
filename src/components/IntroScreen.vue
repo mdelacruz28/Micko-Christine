@@ -228,9 +228,9 @@ const openInvitation = () => {
     .to(
       '.life-envelope__card',
       {
-        yPercent: -24,
+        yPercent: -35,
         scale: 1,
-        rotateZ: -1.2,
+        // rotateZ: -1.2,
         duration: 1.12,
         ease: 'power4.out'
       },
