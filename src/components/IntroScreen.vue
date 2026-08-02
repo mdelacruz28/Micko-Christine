@@ -9,7 +9,7 @@
 
       <div class="monogram">
   <img
-    src="/images/Monogram.png"
+    src="/images/intro/Monogram.png"
     alt="M & C Monogram"
   />
 </div>
@@ -68,7 +68,7 @@ Background Photo
     position:absolute;
     inset:0;
 
-    background-image:url("/images/intro_bg.png");
+    background-image:url("/images/intro/intro_bg.png");
     background-size:cover;
     background-position:center;
 
