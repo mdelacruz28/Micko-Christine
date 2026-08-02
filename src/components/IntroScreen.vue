@@ -695,7 +695,7 @@ const openInvitation = () => {
   clip-path: polygon(0 100%, 50% 38%, 100% 100%);
 }
 
-.wax-seal {
+/* .wax-seal {
   --seal-size: clamp(80px, 9vw, 112px);
 
   position: absolute;
@@ -721,7 +721,7 @@ const openInvitation = () => {
     inset 0 0 0 3px rgba(255, 244, 235, 0.08),
     inset 0 -8px 14px rgba(72, 19, 25, 0.18);
   transform-origin: center;
-}
+} */
 
 .wax-seal {
   position: absolute;
