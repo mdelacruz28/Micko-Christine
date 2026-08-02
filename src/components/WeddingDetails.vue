@@ -19,7 +19,7 @@
 
         <div class="event-card__content">
           <p class="event-card__date">{{ event.date }}</p>
-          <h3>{{ event.venue }}</h3>
+          <h4>{{ event.venue }}</h4>
           <p class="event-card__location">{{ event.location }}</p>
 
           <div class="event-card__meta">
@@ -227,7 +227,7 @@ onBeforeUnmount(() => observer?.disconnect())
   color: var(--pomegranate); 
 }
 
-.event-card h3 { 
+.event-card h4 { 
   margin: 0; 
   font-family: 'Cormorant Garamond', serif; 
   font-size: clamp(2.4rem, 4.2vw, 4rem); 
