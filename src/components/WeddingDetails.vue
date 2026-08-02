@@ -66,7 +66,7 @@ let observer
 const events = [
   {
     type: 'Ceremony',
-    date: 'Sunday · January 17, 2027',
+    // date: 'Sunday · January 17, 2027',
     venue: 'Bell Amphitheater',
     location: 'Camp John Hay, Baguio City',
     time: '2:30 PM',
@@ -79,7 +79,7 @@ const events = [
   },
   {
     type: 'Reception',
-    date: 'Sunday · January 17, 2027',
+    // date: 'Sunday · January 17, 2027',
     venue: 'Lafaayette Luxury Suites',
     location: 'Baguio City',
     time: '5:00 PM',
