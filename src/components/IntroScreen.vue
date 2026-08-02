@@ -84,7 +84,7 @@ const introRef = ref(null)
 const isOpening = ref(false)
 const showMonogramImage = ref(true)
 
-const monogramUrl = '/images/monogram/white.png'
+const monogramUrl = '/images/intro/Monogram.png'
 
 let context
 let idleTimeline
