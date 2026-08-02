@@ -1,6 +1,5 @@
 <template>
   <section
-    v-if="isVisible"
     ref="introRef"
     class="intro-screen"
     aria-label="Wedding invitation introduction"
@@ -51,12 +50,13 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { gsap } from '../plugins/gsap'
 
+const emit = defineEmits(['opened'])
+
 const introRef = ref(null)
 const isOpening = ref(false)
-const isVisible = ref(true)
 const showMonogramImage = ref(true)
 
-const monogramUrl = '/images/intro/Monogram.png'
+const monogramUrl = '/images/monogram/white.png'
 
 let context
 let idleTimeline
@@ -72,7 +72,7 @@ onMounted(() => {
     timeline
       .from('.intro-screen__background', {
         scale: 1.12,
-        duration: 1.8,
+        duration: 1.6,
         ease: 'power2.out'
       })
       .from(
@@ -80,9 +80,9 @@ onMounted(() => {
         {
           opacity: 0,
           scale: 0.97,
-          duration: 0.9
+          duration: 0.8
         },
-        0.25
+        0.2
       )
       .from(
         '.intro-monogram',
@@ -91,28 +91,27 @@ onMounted(() => {
           y: 26,
           scale: 0.88,
           filter: 'blur(8px)',
-          duration: 1.05
+          duration: 0.95
         },
-        0.45
+        0.4
       )
       .from(
         '.intro-copy',
         {
           opacity: 0,
           y: 20,
-          filter: 'blur(5px)',
-          duration: 0.9
+          duration: 0.8
         },
-        0.75
+        0.68
       )
       .from(
         '.intro-divider',
         {
           scaleX: 0,
           transformOrigin: 'center',
-          duration: 0.7
+          duration: 0.6
         },
-        0.95
+        0.86
       )
       .from(
         '.intro-button',
@@ -120,18 +119,18 @@ onMounted(() => {
           opacity: 0,
           y: 18,
           scale: 0.96,
-          duration: 0.75
+          duration: 0.65
         },
-        1.08
+        0.98
       )
       .from(
         '.intro-hint',
         {
           opacity: 0,
           y: 10,
-          duration: 0.65
+          duration: 0.55
         },
-        1.35
+        1.18
       )
 
     idleTimeline = gsap.timeline({
@@ -170,41 +169,25 @@ const openInvitation = () => {
 
   gsap.timeline({
     onComplete: () => {
-      isVisible.value = false
       document.documentElement.classList.remove('invitation-locked')
-
-      window.scrollTo({
-        top: 0,
-        behavior: 'auto'
-      })
-
-      window.dispatchEvent(new CustomEvent('invitation-opened'))
+      emit('opened')
     }
   })
     .to('.intro-content, .intro-hint', {
       opacity: 0,
       y: -18,
-      duration: 0.5,
+      duration: 0.45,
       ease: 'power2.in'
     })
     .to(
-      '.intro-screen__frame',
-      {
-        opacity: 0,
-        scale: 0.97,
-        duration: 0.55,
-        ease: 'power2.inOut'
-      },
-      0.05
-    )
-    .to(
       introRef.value,
       {
-        yPercent: -100,
-        duration: 1,
-        ease: 'power4.inOut'
+        opacity: 0,
+        scale: 1.025,
+        duration: 0.75,
+        ease: 'power3.inOut'
       },
-      0.25
+      0.2
     )
 }
 </script>
@@ -228,10 +211,10 @@ const openInvitation = () => {
   position: absolute;
   inset: -4%;
   z-index: -4;
-  background:
-    linear-gradient(rgba(16, 38, 52, 0.3), rgba(16, 38, 52, 0.3)),
-    url('/images/intro/intro_bg.png') center / cover no-repeat;
-  will-change: transform;
+  background-color: #102634;
+  background-image: url('/images/intro/intro-bg.jpg');
+  background-size: cover;
+  background-position: center;
 }
 
 .intro-screen__overlay {
@@ -342,7 +325,7 @@ const openInvitation = () => {
 }
 
 .intro-button:disabled {
-  cursor: default;
+  cursor: wait;
 }
 
 .intro-button svg {

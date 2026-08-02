@@ -14,10 +14,23 @@ import BackgroundCanvas from './components/layout/BackgroundCanvas.vue'
 import DressCodeSection from './components/DressCodeSection.vue'
 
 const invitationOpened = ref(false)
+const handleInvitationOpened = () => {
+  invitationOpened.value = true
+
+  requestAnimationFrame(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'auto'
+    })
+  })
+}
 </script>
 
 <template>
-  <IntroScreen v-if="!invitationOpened" @open="invitationOpened = true" />
+  <IntroScreen
+    v-if="!invitationOpened"
+    @opened="handleInvitationOpened"
+  />
 
   <main v-else class="site-shell">
     
