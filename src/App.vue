@@ -11,6 +11,7 @@ import RSVPSection from './components/RSVPSection.vue'
 import FAQSection from './components/FAQSection.vue'
 import ClosingSection from './components/ClosingSection.vue'
 import BackgroundCanvas from './components/layout/BackgroundCanvas.vue'
+import DressCodeSection from './components/DressCodeSection.vue'
 
 const invitationOpened = ref(false)
 </script>
