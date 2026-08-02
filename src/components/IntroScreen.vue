@@ -324,7 +324,7 @@ const openInvitation = () => {
   width: min(78vw, 760px);
   min-height: min(66vh, 610px);
   padding: clamp(0.8rem, 2vw, 1.2rem);
-  transform: translate(-50%, -50%);
+  transform: translate(-20%, -50%);
   background:
     linear-gradient(
       145deg,
