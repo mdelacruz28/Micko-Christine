@@ -703,7 +703,7 @@ const openInvitation = () => {
   z-index: 12;
   width:min(12vw,170px);
   aspect-ratio:1;
-  /* width: clamp(90px, 9vw, 130px); */
+  width: clamp(90px, 9vw, 130px);
   aspect-ratio: 1;
 
   margin-left: calc(clamp(90px, 9vw, 130px) / -2);
