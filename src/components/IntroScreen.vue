@@ -240,7 +240,7 @@ const openInvitation = () => {
   position: absolute;
   inset: -4%;
   z-index: -4;
-  background-image: url('/images/intro/intro-bg.png');
+  background-image: url('/images/intro/intro_bg.png');
   background-size: cover;
   background-position: center;
   will-change: transform;
