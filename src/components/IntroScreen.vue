@@ -585,7 +585,7 @@ const openInvitation = () => {
 
 @media (max-width: 520px) {
   .full-envelope__card {
-    width: 88vw;
+    width: 150vw;
     min-height: 54vh;
   }
 
