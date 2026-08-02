@@ -8,7 +8,7 @@
     <div class="closing-content">
       <img
         class="closing-content__monogram"
-        src="/images/Monogram.png"
+        src="/images/intro/Monogram.png"
         alt="Micko and Christine monogram"
       />
 
