@@ -26,6 +26,7 @@ const invitationOpened = ref(false)
     <WeddingDetails />
     <WeddingTimeline />
     <EntourageSection />
+    <DressCodeSection />
     <GallerySection />
     <RSVPSection />
     <FAQSection />
