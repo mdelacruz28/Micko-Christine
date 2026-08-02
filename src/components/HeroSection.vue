@@ -264,7 +264,7 @@ onBeforeUnmount(() => {
   inset: -8% -4%;
   z-index: -4;
   background-color: #163246;
-  background-image: url('/images/hero/hero-bg.jpg');
+  background-image: url('/images/hero/lafayette.png');
   background-size: cover;
   background-position: center;
   will-change: transform;

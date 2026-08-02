@@ -56,7 +56,7 @@ const introRef = ref(null)
 const isOpening = ref(false)
 const showMonogramImage = ref(true)
 
-const monogramUrl = '/images/monogram/white.png'
+const monogramUrl = '/images/intro/Monogram.png'
 
 let context
 let idleTimeline
@@ -212,7 +212,7 @@ const openInvitation = () => {
   inset: -4%;
   z-index: -4;
   background-color: #102634;
-  background-image: url('/images/intro/intro-bg.jpg');
+  background-image: url('/images/intro/intro_bg.png');
   background-size: cover;
   background-position: center;
 }
