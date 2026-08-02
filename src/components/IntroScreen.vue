@@ -4,15 +4,14 @@
     class="intro-screen"
     aria-label="Wedding invitation introduction"
   >
-    <div class="intro-screen__background" aria-hidden="true"></div>
-    <div class="intro-screen__overlay" aria-hidden="true"></div>
+    <div class="intro-screen__backdrop" aria-hidden="true"></div>
 
-    <div class="full-envelope">
-      <div class="full-envelope__back" aria-hidden="true"></div>
+    <div class="life-envelope">
+      <div class="life-envelope__base" aria-hidden="true"></div>
 
-      <div class="full-envelope__card">
-        <div class="full-envelope__card-inner">
-          <div class="full-envelope__monogram">
+      <div class="life-envelope__card">
+        <div class="life-envelope__card-inner">
+          <div class="life-envelope__monogram">
             <img
               v-if="showMonogramImage"
               :src="monogramUrl"
@@ -20,35 +19,36 @@
               @error="showMonogramImage = false"
             />
 
-            <div v-else class="full-envelope__fallback" aria-hidden="true">
+            <div v-else class="life-envelope__fallback" aria-hidden="true">
               M<span>&amp;</span>C
             </div>
           </div>
 
-          <p class="full-envelope__eyebrow">Together with our families</p>
+          <p class="life-envelope__eyebrow">Together with our families</p>
 
           <h1>Micko <span>&amp;</span> Christine</h1>
 
-          <div class="full-envelope__divider" aria-hidden="true"></div>
+          <div class="life-envelope__divider" aria-hidden="true"></div>
 
-          <p class="full-envelope__date">January 17, 2027</p>
+          <p class="life-envelope__date">January 17, 2027</p>
 
-          <p class="full-envelope__venue">
+          <p class="life-envelope__venue">
             Bell Amphitheater · Camp John Hay
           </p>
         </div>
       </div>
 
-      <div class="full-envelope__pocket" aria-hidden="true"></div>
-      <div class="full-envelope__side full-envelope__side--left" aria-hidden="true"></div>
-      <div class="full-envelope__side full-envelope__side--right" aria-hidden="true"></div>
-      <div class="full-envelope__bottom" aria-hidden="true"></div>
+      <div class="life-envelope__pocket" aria-hidden="true"></div>
+      <div class="life-envelope__left" aria-hidden="true"></div>
+      <div class="life-envelope__right" aria-hidden="true"></div>
+      <div class="life-envelope__bottom" aria-hidden="true"></div>
 
-      <div class="full-envelope__flap" aria-hidden="true">
-        <div class="full-envelope__flap-face"></div>
+      <div class="life-envelope__flap" aria-hidden="true">
+        <div class="life-envelope__flap-front"></div>
+        <div class="life-envelope__flap-back"></div>
       </div>
 
-      <div class="full-envelope__seal" aria-hidden="true">
+      <div class="life-envelope__seal" aria-hidden="true">
         <span>M</span>
         <i>&amp;</i>
         <span>C</span>
@@ -93,19 +93,20 @@ onMounted(() => {
   document.documentElement.classList.add('invitation-locked')
 
   context = gsap.context(() => {
-    gsap.set('.full-envelope__card', {
-      yPercent: 34,
-      scale: 0.96
+    gsap.set('.life-envelope__card', {
+      yPercent: 42,
+      scale: 0.94,
+      rotateZ: 0
     })
 
-    gsap.set('.full-envelope__flap', {
+    gsap.set('.life-envelope__flap', {
       rotateX: 0,
       transformOrigin: 'top center'
     })
 
-    gsap.set('.full-envelope__card-inner > *', {
+    gsap.set('.life-envelope__card-inner > *', {
       opacity: 0,
-      y: 20
+      y: 18
     })
 
     const introTimeline = gsap.timeline({
@@ -113,29 +114,38 @@ onMounted(() => {
     })
 
     introTimeline
-      .from('.intro-screen__background', {
+      .from('.intro-screen__backdrop', {
         scale: 1.08,
         duration: 1.5,
         ease: 'power2.out'
       })
       .from(
-        '.full-envelope',
+        '.life-envelope',
         {
           opacity: 0,
-          scale: 1.03,
-          duration: 1,
-          ease: 'power2.out'
+          scale: 1.035,
+          duration: 0.95
         },
-        0.2
+        0.18
+      )
+      .from(
+        '.life-envelope__seal',
+        {
+          opacity: 0,
+          scale: 0.55,
+          duration: 0.7,
+          ease: 'back.out(1.9)'
+        },
+        0.58
       )
       .from(
         '.intro-actions',
         {
           opacity: 0,
-          y: 18,
-          duration: 0.7
+          y: 16,
+          duration: 0.65
         },
-        0.8
+        0.85
       )
 
     idleTimeline = gsap.timeline({
@@ -144,10 +154,19 @@ onMounted(() => {
       defaults: { ease: 'sine.inOut' }
     })
 
-    idleTimeline.to('.full-envelope__seal', {
-      scale: 1.06,
-      duration: 1.5
-    })
+    idleTimeline
+      .to('.life-envelope__seal', {
+        scale: 1.055,
+        duration: 1.5
+      })
+      .to(
+        '.intro-button svg',
+        {
+          x: 4,
+          duration: 0.9
+        },
+        0
+      )
   }, introRef.value)
 })
 
@@ -172,86 +191,117 @@ const openInvitation = () => {
   })
     .to('.intro-actions', {
       opacity: 0,
-      y: 18,
-      duration: 0.35,
+      y: 14,
+      duration: 0.32,
       pointerEvents: 'none'
     })
     .to(
-      '.full-envelope__seal',
+      '.life-envelope__seal',
       {
         opacity: 0,
-        scale: 0.65,
+        scale: 0.55,
         duration: 0.28,
         ease: 'power2.in'
       },
-      0.08
+      0.06
     )
     .to(
-      '.full-envelope__flap',
+      '.life-envelope__flap',
       {
         rotateX: -180,
-        duration: 0.9,
-        ease: 'power3.inOut'
+        duration: 1.05,
+        ease: 'power4.inOut'
       },
-      0.28
+      0.24
     )
     .to(
-      '.full-envelope__card',
+      '.life-envelope__card',
       {
-        yPercent: -50,
+        yPercent: 18,
+        scale: 0.97,
+        duration: 0.72,
+        ease: 'power3.out'
+      },
+      0.88
+    )
+    .to({}, { duration: 0.32 })
+    .to(
+      '.life-envelope__card',
+      {
+        yPercent: -24,
         scale: 1,
-        duration: 1.05,
+        rotateZ: -1.2,
+        duration: 1.12,
         ease: 'power4.out'
       },
-      0.72
+      1.5
     )
     .to(
-      '.full-envelope__pocket, .full-envelope__side, .full-envelope__bottom',
+      '.life-envelope__pocket, .life-envelope__left, .life-envelope__right, .life-envelope__bottom',
       {
+        yPercent: 28,
         opacity: 0.35,
-        y: 90,
-        duration: 0.8,
+        duration: 0.9,
         ease: 'power2.inOut'
       },
-      1.12
+      1.78
     )
     .to(
-      '.full-envelope__card-inner > *',
+      '.life-envelope__card-inner > *',
       {
         opacity: 1,
         y: 0,
         duration: 0.6,
-        stagger: 0.09,
+        stagger: 0.085,
         ease: 'power3.out'
       },
-      1.28
+      2.05
     )
     .to(
-      '.full-envelope__back',
+      '.life-envelope__base',
       {
-        opacity: 0.2,
-        duration: 0.6
+        opacity: 0.18,
+        duration: 0.55
       },
-      1.55
+      2.15
     )
     .to(
-      '.full-envelope__card',
+      '.life-envelope__card',
       {
-        scale: 1.04,
-        duration: 0.75,
+        rotateZ: 0,
+        scale: 1.025,
+        duration: 0.65,
         ease: 'sine.inOut'
       },
-      2
+      2.65
+    )
+    .to(
+      '.life-envelope__card',
+      {
+        scale: 1.52,
+        yPercent: -10,
+        duration: 1.15,
+        ease: 'power3.inOut'
+      },
+      3.05
+    )
+    .to(
+      '.life-envelope__card-inner',
+      {
+        opacity: 0,
+        duration: 0.45,
+        ease: 'power2.in'
+      },
+      3.62
     )
     .to(
       introRef.value,
       {
         opacity: 0,
-        scale: 1.02,
-        duration: 0.85,
-        ease: 'power3.inOut'
+        duration: 0.65,
+        ease: 'power2.inOut'
       },
-      2.45
+      3.82
     )
 }
 </script>
@@ -266,101 +316,91 @@ const openInvitation = () => {
   isolation: isolate;
   color: #fffaf5;
   background: #102634;
-  perspective: 1800px;
+  perspective: 2000px;
 }
 
-.intro-screen__background {
+.intro-screen__backdrop {
   position: absolute;
   inset: -4%;
   z-index: -5;
   background-color: #102634;
-  background-image: url('/images/intro/intro_bg.png');
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(10, 23, 32, 0.28),
+      rgba(10, 23, 32, 0.5)
+    ),
+    url('/images/intro/intro_bg.png');
   background-size: cover;
   background-position: center;
 }
 
-.intro-screen__overlay {
+.life-envelope {
   position: absolute;
   inset: 0;
-  z-index: -4;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(10, 23, 32, 0.36),
-      rgba(10, 23, 32, 0.62)
-    ),
-    radial-gradient(
-      circle at center,
-      rgba(239, 180, 159, 0.08),
-      rgba(8, 19, 27, 0.5)
-    );
-}
-
-.full-envelope {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
   overflow: hidden;
+  transform-style: preserve-3d;
 }
 
-.full-envelope__back {
+.life-envelope__base {
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
     linear-gradient(
       145deg,
-      #e8c9b9 0%,
-      #d9aa95 52%,
-      #c88f77 100%
+      #ecd2c5 0%,
+      #d9aa95 50%,
+      #c98d73 100%
     );
 }
 
-.full-envelope__card {
+.life-envelope__card {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 49%;
   z-index: 2;
-  width: min(78vw, 760px);
-  min-height: min(66vh, 610px);
+  width: min(80vw, 820px);
+  min-height: min(70vh, 660px);
   padding: clamp(0.8rem, 2vw, 1.2rem);
   transform: translate(-50%, -50%);
   background:
     linear-gradient(
       145deg,
-      rgba(255, 253, 248, 0.99),
-      rgba(246, 235, 224, 0.99)
+      rgba(255, 253, 248, 0.995),
+      rgba(246, 235, 224, 0.995)
     );
   color: #24313a;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.26);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.28);
+  will-change: transform;
 }
 
-.full-envelope__card::before {
+.life-envelope__card::before {
   content: '';
   position: absolute;
-  inset: clamp(0.6rem, 1.6vw, 1rem);
+  inset: clamp(0.65rem, 1.7vw, 1.1rem);
   border: 1px solid rgba(40, 77, 103, 0.2);
 }
 
-.full-envelope__card-inner {
+.life-envelope__card-inner {
   position: relative;
-  min-height: calc(min(66vh, 610px) - 2.4rem);
+  min-height: calc(min(70vh, 660px) - 2.4rem);
   display: grid;
   place-content: center;
   justify-items: center;
+  padding: clamp(1.5rem, 4vw, 3.2rem);
   text-align: center;
-  padding: clamp(1.5rem, 4vw, 3rem);
 }
 
-.full-envelope__monogram img {
-  width: clamp(110px, 15vw, 180px);
-  max-height: 150px;
+.life-envelope__monogram img {
+  width: clamp(115px, 16vw, 190px);
+  max-height: 160px;
   object-fit: contain;
   filter: brightness(0) saturate(100%) invert(28%) sepia(16%)
     saturate(1200%) hue-rotate(158deg) brightness(88%) contrast(90%);
 }
 
-.full-envelope__fallback {
+.life-envelope__fallback {
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(5rem, 12vw, 8rem);
   font-style: italic;
@@ -369,14 +409,14 @@ const openInvitation = () => {
   color: #284d67;
 }
 
-.full-envelope__fallback span {
+.life-envelope__fallback span {
   margin: 0 0.12em;
   font-family: 'Allura', cursive;
   font-size: 0.6em;
   color: #a64248;
 }
 
-.full-envelope__eyebrow {
+.life-envelope__eyebrow {
   margin: 1.2rem 0 0;
   font-family: 'Manrope', sans-serif;
   font-size: clamp(0.55rem, 1.2vw, 0.72rem);
@@ -386,28 +426,28 @@ const openInvitation = () => {
   color: #78614b;
 }
 
-.full-envelope__card h1 {
+.life-envelope__card h1 {
   margin: 1rem 0 0;
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3rem, 7vw, 5.8rem);
+  font-size: clamp(3rem, 7vw, 5.9rem);
   font-style: italic;
   font-weight: 500;
   line-height: 0.95;
   color: #284d67;
 }
 
-.full-envelope__card h1 span {
+.life-envelope__card h1 span {
   color: #a64248;
 }
 
-.full-envelope__divider {
-  width: 72px;
+.life-envelope__divider {
+  width: 74px;
   height: 1px;
   margin: 1.5rem 0 1rem;
   background: rgba(40, 77, 103, 0.36);
 }
 
-.full-envelope__date {
+.life-envelope__date {
   margin: 0;
   font-family: 'Manrope', sans-serif;
   font-size: clamp(0.65rem, 1.3vw, 0.82rem);
@@ -417,7 +457,7 @@ const openInvitation = () => {
   color: #24313a;
 }
 
-.full-envelope__venue {
+.life-envelope__venue {
   margin: 0.55rem 0 0;
   font-family: 'Manrope', sans-serif;
   font-size: clamp(0.58rem, 1.2vw, 0.74rem);
@@ -425,44 +465,44 @@ const openInvitation = () => {
   color: rgba(36, 49, 58, 0.68);
 }
 
-.full-envelope__pocket {
+.life-envelope__pocket {
   position: absolute;
   inset: 0;
   z-index: 4;
   background:
     linear-gradient(
       145deg,
-      rgba(243, 211, 196, 0.98),
-      rgba(218, 172, 150, 0.98)
+      rgba(244, 215, 201, 0.99),
+      rgba(219, 174, 151, 0.99)
     );
-  clip-path: polygon(0 42%, 50% 72%, 100% 42%, 100% 100%, 0 100%);
+  clip-path: polygon(0 39%, 50% 72%, 100% 39%, 100% 100%, 0 100%);
 }
 
-.full-envelope__side {
+.life-envelope__left {
   position: absolute;
   inset: 0;
   z-index: 5;
+  background: linear-gradient(145deg, #efd1c0, #d7a289);
+  clip-path: polygon(0 28%, 54% 72%, 0 100%);
 }
 
-.full-envelope__side--left {
-  background: linear-gradient(145deg, #edcbb9, #d8a58d);
-  clip-path: polygon(0 32%, 52% 72%, 0 100%);
+.life-envelope__right {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: linear-gradient(215deg, #e8bea9, #ce9277);
+  clip-path: polygon(100% 28%, 46% 72%, 100% 100%);
 }
 
-.full-envelope__side--right {
-  background: linear-gradient(215deg, #e4b9a4, #cf9479);
-  clip-path: polygon(100% 32%, 48% 72%, 100% 100%);
-}
-
-.full-envelope__bottom {
+.life-envelope__bottom {
   position: absolute;
   inset: 0;
   z-index: 6;
-  background: linear-gradient(180deg, #e6bca8, #d49a7f);
-  clip-path: polygon(0 100%, 50% 62%, 100% 100%);
+  background: linear-gradient(180deg, #e8bea9, #d3997d);
+  clip-path: polygon(0 100%, 50% 60%, 100% 100%);
 }
 
-.full-envelope__flap {
+.life-envelope__flap {
   position: absolute;
   inset: 0;
   z-index: 8;
@@ -470,26 +510,30 @@ const openInvitation = () => {
   backface-visibility: visible;
 }
 
-.full-envelope__flap-face {
-  width: 100%;
-  height: 100%;
-  background:
-    linear-gradient(
-      180deg,
-      #f0cfbf,
-      #dba58d
-    );
-  clip-path: polygon(0 0, 50% 58%, 100% 0);
+.life-envelope__flap-front,
+.life-envelope__flap-back {
+  position: absolute;
+  inset: 0;
   backface-visibility: hidden;
+  clip-path: polygon(0 0, 50% 60%, 100% 0);
 }
 
-.full-envelope__seal {
+.life-envelope__flap-front {
+  background: linear-gradient(180deg, #f2d5c8, #dba58d);
+}
+
+.life-envelope__flap-back {
+  background: linear-gradient(180deg, #c98f76, #e4b8a4);
+  transform: rotateX(180deg);
+}
+
+.life-envelope__seal {
   position: absolute;
   left: 50%;
-  top: 57%;
+  top: 58%;
   z-index: 10;
-  width: clamp(70px, 9vw, 100px);
-  height: clamp(70px, 9vw, 100px);
+  width: clamp(78px, 9vw, 110px);
+  height: clamp(78px, 9vw, 110px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -498,7 +542,7 @@ const openInvitation = () => {
   background:
     radial-gradient(circle at 35% 30%, #c2676c, #9e343b 72%);
   box-shadow:
-    0 12px 26px rgba(92, 30, 35, 0.34),
+    0 14px 30px rgba(92, 30, 35, 0.34),
     inset 0 0 0 4px rgba(255, 255, 255, 0.08);
   transform: translate(-50%, -50%);
   font-family: 'Cormorant Garamond', serif;
@@ -507,7 +551,7 @@ const openInvitation = () => {
   color: #fbe9df;
 }
 
-.full-envelope__seal i {
+.life-envelope__seal i {
   font-family: 'Allura', cursive;
   font-size: 0.9em;
   color: #f3c2ad;
@@ -525,16 +569,16 @@ const openInvitation = () => {
 }
 
 .intro-button {
-  min-width: 225px;
-  min-height: 54px;
+  min-width: 230px;
+  min-height: 56px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   border: 0;
   border-radius: 999px;
-  padding: 0.9rem 1.5rem;
-  background: rgba(255, 250, 245, 0.96);
+  padding: 0.95rem 1.55rem;
+  background: rgba(255, 250, 245, 0.97);
   color: #182f40;
   font-family: 'Manrope', sans-serif;
   font-size: 0.7rem;
@@ -565,37 +609,37 @@ const openInvitation = () => {
   font-size: 0.52rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(255, 250, 245, 0.62);
+  color: rgba(255, 250, 245, 0.64);
 }
 
 @media (max-width: 760px) {
-  .full-envelope__card {
-    width: 84vw;
-    min-height: 58vh;
+  .life-envelope__card {
+    width: 86vw;
+    min-height: 60vh;
   }
 
-  .full-envelope__card-inner {
-    min-height: calc(58vh - 2rem);
+  .life-envelope__card-inner {
+    min-height: calc(60vh - 2rem);
   }
 
-  .full-envelope__seal {
-    top: 59%;
+  .life-envelope__seal {
+    top: 60%;
   }
 }
 
 @media (max-width: 520px) {
-  .full-envelope__card {
-    width: 150vw;
-    min-height: 54vh;
+  .life-envelope__card {
+    width: 90vw;
+    min-height: 55vh;
   }
 
-  .full-envelope__card-inner {
-    min-height: calc(54vh - 1.8rem);
+  .life-envelope__card-inner {
+    min-height: calc(55vh - 1.8rem);
     padding-inline: 1.2rem;
   }
 
-  .full-envelope__seal {
-    top: 60%;
+  .life-envelope__seal {
+    top: 61%;
   }
 
   .intro-button {
