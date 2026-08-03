@@ -1,5 +1,5 @@
 <template>
-  <section id="entourage" class="entourage-section">
+  <section id="entourage" ref="sectionRef" class="entourage-section">
     <div class="entourage-section__wash" aria-hidden="true"></div>
 
     <header class="entourage-header">
@@ -88,7 +88,7 @@
       <div class="role-grid">
         <article
           v-for="member in secondaryEntourage"
-          :key="member.role"
+          :key="member.role + member.name"
           class="role-card"
         >
           <div class="role-card__icon" v-html="member.icon" aria-hidden="true"></div>
@@ -114,6 +114,14 @@
 </template>
 
 <script setup>
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { gsap, ScrollTrigger } from '../plugins/gsap'
+
+const sectionRef = ref(null)
+
+let context
+let mediaContext
+
 const featured = [
   {
     role: 'Best Man',
@@ -213,6 +221,203 @@ const secondaryEntourage = [
     `
   }
 ]
+
+onMounted(async () => {
+  await nextTick()
+
+  if (!sectionRef.value) return
+
+  context = gsap.context(() => {
+    const header = sectionRef.value.querySelector('.entourage-header')
+    const featuredCards = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll('.featured-card')
+    )
+    const groups = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll('.entourage-group')
+    )
+    const footer = sectionRef.value.querySelector('.entourage-footer')
+
+    gsap.from(header.children, {
+      scrollTrigger: {
+        trigger: header,
+        start: 'top 84%',
+        once: true
+      },
+      opacity: 0,
+      y: 38,
+      filter: 'blur(5px)',
+      duration: 0.95,
+      stagger: 0.12,
+      ease: 'power3.out'
+    })
+
+    mediaContext = gsap.matchMedia()
+
+    mediaContext.add('(min-width: 761px)', () => {
+      featuredCards.forEach((card, index) => {
+        const image = card.querySelector('.featured-card__image')
+        const imageEl = card.querySelector('.featured-card__image img')
+        const content = card.querySelector('.featured-card__content')
+        const contentChildren = content.children
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 78%',
+            once: true
+          }
+        })
+
+        tl
+          .from(card, {
+            opacity: 0,
+            y: 48,
+            x: index === 0 ? -42 : 42,
+            duration: 0.95,
+            ease: 'power3.out'
+          })
+          .from(
+            image,
+            {
+              clipPath: 'inset(0 0 100% 0)',
+              duration: 1,
+              ease: 'power4.out'
+            },
+            '-=0.78'
+          )
+          .from(
+            contentChildren,
+            {
+              opacity: 0,
+              y: 18,
+              duration: 0.55,
+              stagger: 0.08
+            },
+            '-=0.58'
+          )
+
+        gsap.to(imageEl, {
+          yPercent: index === 0 ? 7 : -7,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1
+          }
+        })
+      })
+    })
+
+    mediaContext.add('(max-width: 760px)', () => {
+      featuredCards.forEach(card => {
+        const image = card.querySelector('.featured-card__image')
+        const contentChildren = card.querySelector('.featured-card__content').children
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 82%',
+            once: true
+          }
+        })
+
+        tl
+          .from(card, {
+            opacity: 0,
+            y: 42,
+            duration: 0.85
+          })
+          .from(
+            image,
+            {
+              clipPath: 'inset(0 0 100% 0)',
+              duration: 0.85
+            },
+            '-=0.65'
+          )
+          .from(
+            contentChildren,
+            {
+              opacity: 0,
+              y: 16,
+              duration: 0.5,
+              stagger: 0.07
+            },
+            '-=0.45'
+          )
+      })
+    })
+
+    groups.forEach(group => {
+      const heading = group.querySelector('.entourage-group__heading')
+      const cards = group.querySelectorAll(
+        '.sponsor-pair, .family-card, .role-card'
+      )
+
+      gsap.from(heading.children, {
+        scrollTrigger: {
+          trigger: heading,
+          start: 'top 84%',
+          once: true
+        },
+        opacity: 0,
+        y: 30,
+        filter: 'blur(4px)',
+        duration: 0.8,
+        stagger: 0.1
+      })
+
+      gsap.from(cards, {
+        scrollTrigger: {
+          trigger: cards[0] || heading,
+          start: 'top 82%',
+          once: true
+        },
+        opacity: 0,
+        y: 34,
+        scale: 0.96,
+        duration: 0.72,
+        stagger: 0.1,
+        ease: 'power3.out'
+      })
+    })
+
+    const roleIcons = sectionRef.value.querySelectorAll('.role-card__icon')
+
+    gsap.from(roleIcons, {
+      scrollTrigger: {
+        trigger: '.role-grid',
+        start: 'top 80%',
+        once: true
+      },
+      rotate: -22,
+      scale: 0.7,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: 'back.out(2)'
+    })
+
+    gsap.from(footer.children, {
+      scrollTrigger: {
+        trigger: footer,
+        start: 'top 86%',
+        once: true
+      },
+      opacity: 0,
+      y: 28,
+      duration: 0.8,
+      stagger: 0.12
+    })
+  }, sectionRef.value)
+
+  ScrollTrigger.refresh()
+})
+
+onBeforeUnmount(() => {
+  mediaContext?.revert()
+  context?.revert()
+})
 </script>
 
 <style scoped>
@@ -295,6 +500,14 @@ const secondaryEntourage = [
   border: 1px solid rgba(40, 77, 103, 0.12);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 24px 70px rgba(65, 56, 49, 0.1);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.featured-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 80px rgba(65, 56, 49, 0.14);
 }
 
 .featured-card__image {
@@ -306,14 +519,16 @@ const secondaryEntourage = [
 
 .featured-card__image img {
   width: 100%;
-  height: 100%;
+  height: 112%;
+  margin-top: -6%;
   display: block;
   object-fit: cover;
-  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  transition: scale 1.1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .featured-card:hover .featured-card__image img {
-  transform: scale(1.04);
+  scale: 1.04;
 }
 
 .featured-card__overlay {
@@ -414,6 +629,16 @@ const secondaryEntourage = [
   border: 1px solid rgba(40, 77, 103, 0.11);
   background: rgba(255, 255, 255, 0.68);
   text-align: center;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.sponsor-pair:hover {
+  transform: translateY(-4px);
+  border-color: rgba(166, 66, 72, 0.2);
+  box-shadow: 0 18px 38px rgba(62, 56, 51, 0.08);
 }
 
 .sponsor-pair__number {
@@ -458,6 +683,14 @@ const secondaryEntourage = [
   border: 1px solid rgba(40, 77, 103, 0.12);
   background: rgba(255, 255, 255, 0.66);
   text-align: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.family-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 44px rgba(62, 56, 51, 0.09);
 }
 
 .family-card__label {
@@ -503,6 +736,16 @@ const secondaryEntourage = [
   border: 1px solid rgba(40, 77, 103, 0.11);
   background: rgba(255, 255, 255, 0.66);
   text-align: center;
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(166, 66, 72, 0.2);
+  box-shadow: 0 18px 40px rgba(62, 56, 51, 0.08);
 }
 
 .role-card__icon {
@@ -619,6 +862,16 @@ const secondaryEntourage = [
 
   .role-card {
     min-height: 170px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featured-card,
+  .featured-card__image img,
+  .sponsor-pair,
+  .family-card,
+  .role-card {
+    transition: none;
   }
 }
 </style>
