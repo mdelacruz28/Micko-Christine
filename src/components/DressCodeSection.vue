@@ -1,5 +1,5 @@
 <template>
-  <section id="dress-code" class="dress-section">
+  <section id="dress-code" ref="sectionRef" class="dress-section">
     <div class="dress-section__wash" aria-hidden="true"></div>
 
     <header class="dress-header">
@@ -151,6 +151,14 @@
 </template>
 
 <script setup>
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { gsap, ScrollTrigger } from '../plugins/gsap'
+
+const sectionRef = ref(null)
+
+let context
+let mediaContext
+
 const featuredGroups = [
   {
     label: 'Principal Sponsors',
@@ -274,6 +282,302 @@ const avoidColors = [
     background: 'linear-gradient(135deg, #dfff00, #ff4fd8)'
   }
 ]
+
+onMounted(async () => {
+  await nextTick()
+
+  if (!sectionRef.value) return
+
+  context = gsap.context(() => {
+    const header = sectionRef.value.querySelector('.dress-header')
+    const featuredCards = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll('.dress-card')
+    )
+    const guestHeading = sectionRef.value.querySelector('.guest-guide__heading')
+    const guestCards = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll('.guest-card')
+    )
+    const paletteHeading = sectionRef.value.querySelector('.palette-guide__heading')
+    const paletteSwatches = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll('.palette-swatch')
+    )
+    const avoidHeading = sectionRef.value.querySelector('.avoid-guide__heading')
+    const avoidItems = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll('.avoid-item')
+    )
+    const footer = sectionRef.value.querySelector('.dress-footer')
+
+    gsap.from(header.children, {
+      scrollTrigger: {
+        trigger: header,
+        start: 'top 84%',
+        once: true
+      },
+      opacity: 0,
+      y: 38,
+      filter: 'blur(5px)',
+      duration: 0.95,
+      stagger: 0.12,
+      ease: 'power3.out'
+    })
+
+    mediaContext = gsap.matchMedia()
+
+    mediaContext.add('(min-width: 761px)', () => {
+      featuredCards.forEach((card, index) => {
+        const imageWrap = card.querySelector('.dress-card__image')
+        const image = card.querySelector('.dress-card__image img')
+        const label = card.querySelector('.dress-card__label')
+        const content = card.querySelector('.dress-card__content')
+        const contentChildren = content.children
+        const swatches = card.querySelectorAll('.swatch')
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 78%',
+            once: true
+          }
+        })
+
+        tl
+          .from(card, {
+            opacity: 0,
+            y: 48,
+            x: index === 0 ? -42 : 42,
+            duration: 0.95,
+            ease: 'power3.out'
+          })
+          .from(
+            imageWrap,
+            {
+              clipPath: 'inset(0 0 100% 0)',
+              duration: 1,
+              ease: 'power4.out'
+            },
+            '-=0.78'
+          )
+          .from(
+            label,
+            {
+              opacity: 0,
+              y: 12,
+              duration: 0.45
+            },
+            '-=0.48'
+          )
+          .from(
+            contentChildren,
+            {
+              opacity: 0,
+              y: 18,
+              duration: 0.55,
+              stagger: 0.08
+            },
+            '-=0.52'
+          )
+          .from(
+            swatches,
+            {
+              opacity: 0,
+              scale: 0.65,
+              y: 10,
+              duration: 0.45,
+              stagger: 0.07,
+              ease: 'back.out(1.8)'
+            },
+            '-=0.38'
+          )
+
+        gsap.to(image, {
+          yPercent: index === 0 ? 7 : -7,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1
+          }
+        })
+      })
+    })
+
+    mediaContext.add('(max-width: 760px)', () => {
+      featuredCards.forEach(card => {
+        const imageWrap = card.querySelector('.dress-card__image')
+        const contentChildren = card.querySelector('.dress-card__content').children
+        const swatches = card.querySelectorAll('.swatch')
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 82%',
+            once: true
+          }
+        })
+
+        tl
+          .from(card, {
+            opacity: 0,
+            y: 42,
+            duration: 0.85
+          })
+          .from(
+            imageWrap,
+            {
+              clipPath: 'inset(0 0 100% 0)',
+              duration: 0.85
+            },
+            '-=0.65'
+          )
+          .from(
+            contentChildren,
+            {
+              opacity: 0,
+              y: 16,
+              duration: 0.5,
+              stagger: 0.07
+            },
+            '-=0.45'
+          )
+          .from(
+            swatches,
+            {
+              opacity: 0,
+              scale: 0.7,
+              duration: 0.4,
+              stagger: 0.06
+            },
+            '-=0.32'
+          )
+      })
+    })
+
+    gsap.from(guestHeading.children, {
+      scrollTrigger: {
+        trigger: guestHeading,
+        start: 'top 84%',
+        once: true
+      },
+      opacity: 0,
+      y: 30,
+      filter: 'blur(4px)',
+      duration: 0.8,
+      stagger: 0.1
+    })
+
+    gsap.from(guestCards, {
+      scrollTrigger: {
+        trigger: '.guest-guide__grid',
+        start: 'top 80%',
+        once: true
+      },
+      opacity: 0,
+      y: 36,
+      scale: 0.96,
+      duration: 0.78,
+      stagger: 0.14,
+      ease: 'power3.out'
+    })
+
+    gsap.from('.guest-card__icon', {
+      scrollTrigger: {
+        trigger: '.guest-guide__grid',
+        start: 'top 78%',
+        once: true
+      },
+      rotate: -24,
+      scale: 0.65,
+      duration: 0.55,
+      stagger: 0.12,
+      ease: 'back.out(2)'
+    })
+
+    gsap.from(paletteHeading.children, {
+      scrollTrigger: {
+        trigger: paletteHeading,
+        start: 'top 84%',
+        once: true
+      },
+      opacity: 0,
+      y: 28,
+      duration: 0.8,
+      stagger: 0.1
+    })
+
+    gsap.from(paletteSwatches, {
+      scrollTrigger: {
+        trigger: '.palette-guide__swatches',
+        start: 'top 82%',
+        once: true
+      },
+      opacity: 0,
+      y: 26,
+      scale: 0.5,
+      duration: 0.62,
+      stagger: 0.09,
+      ease: 'back.out(1.8)'
+    })
+
+    gsap.from(avoidHeading.children, {
+      scrollTrigger: {
+        trigger: avoidHeading,
+        start: 'top 84%',
+        once: true
+      },
+      opacity: 0,
+      y: 28,
+      duration: 0.8,
+      stagger: 0.1
+    })
+
+    gsap.from(avoidItems, {
+      scrollTrigger: {
+        trigger: '.avoid-guide__items',
+        start: 'top 82%',
+        once: true
+      },
+      opacity: 0,
+      y: 30,
+      scale: 0.96,
+      duration: 0.68,
+      stagger: 0.1,
+      ease: 'power3.out'
+    })
+
+    gsap.from('.avoid-item__color', {
+      scrollTrigger: {
+        trigger: '.avoid-guide__items',
+        start: 'top 80%',
+        once: true
+      },
+      rotate: -18,
+      scale: 0.6,
+      duration: 0.5,
+      stagger: 0.09,
+      ease: 'back.out(2)'
+    })
+
+    gsap.from(footer.children, {
+      scrollTrigger: {
+        trigger: footer,
+        start: 'top 86%',
+        once: true
+      },
+      opacity: 0,
+      y: 28,
+      duration: 0.8,
+      stagger: 0.12
+    })
+  }, sectionRef.value)
+
+  ScrollTrigger.refresh()
+})
+
+onBeforeUnmount(() => {
+  mediaContext?.revert()
+  context?.revert()
+})
 </script>
 
 <style scoped>
@@ -356,6 +660,14 @@ const avoidColors = [
   border: 1px solid rgba(40, 77, 103, 0.12);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 24px 70px rgba(65, 56, 49, 0.1);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.dress-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 80px rgba(65, 56, 49, 0.14);
 }
 
 .dress-card__image {
@@ -367,14 +679,16 @@ const avoidColors = [
 
 .dress-card__image img {
   width: 100%;
-  height: 100%;
+  height: 112%;
+  margin-top: -6%;
   display: block;
   object-fit: cover;
-  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  transition: scale 1.1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dress-card:hover .dress-card__image img {
-  transform: scale(1.04);
+  scale: 1.04;
 }
 
 .dress-card__overlay {
@@ -529,6 +843,14 @@ const avoidColors = [
   padding: clamp(2rem, 5vw, 3.5rem);
   border: 1px solid rgba(40, 77, 103, 0.12);
   background: rgba(255, 255, 255, 0.68);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.guest-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 22px 48px rgba(62, 56, 51, 0.1);
 }
 
 .guest-card__icon {
@@ -611,6 +933,11 @@ const avoidColors = [
 
 .palette-swatch {
   text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.palette-swatch:hover {
+  transform: translateY(-4px);
 }
 
 .palette-swatch span {
@@ -643,6 +970,14 @@ const avoidColors = [
   padding: 1.3rem;
   border: 1px solid rgba(40, 77, 103, 0.11);
   background: rgba(255, 255, 255, 0.64);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.avoid-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(62, 56, 51, 0.08);
 }
 
 .avoid-item__color {
@@ -757,6 +1092,16 @@ const avoidColors = [
   .avoid-item {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dress-card,
+  .dress-card__image img,
+  .guest-card,
+  .palette-swatch,
+  .avoid-item {
+    transition: none;
   }
 }
 </style>
