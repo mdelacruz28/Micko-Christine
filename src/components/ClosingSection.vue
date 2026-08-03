@@ -94,13 +94,13 @@ onMounted(async () => {
       stagger: 0.11,
     });
 
-    gsap.to(".closing-content__monogram-placeholder", {
-      y: -6,
-      duration: 2.2,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
+    // gsap.to(".closing-content__monogram-placeholder", {
+    //   y: -6,
+    //   duration: 2.2,
+    //   repeat: -1,
+    //   yoyo: true,
+    //   ease: "sine.inOut",
+    // });
   }, sectionRef.value);
 
   ScrollTrigger.refresh();
@@ -169,7 +169,7 @@ onBeforeUnmount(() => context?.revert());
 }
 .closing-content__monogram-placeholder {
   margin-bottom: 1.7rem;
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Imperial Script", serif;
   font-size: clamp(4rem, 10vw, 7rem);
   font-style: italic;
   line-height: 1;
@@ -214,7 +214,7 @@ onBeforeUnmount(() => context?.revert());
   flex-wrap: wrap;
   gap: clamp(0.5rem, 2vw, 1.25rem);
   margin-top: clamp(2.6rem, 6vw, 4rem);
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Imperial Script", serif;
   font-size: clamp(2.8rem, 6vw, 5rem);
   font-style: italic;
   line-height: 1;
