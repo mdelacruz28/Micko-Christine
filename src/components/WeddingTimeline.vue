@@ -1,5 +1,5 @@
 <template>
-  <section id="timeline" class="timeline-section">
+  <section id="timeline" ref="sectionRef" class="timeline-section">
     <div class="timeline-section__wash" aria-hidden="true"></div>
 
     <header class="timeline-header">
@@ -11,8 +11,10 @@
       </p>
     </header>
 
-    <div class="timeline">
-      <div class="timeline__spine" aria-hidden="true"></div>
+    <div ref="timelineRef" class="timeline">
+      <div class="timeline__spine" aria-hidden="true">
+        <span class="timeline__progress"></span>
+      </div>
 
       <article
         v-for="(item, index) in timelineItems"
@@ -25,7 +27,8 @@
         </div>
 
         <div class="timeline-item__marker" aria-hidden="true">
-          <span v-html="item.icon"></span>
+          <span class="timeline-item__marker-ring"></span>
+          <span class="timeline-item__icon" v-html="item.icon"></span>
         </div>
 
         <div class="timeline-card">
@@ -34,9 +37,7 @@
           </p>
 
           <p class="timeline-card__label">{{ item.label }}</p>
-
           <h3>{{ item.title }}</h3>
-
           <p class="timeline-card__venue">{{ item.venue }}</p>
 
           <p class="timeline-card__description">
@@ -69,6 +70,15 @@
 </template>
 
 <script setup>
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { gsap, ScrollTrigger } from '../plugins/gsap'
+
+const sectionRef = ref(null)
+const timelineRef = ref(null)
+
+let context
+let mediaContext
+
 const timelineItems = [
   {
     time: '2:00 PM',
@@ -95,10 +105,8 @@ const timelineItems = [
     note: 'An unplugged ceremony is kindly encouraged.',
     icon: `
       <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M8.5 6.5 12 3l3.5 3.5L12 10 8.5 6.5Z"/>
-        <path d="M6.5 8.5 3 12l3.5 3.5L10 12 6.5 8.5Z"/>
-        <path d="m15.5 8.5 3.5 3.5-3.5 3.5L12 12l3.5-3.5Z"/>
-        <path d="M8.5 15.5 12 12l3.5 3.5L12 19l-3.5-3.5Z"/>
+        <circle cx="9" cy="12" r="5"/>
+        <circle cx="15" cy="12" r="5"/>
       </svg>
     `
   },
@@ -106,7 +114,7 @@ const timelineItems = [
     time: '4:00 PM',
     label: 'Interlude',
     title: 'Cocktail Hour',
-    venue: 'Reception Venue',
+    venue: 'Lafaayette Luxury Suites',
     description:
       'Enjoy light refreshments, coffee, taho, and interactive guest activities while the newlyweds complete their portraits.',
     note: 'Travel time from Camp John Hay is approximately 10–30 minutes.',
@@ -184,6 +192,222 @@ const timelineItems = [
     `
   }
 ]
+
+onMounted(async () => {
+  await nextTick()
+
+  if (!sectionRef.value || !timelineRef.value) return
+
+  context = gsap.context(() => {
+    const header = sectionRef.value.querySelector('.timeline-header')
+    const footer = sectionRef.value.querySelector('.timeline-footer')
+    const progress = sectionRef.value.querySelector('.timeline__progress')
+    const items = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll('.timeline-item')
+    )
+
+    gsap.from(header.children, {
+      scrollTrigger: {
+        trigger: header,
+        start: 'top 84%',
+        once: true
+      },
+      opacity: 0,
+      y: 38,
+      filter: 'blur(5px)',
+      duration: 0.95,
+      stagger: 0.12,
+      ease: 'power3.out'
+    })
+
+    gsap.fromTo(
+      progress,
+      {
+        scaleY: 0,
+        transformOrigin: 'top center'
+      },
+      {
+        scaleY: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: timelineRef.value,
+          start: 'top 68%',
+          end: 'bottom 58%',
+          scrub: 0.75
+        }
+      }
+    )
+
+    mediaContext = gsap.matchMedia()
+
+    mediaContext.add('(min-width: 861px)', () => {
+      items.forEach(item => {
+        const isReverse = item.classList.contains('timeline-item--reverse')
+        const time = item.querySelector('.timeline-item__time')
+        const marker = item.querySelector('.timeline-item__marker')
+        const icon = item.querySelector('.timeline-item__icon')
+        const card = item.querySelector('.timeline-card')
+        const cardChildren = card.querySelectorAll(
+          '.timeline-card__label, .timeline-card h3, .timeline-card__venue, .timeline-card__description, .timeline-card__note'
+        )
+
+        const itemTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 76%',
+            once: true,
+            onEnter: () => item.classList.add('is-active')
+          }
+        })
+
+        itemTimeline
+          .from(time, {
+            opacity: 0,
+            x: isReverse ? 55 : -55,
+            filter: 'blur(5px)',
+            duration: 0.85
+          })
+          .from(
+            marker,
+            {
+              opacity: 0,
+              scale: 0.2,
+              duration: 0.55,
+              ease: 'back.out(2.1)'
+            },
+            '-=0.55'
+          )
+          .from(
+            card,
+            {
+              opacity: 0,
+              x: isReverse ? -72 : 72,
+              y: 18,
+              duration: 0.95,
+              ease: 'power3.out'
+            },
+            '-=0.62'
+          )
+          .from(
+            cardChildren,
+            {
+              opacity: 0,
+              y: 18,
+              duration: 0.55,
+              stagger: 0.07
+            },
+            '-=0.55'
+          )
+          .from(
+            icon,
+            {
+              rotate: -28,
+              scale: 0.65,
+              duration: 0.5,
+              ease: 'back.out(2)'
+            },
+            '-=0.5'
+          )
+
+        ScrollTrigger.create({
+          trigger: item,
+          start: 'top 58%',
+          end: 'bottom 42%',
+          toggleClass: {
+            targets: item,
+            className: 'is-current'
+          }
+        })
+      })
+    })
+
+    mediaContext.add('(max-width: 860px)', () => {
+      items.forEach(item => {
+        const time = item.querySelector('.timeline-item__time')
+        const marker = item.querySelector('.timeline-item__marker')
+        const card = item.querySelector('.timeline-card')
+        const cardChildren = card.querySelectorAll(
+          '.timeline-card__label, .timeline-card h3, .timeline-card__venue, .timeline-card__description, .timeline-card__note'
+        )
+
+        const itemTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 82%',
+            once: true,
+            onEnter: () => item.classList.add('is-active')
+          }
+        })
+
+        itemTimeline
+          .from(time, {
+            opacity: 0,
+            y: 24,
+            duration: 0.7
+          })
+          .from(
+            marker,
+            {
+              opacity: 0,
+              scale: 0.25,
+              duration: 0.5,
+              ease: 'back.out(2)'
+            },
+            '-=0.42'
+          )
+          .from(
+            card,
+            {
+              opacity: 0,
+              y: 42,
+              duration: 0.85
+            },
+            '-=0.36'
+          )
+          .from(
+            cardChildren,
+            {
+              opacity: 0,
+              y: 14,
+              duration: 0.5,
+              stagger: 0.06
+            },
+            '-=0.5'
+          )
+
+        ScrollTrigger.create({
+          trigger: item,
+          start: 'top 60%',
+          end: 'bottom 45%',
+          toggleClass: {
+            targets: item,
+            className: 'is-current'
+          }
+        })
+      })
+    })
+
+    gsap.from(footer.children, {
+      scrollTrigger: {
+        trigger: footer,
+        start: 'top 86%',
+        once: true
+      },
+      opacity: 0,
+      y: 30,
+      duration: 0.8,
+      stagger: 0.12,
+      ease: 'power3.out'
+    })
+  }, sectionRef.value)
+
+  ScrollTrigger.refresh()
+})
+
+onBeforeUnmount(() => {
+  mediaContext?.revert()
+  context?.revert()
+})
 </script>
 
 <style scoped>
@@ -265,16 +489,33 @@ const timelineItems = [
   top: 1rem;
   bottom: 1rem;
   left: 50%;
-  width: 1px;
+  width: 2px;
   transform: translateX(-50%);
   background:
     linear-gradient(
       to bottom,
       transparent,
-      rgba(40, 77, 103, 0.26) 5%,
-      rgba(40, 77, 103, 0.26) 95%,
+      rgba(40, 77, 103, 0.18) 5%,
+      rgba(40, 77, 103, 0.18) 95%,
       transparent
     );
+}
+
+.timeline__progress {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      var(--timeline-melon) 7%,
+      var(--timeline-pomegranate) 50%,
+      var(--timeline-blue) 93%,
+      transparent
+    );
+  box-shadow: 0 0 16px rgba(166, 66, 72, 0.2);
+  transform-origin: top center;
 }
 
 .timeline-item {
@@ -307,6 +548,9 @@ const timelineItems = [
   line-height: 1;
   color: var(--timeline-blue);
   white-space: nowrap;
+  transition:
+    color 0.35s ease,
+    text-shadow 0.35s ease;
 }
 
 .timeline-item__marker {
@@ -314,21 +558,41 @@ const timelineItems = [
   grid-row: 1;
   justify-self: center;
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: 58px;
   height: 58px;
   display: grid;
   place-items: center;
   border: 1px solid rgba(40, 77, 103, 0.22);
   border-radius: 50%;
-  background: rgba(255, 250, 246, 0.94);
+  background: rgba(255, 250, 246, 0.96);
   box-shadow:
     0 10px 30px rgba(50, 55, 58, 0.1),
     0 0 0 8px rgba(248, 242, 235, 0.95);
   color: var(--timeline-pomegranate);
+  transition:
+    color 0.35s ease,
+    border-color 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
-.timeline-item__marker :deep(svg) {
+.timeline-item__marker-ring {
+  position: absolute;
+  inset: -7px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  transition:
+    border-color 0.35s ease,
+    transform 0.35s ease;
+}
+
+.timeline-item__icon {
+  display: grid;
+  place-items: center;
+}
+
+.timeline-item__icon :deep(svg) {
   width: 24px;
   height: 24px;
   fill: none;
@@ -347,6 +611,10 @@ const timelineItems = [
   background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 24px 65px rgba(62, 56, 51, 0.09);
   backdrop-filter: blur(10px);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
 }
 
 .timeline-item--reverse .timeline-card {
@@ -446,6 +714,31 @@ const timelineItems = [
   font-size: 1.05rem;
   font-style: italic;
   color: var(--timeline-pomegranate);
+}
+
+.timeline-item.is-current .timeline-item__marker {
+  color: #fffaf6;
+  border-color: var(--timeline-pomegranate);
+  background: var(--timeline-pomegranate);
+  box-shadow:
+    0 12px 34px rgba(166, 66, 72, 0.25),
+    0 0 0 8px rgba(248, 242, 235, 0.96);
+}
+
+.timeline-item.is-current .timeline-item__marker-ring {
+  border-color: rgba(166, 66, 72, 0.32);
+  transform: scale(1.16);
+}
+
+.timeline-item.is-current .timeline-item__time span {
+  color: var(--timeline-pomegranate);
+  text-shadow: 0 8px 24px rgba(166, 66, 72, 0.15);
+}
+
+.timeline-item.is-current .timeline-card {
+  border-color: rgba(166, 66, 72, 0.22);
+  box-shadow: 0 30px 75px rgba(62, 56, 51, 0.13);
+  transform: translateY(-4px);
 }
 
 .timeline-footer {
@@ -572,13 +865,22 @@ const timelineItems = [
     height: 42px;
   }
 
-  .timeline-item__marker :deep(svg) {
+  .timeline-item__icon :deep(svg) {
     width: 20px;
     height: 20px;
   }
 
   .timeline-card {
     padding: 1.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-item__marker,
+  .timeline-item__marker-ring,
+  .timeline-item__time span,
+  .timeline-card {
+    transition: none;
   }
 }
 </style>
