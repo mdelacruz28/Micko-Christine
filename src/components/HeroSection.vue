@@ -308,7 +308,7 @@ onBeforeUnmount(() => {
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   width: 100%;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Imperial Script', serif;
   font-size: clamp(4rem, 10vw, 8.8rem);
   font-style: italic;
   line-height: 0.82;
@@ -336,7 +336,7 @@ onBeforeUnmount(() => {
 
 .hero-content__caption {
   margin: clamp(1rem, 3vw, 1.7rem) 0 0;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Imperial Script', serif;
   font-size: clamp(1.3rem, 2.5vw, 2rem);
   font-style: italic;
   letter-spacing: 0.08em;
