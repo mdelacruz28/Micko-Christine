@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
 
 .credit-group h3 {
   margin: 0 0 0.55rem;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Imperial Script', sans-serif;
   font-size: clamp(0.88rem, 1.55vw, 1rem);
   font-weight: 700;
   line-height: 1.25;
