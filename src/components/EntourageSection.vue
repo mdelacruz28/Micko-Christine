@@ -4,6 +4,7 @@
     <div class="entourage-section__wash" aria-hidden="true"></div>
 
     <header class="entourage-header">
+      <p class="entourage-header__eyebrow">Together with our loved ones</p>
       <h2>Wedding Entourage</h2>
 
       <div class="entourage-header__ornament" aria-hidden="true">
@@ -13,9 +14,9 @@
       </div>
     </header>
 
-    <div class="entourage-list">
-      <section class="entourage-block entourage-block--parents">
-        <div class="two-column-group">
+    <div class="entourage-credits">
+      <section class="credit-group credit-group--parents">
+        <div class="paired-headings">
           <div>
             <h3>Parents of the Groom</h3>
             <p>{{ parents.groom.father }}</p>
@@ -30,10 +31,10 @@
         </div>
       </section>
 
-      <section class="entourage-block">
+      <section class="credit-group">
         <h3>Primary Sponsors</h3>
 
-        <div class="two-column-list">
+        <div class="name-grid">
           <template
             v-for="(pair, index) in primarySponsors"
             :key="`primary-${index}`"
@@ -44,10 +45,10 @@
         </div>
       </section>
 
-      <section class="entourage-block">
+      <section class="credit-group">
         <h3>Secondary Sponsor</h3>
 
-        <div class="two-column-list">
+        <div class="name-grid">
           <template
             v-for="(pair, index) in secondarySponsors"
             :key="`secondary-${index}`"
@@ -58,8 +59,8 @@
         </div>
       </section>
 
-      <section class="entourage-block entourage-block--honor">
-        <div class="two-column-group">
+      <section class="credit-group credit-group--honor">
+        <div class="paired-headings">
           <div>
             <h3>Best Man</h3>
             <p>{{ bestMan }}</p>
@@ -72,10 +73,10 @@
         </div>
       </section>
 
-      <section class="entourage-block">
+      <section class="credit-group">
         <h3>Bearers</h3>
 
-        <div class="bearers-list">
+        <div class="name-grid name-grid--roles">
           <template
             v-for="(bearer, index) in bearers"
             :key="`bearer-${index}`"
@@ -86,10 +87,10 @@
         </div>
       </section>
 
-      <section class="entourage-block">
+      <section class="credit-group">
         <h3>Flower Girls</h3>
 
-        <div class="two-column-list">
+        <div class="name-grid">
           <template
             v-for="(pair, index) in flowerGirls"
             :key="`flower-${index}`"
@@ -166,27 +167,45 @@ onMounted(async () => {
     gsap.from('.entourage-header > *', {
       scrollTrigger: {
         trigger: '.entourage-header',
-        start: 'top 86%',
+        start: 'top 84%',
         once: true
       },
       opacity: 0,
-      y: 24,
+      y: 28,
       filter: 'blur(4px)',
       duration: 0.8,
       stagger: 0.1,
       ease: 'power3.out'
     })
 
-    gsap.utils.toArray('.entourage-block').forEach(block => {
-      gsap.from(block, {
+    gsap.utils.toArray('.credit-group').forEach(group => {
+      const headings = group.querySelectorAll('h3')
+      const names = group.querySelectorAll('p')
+
+      gsap.from(headings, {
         scrollTrigger: {
-          trigger: block,
-          start: 'top 88%',
+          trigger: group,
+          start: 'top 86%',
           once: true
         },
         opacity: 0,
         y: 18,
-        duration: 0.62,
+        duration: 0.65,
+        stagger: 0.08,
+        ease: 'power3.out'
+      })
+
+      gsap.from(names, {
+        scrollTrigger: {
+          trigger: group,
+          start: 'top 82%',
+          once: true
+        },
+        opacity: 0,
+        y: 14,
+        duration: 0.55,
+        stagger: 0.055,
+        delay: 0.08,
         ease: 'power3.out'
       })
     })
@@ -194,12 +213,12 @@ onMounted(async () => {
     gsap.from('.entourage-footer', {
       scrollTrigger: {
         trigger: '.entourage-footer',
-        start: 'top 90%',
+        start: 'top 88%',
         once: true
       },
       opacity: 0,
-      y: 16,
-      duration: 0.65
+      y: 18,
+      duration: 0.7
     })
   }, sectionRef.value)
 
@@ -215,25 +234,20 @@ onBeforeUnmount(() => {
 .entourage-section {
   --entourage-blue: #284d67;
   --entourage-melon: #efb49f;
-  --entourage-ink: #203342;
+  --entourage-pomegranate: #a64248;
+  --entourage-ink: #27333a;
 
   position: relative;
   isolation: isolate;
   overflow: hidden;
-
   min-height: 100vh;
-  padding:
-    clamp(4.5rem, 7vw, 6.5rem)
-    1rem
-    clamp(4rem, 7vw, 6rem);
-
+  padding: clamp(6rem, 10vw, 10rem) 1.25rem;
   color: var(--entourage-ink);
-
   background:
     linear-gradient(
       180deg,
       #fbf7f2 0%,
-      #f6efe8 52%,
+      #f6efe8 50%,
       #fbf8f4 100%
     );
 }
@@ -243,36 +257,41 @@ onBeforeUnmount(() => {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-
   background:
     radial-gradient(
-      circle at 15% 10%,
-      rgba(239, 180, 159, 0.12),
-      transparent 26rem
+      circle at 12% 15%,
+      rgba(239, 180, 159, 0.15),
+      transparent 24rem
     ),
     radial-gradient(
-      circle at 85% 88%,
-      rgba(40, 77, 103, 0.06),
-      transparent 30rem
+      circle at 88% 85%,
+      rgba(40, 77, 103, 0.08),
+      transparent 28rem
     );
 }
 
 .entourage-header {
-  width: min(100%, 900px);
-  margin: 0 auto clamp(4.2rem, 7vw, 6rem);
+  width: min(100%, 760px);
+  margin: 0 auto clamp(4rem, 8vw, 6.5rem);
   text-align: center;
+}
+
+.entourage-header__eyebrow {
+  margin: 0 0 0.65rem;
+  font-family: 'Allura', cursive;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  color: var(--entourage-melon);
+  transform: rotate(-3deg);
 }
 
 .entourage-header h2 {
   margin: 0;
-
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(4rem, 7vw, 6rem);
+  font-size: clamp(3.6rem, 8vw, 6.6rem);
   font-style: italic;
   font-weight: 500;
-  line-height: 0.92;
+  line-height: 0.95;
   letter-spacing: -0.045em;
-
   color: var(--entourage-blue);
 }
 
@@ -280,149 +299,128 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
-
-  margin-top: 1rem;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .entourage-header__ornament span {
-  width: 52px;
+  width: clamp(2rem, 7vw, 5rem);
   height: 1px;
-
-  background: rgba(120, 97, 75, 0.33);
+  background: rgba(120, 97, 75, 0.34);
 }
 
 .entourage-header__ornament i {
-  width: 5px;
-  height: 5px;
-
+  width: 6px;
+  height: 6px;
   border: 1px solid var(--entourage-melon);
-
   transform: rotate(45deg);
 }
 
-.entourage-list {
-  width: min(100%, 540px);
+.entourage-credits {
+  width: min(100%, 680px);
   margin: 0 auto;
-
   text-align: center;
 }
 
-.entourage-block + .entourage-block {
-  margin-top: clamp(2.8rem, 4.5vw, 4rem);
+.credit-group + .credit-group {
+  margin-top: clamp(2.8rem, 5vw, 4.5rem);
 }
 
-.entourage-block h3 {
-  margin: 0 0 0.5rem;
-
+.credit-group h3 {
+  margin: 0 0 0.55rem;
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(0.68rem, 0.85vw, 0.82rem);
-  font-weight: 600;
-  line-height: 1.3;
-
+  font-size: clamp(0.88rem, 1.55vw, 1rem);
+  font-weight: 700;
+  line-height: 1.25;
   color: var(--entourage-ink);
 }
 
-.entourage-block p {
+.credit-group p {
   margin: 0;
-
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(0.64rem, 0.82vw, 0.76rem);
+  font-size: clamp(0.82rem, 1.55vw, 1rem);
   font-weight: 400;
-  line-height: 1.55;
-
+  line-height: 1.42;
   color: var(--entourage-ink);
 }
 
-.two-column-group {
+.paired-headings {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.5rem, 3vw, 2.2rem);
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  align-items: start;
 }
 
-.two-column-list {
+.name-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(1.5rem, 3vw, 2.2rem);
-  row-gap: 0;
+  column-gap: clamp(1.5rem, 4vw, 2.5rem);
+  row-gap: 0.08rem;
 }
 
-.bearers-list {
-  width: min(100%, 310px);
+.name-grid--roles {
+  width: min(100%, 470px);
   margin: 0 auto;
-
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: 1.2rem;
-}
-
-.bearers-list p:nth-child(odd) {
-  text-align: right;
-}
-
-.bearers-list p:nth-child(even) {
-  text-align: left;
 }
 
 .entourage-footer {
   width: min(100%, 680px);
-  margin: clamp(4rem, 7vw, 6rem) auto 0;
-
+  margin: clamp(4.5rem, 8vw, 7rem) auto 0;
   text-align: center;
 }
 
 .entourage-footer p {
   margin: 0;
-
   font-family: 'Allura', cursive;
-  font-size: clamp(1.9rem, 3vw, 2.7rem);
-
+  font-size: clamp(2rem, 4vw, 3rem);
   color: var(--entourage-blue);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 620px) {
   .entourage-section {
-    padding-inline: 0.8rem;
+    padding-inline: 1rem;
   }
 
-  .entourage-header {
-    margin-bottom: 4rem;
+  .entourage-credits {
+    width: min(100%, 470px);
   }
 
-  .entourage-list {
-    width: min(100%, 480px);
+  .paired-headings,
+  .name-grid {
+    column-gap: 1rem;
+  }
+
+  .credit-group h3 {
+    font-size: 0.82rem;
+  }
+
+  .credit-group p {
+    font-size: 0.78rem;
   }
 }
 
-@media (max-width: 480px) {
-  .entourage-header h2 {
-    font-size: clamp(3.2rem, 13vw, 4.5rem);
-  }
-
-  .entourage-list {
+@media (max-width: 420px) {
+  .entourage-credits {
     width: 100%;
   }
 
-  .two-column-group,
-  .two-column-list {
-    column-gap: 0.8rem;
+  .paired-headings,
+  .name-grid {
+    column-gap: 0.65rem;
   }
 
-  .entourage-block h3 {
-    font-size: 0.66rem;
+  .credit-group h3 {
+    font-size: 0.72rem;
   }
 
-  .entourage-block p {
-    font-size: 0.62rem;
-  }
-
-  .bearers-list {
-    width: min(100%, 270px);
+  .credit-group p {
+    font-size: 0.7rem;
+    line-height: 1.5;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .entourage-block {
+  .credit-group {
     will-change: auto;
   }
 }
