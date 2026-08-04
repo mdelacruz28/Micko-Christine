@@ -391,7 +391,7 @@ onBeforeUnmount(() => {
   }
 
   .credit-group h3 {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
   }
 
   .credit-group p {
