@@ -1,107 +1,108 @@
 
 <template>
-  <section id="entourage" ref="sectionRef" class="entourage">
-    <div class="entourage__background" aria-hidden="true"></div>
+  <section id="entourage" ref="sectionRef" class="entourage-section">
+    <div class="entourage-section__wash" aria-hidden="true"></div>
 
-    <header class="entourage__header">
-      <p class="entourage__eyebrow">Together with our loved ones</p>
+    <header class="entourage-header">
+      <p class="entourage-header__eyebrow">Together with our loved ones</p>
       <h2>Wedding Entourage</h2>
-      <div class="entourage__ornament" aria-hidden="true">
+
+      <div class="entourage-header__ornament" aria-hidden="true">
         <span></span>
         <i></i>
         <span></span>
       </div>
     </header>
 
-    <div class="credits">
-      <div class="credits__section">
-        <h3>Parents</h3>
+    <div class="entourage-credits">
+      <section class="credit-group credit-group--parents">
+        <div class="paired-headings">
+          <div>
+            <h3>Parents of the Groom</h3>
+            <p>{{ parents.groom.father }}</p>
+            <p>{{ parents.groom.mother }}</p>
+          </div>
 
-        <div
-          v-for="item in parents"
-          :key="item.role"
-          class="credit-row"
-        >
-          <p class="credit-row__role">{{ item.role }}</p>
-
-          <div class="credit-row__names">
-            <p v-for="name in item.names" :key="name">{{ name }}</p>
+          <div>
+            <h3>Parents of the Bride</h3>
+            <p>{{ parents.bride.father }}</p>
+            <p>{{ parents.bride.mother }}</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="credits__section">
-        <h3>Principal Sponsors</h3>
+      <section class="credit-group">
+        <h3>Primary Sponsors</h3>
 
-        <div
-          v-for="(pair, index) in principalSponsors"
-          :key="index"
-          class="credit-row"
-        >
-          <p class="credit-row__role">
-            Pair {{ String(index + 1).padStart(2, '0') }}
-          </p>
-
-          <div class="credit-row__names credit-row__names--pair">
+        <div class="name-grid">
+          <template
+            v-for="(pair, index) in primarySponsors"
+            :key="`primary-${index}`"
+          >
             <p>{{ pair.left }}</p>
             <p>{{ pair.right }}</p>
-          </div>
+          </template>
         </div>
-      </div>
+      </section>
 
-      <div class="credits__section">
-        <h3>Secondary Sponsors</h3>
+      <section class="credit-group">
+        <h3>Secondary Sponsor</h3>
 
-        <div
-          v-for="item in secondarySponsors"
-          :key="item.role"
-          class="credit-row"
-        >
-          <p class="credit-row__role">{{ item.role }}</p>
-
-          <div class="credit-row__names credit-row__names--pair">
-            <p>{{ item.left }}</p>
-            <p>{{ item.right }}</p>
-          </div>
+        <div class="name-grid">
+          <template
+            v-for="(pair, index) in secondarySponsors"
+            :key="`secondary-${index}`"
+          >
+            <p>{{ pair.left }}</p>
+            <p>{{ pair.right }}</p>
+          </template>
         </div>
-      </div>
+      </section>
 
-      <div class="credits__section">
-        <h3>Honor Attendants</h3>
-
-        <div class="credit-row">
-          <p class="credit-row__role">Best Man</p>
-          <div class="credit-row__names">
+      <section class="credit-group credit-group--honor">
+        <div class="paired-headings">
+          <div>
+            <h3>Best Man</h3>
             <p>{{ bestMan }}</p>
           </div>
-        </div>
 
-        <div class="credit-row">
-          <p class="credit-row__role">Matron of Honor</p>
-          <div class="credit-row__names">
+          <div>
+            <h3>Matron of Honor</h3>
             <p>{{ matronOfHonor }}</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="credits__section">
-        <h3>Wedding Bearers</h3>
+      <section class="credit-group">
+        <h3>Bearers</h3>
 
-        <div
-          v-for="item in bearers"
-          :key="item.role"
-          class="credit-row"
-        >
-          <p class="credit-row__role">{{ item.role }}</p>
-
-          <div class="credit-row__names">
-            <p v-for="name in item.names" :key="name">{{ name }}</p>
-          </div>
+        <div class="name-grid name-grid--roles">
+          <template
+            v-for="(bearer, index) in bearers"
+            :key="`bearer-${index}`"
+          >
+            <p>{{ bearer.name }}</p>
+            <p>{{ bearer.role }}</p>
+          </template>
         </div>
-      </div>
+      </section>
+
+      <section class="credit-group">
+        <h3>Flower Girls</h3>
+
+        <div class="name-grid">
+          <template
+            v-for="(pair, index) in flowerGirls"
+            :key="`flower-${index}`"
+          >
+            <p>{{ pair.left }}</p>
+            <p>{{ pair.right }}</p>
+          </template>
+        </div>
+      </section>
     </div>
 
-    <footer class="entourage__footer">
+    <footer class="entourage-footer">
       <p>With love and gratitude</p>
     </footer>
   </section>
@@ -114,49 +115,58 @@ import { gsap, ScrollTrigger } from '../plugins/gsap'
 const sectionRef = ref(null)
 let context
 
-const parents = [
-  {
-    role: 'Parents of the Groom',
-    names: ['Name of Father', 'Name of Mother']
+const parents = {
+  groom: {
+    father: 'Name of Father',
+    mother: 'Name of Mother'
   },
-  {
-    role: 'Parents of the Bride',
-    names: ['Name of Father', 'Name of Mother']
+  bride: {
+    father: 'Name of Father',
+    mother: 'Name of Mother'
   }
-]
+}
 
-const principalSponsors = [
-  { left: 'Sponsor Name', right: 'Sponsor Name' },
-  { left: 'Sponsor Name', right: 'Sponsor Name' },
-  { left: 'Sponsor Name', right: 'Sponsor Name' },
-  { left: 'Sponsor Name', right: 'Sponsor Name' },
-  { left: 'Sponsor Name', right: 'Sponsor Name' },
-  { left: 'Sponsor Name', right: 'Sponsor Name' }
+const primarySponsors = [
+  { left: 'Name of Sponsor', right: 'Name of Sponsor' },
+  { left: 'Name of Sponsor', right: 'Name of Sponsor' },
+  { left: 'Name of Sponsor', right: 'Name of Sponsor' },
+  { left: 'Name of Sponsor', right: 'Name of Sponsor' },
+  { left: 'Name of Sponsor', right: 'Name of Sponsor' },
+  { left: 'Name of Sponsor', right: 'Name of Sponsor' }
 ]
 
 const secondarySponsors = [
-  { role: 'Candle Sponsors', left: 'Name', right: 'Name' },
-  { role: 'Veil Sponsors', left: 'Name', right: 'Name' },
-  { role: 'Cord Sponsors', left: 'Name', right: 'Name' }
+  {
+    left: 'Name of Secondary Sponsor',
+    right: 'Name of Secondary Sponsor'
+  }
 ]
 
-const bestMan = 'Name'
-const matronOfHonor = 'Name'
+const bestMan = 'Name of Best Man'
+const matronOfHonor = 'Name of Matron of Honor'
 
 const bearers = [
-  { role: 'Ring Bearer', names: ['Name'] },
-  { role: 'Bible Bearer', names: ['Name'] },
-  { role: 'Coin Bearer', names: ['Name'] },
-  { role: 'Flower Girls', names: ['Name', 'Name'] }
+  { name: 'Name of Bearer', role: 'Ring Bearer' },
+  { name: 'Name of Bearer', role: 'Coin Bearer' },
+  { name: 'Name of Bearer', role: 'Bible Bearer' }
+]
+
+const flowerGirls = [
+  {
+    left: 'Name of Flower Girl',
+    right: 'Name of Flower Girl'
+  }
 ]
 
 onMounted(async () => {
   await nextTick()
 
+  if (!sectionRef.value) return
+
   context = gsap.context(() => {
-    gsap.from('.entourage__header > *', {
+    gsap.from('.entourage-header > *', {
       scrollTrigger: {
-        trigger: '.entourage__header',
+        trigger: '.entourage-header',
         start: 'top 84%',
         once: true
       },
@@ -168,45 +178,47 @@ onMounted(async () => {
       ease: 'power3.out'
     })
 
-    gsap.utils.toArray('.credits__section').forEach(section => {
-      const heading = section.querySelector('h3')
-      const rows = section.querySelectorAll('.credit-row')
+    gsap.utils.toArray('.credit-group').forEach(group => {
+      const headings = group.querySelectorAll('h3')
+      const names = group.querySelectorAll('p')
 
-      gsap.from(heading, {
+      gsap.from(headings, {
         scrollTrigger: {
-          trigger: section,
-          start: 'top 84%',
-          once: true
-        },
-        opacity: 0,
-        y: 20,
-        duration: 0.65,
-        ease: 'power3.out'
-      })
-
-      gsap.from(rows, {
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
+          trigger: group,
+          start: 'top 86%',
           once: true
         },
         opacity: 0,
         y: 18,
-        duration: 0.58,
-        stagger: 0.075,
+        duration: 0.65,
+        stagger: 0.08,
+        ease: 'power3.out'
+      })
+
+      gsap.from(names, {
+        scrollTrigger: {
+          trigger: group,
+          start: 'top 82%',
+          once: true
+        },
+        opacity: 0,
+        y: 14,
+        duration: 0.55,
+        stagger: 0.055,
+        delay: 0.08,
         ease: 'power3.out'
       })
     })
 
-    gsap.from('.entourage__footer', {
+    gsap.from('.entourage-footer', {
       scrollTrigger: {
-        trigger: '.entourage__footer',
+        trigger: '.entourage-footer',
         start: 'top 88%',
         once: true
       },
       opacity: 0,
-      y: 20,
-      duration: 0.75
+      y: 18,
+      duration: 0.7
     })
   }, sectionRef.value)
 
@@ -219,57 +231,71 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.entourage {
-  --credit-blue: #284d67;
-  --credit-melon: #efb49f;
-  --credit-pomegranate: #a64248;
-  --credit-ink: #27333a;
+.entourage-section {
+  --entourage-blue: #284d67;
+  --entourage-melon: #efb49f;
+  --entourage-pomegranate: #a64248;
+  --entourage-ink: #27333a;
 
   position: relative;
   isolation: isolate;
   overflow: hidden;
   min-height: 100vh;
   padding: clamp(6rem, 10vw, 10rem) 1.25rem;
-  color: var(--credit-ink);
-  background: #f8f3ed;
+  color: var(--entourage-ink);
+  background:
+    linear-gradient(
+      180deg,
+      #fbf7f2 0%,
+      #f6efe8 50%,
+      #fbf8f4 100%
+    );
 }
 
-.entourage__background {
+.entourage-section__wash {
   position: absolute;
   inset: 0;
   z-index: -1;
+  pointer-events: none;
   background:
-    radial-gradient(circle at 15% 10%, rgba(239, 180, 159, 0.16), transparent 24rem),
-    radial-gradient(circle at 85% 90%, rgba(40, 77, 103, 0.08), transparent 26rem),
-    linear-gradient(180deg, #fbf7f2, #f5eee7);
+    radial-gradient(
+      circle at 12% 15%,
+      rgba(239, 180, 159, 0.15),
+      transparent 24rem
+    ),
+    radial-gradient(
+      circle at 88% 85%,
+      rgba(40, 77, 103, 0.08),
+      transparent 28rem
+    );
 }
 
-.entourage__header {
+.entourage-header {
   width: min(100%, 760px);
   margin: 0 auto clamp(4rem, 8vw, 6.5rem);
   text-align: center;
 }
 
-.entourage__eyebrow {
+.entourage-header__eyebrow {
   margin: 0 0 0.65rem;
   font-family: 'Allura', cursive;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
-  color: var(--credit-melon);
+  color: var(--entourage-melon);
   transform: rotate(-3deg);
 }
 
-.entourage__header h2 {
+.entourage-header h2 {
   margin: 0;
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  font-size: clamp(3.6rem, 8vw, 6.6rem);
   font-style: italic;
   font-weight: 500;
   line-height: 0.95;
   letter-spacing: -0.045em;
-  color: var(--credit-blue);
+  color: var(--entourage-blue);
 }
 
-.entourage__ornament {
+.entourage-header__ornament {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -277,131 +303,124 @@ onBeforeUnmount(() => {
   margin-top: 1.5rem;
 }
 
-.entourage__ornament span {
+.entourage-header__ornament span {
   width: clamp(2rem, 7vw, 5rem);
   height: 1px;
   background: rgba(120, 97, 75, 0.34);
 }
 
-.entourage__ornament i {
+.entourage-header__ornament i {
   width: 6px;
   height: 6px;
-  border: 1px solid var(--credit-melon);
+  border: 1px solid var(--entourage-melon);
   transform: rotate(45deg);
 }
 
-.credits {
-  width: min(100%, 760px);
+.entourage-credits {
+  width: min(100%, 680px);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.credit-group + .credit-group {
+  margin-top: clamp(2.8rem, 5vw, 4.5rem);
+}
+
+.credit-group h3 {
+  margin: 0 0 0.55rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(0.88rem, 1.55vw, 1rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--entourage-ink);
+}
+
+.credit-group p {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(0.82rem, 1.55vw, 1rem);
+  font-weight: 400;
+  line-height: 1.42;
+  color: var(--entourage-ink);
+}
+
+.paired-headings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  align-items: start;
+}
+
+.name-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 4vw, 2.5rem);
+  row-gap: 0.08rem;
+}
+
+.name-grid--roles {
+  width: min(100%, 470px);
   margin: 0 auto;
 }
 
-.credits__section + .credits__section {
-  margin-top: clamp(4.5rem, 8vw, 7rem);
-}
-
-.credits__section h3 {
-  margin: 0 0 2.2rem;
-  text-align: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 4vw, 3.1rem);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--credit-blue);
-}
-
-.credit-row {
-  display: grid;
-  grid-template-columns: minmax(150px, 0.72fr) minmax(0, 1.28fr);
-  align-items: start;
-  column-gap: clamp(1.5rem, 4vw, 3.5rem);
-  margin-bottom: 1.15rem;
-}
-
-.credit-row__role {
-  margin: 0;
-  text-align: right;
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(0.58rem, 1.2vw, 0.7rem);
-  font-weight: 500;
-  line-height: 1.6;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
-  color: var(--credit-pomegranate);
-}
-
-.credit-row__names {
-  min-width: 0;
-}
-
-.credit-row__names p {
-  margin: 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(0.72rem, 1.45vw, 0.88rem);
-  font-weight: 400;
-  line-height: 1.65;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--credit-ink);
-}
-
-.credit-row__names--pair {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
-}
-
-.entourage__footer {
+.entourage-footer {
   width: min(100%, 680px);
-  margin: clamp(5rem, 9vw, 8rem) auto 0;
+  margin: clamp(4.5rem, 8vw, 7rem) auto 0;
   text-align: center;
 }
 
-.entourage__footer p {
+.entourage-footer p {
   margin: 0;
   font-family: 'Allura', cursive;
   font-size: clamp(2rem, 4vw, 3rem);
-  color: var(--credit-blue);
+  color: var(--entourage-blue);
 }
 
-@media (max-width: 640px) {
-  .entourage {
+@media (max-width: 620px) {
+  .entourage-section {
     padding-inline: 1rem;
   }
 
-  .credits {
-    max-width: 430px;
+  .entourage-credits {
+    width: min(100%, 470px);
   }
 
-  .credit-row {
-    grid-template-columns: minmax(110px, 0.78fr) minmax(0, 1.22fr);
+  .paired-headings,
+  .name-grid {
     column-gap: 1rem;
-    margin-bottom: 1.35rem;
   }
 
-  .credit-row__names--pair {
-    grid-template-columns: 1fr;
-    gap: 0.1rem;
+  .credit-group h3 {
+    font-size: 0.82rem;
+  }
+
+  .credit-group p {
+    font-size: 0.78rem;
   }
 }
 
 @media (max-width: 420px) {
-  .credit-row {
-    grid-template-columns: 1fr;
-    gap: 0.35rem;
-    text-align: center;
+  .entourage-credits {
+    width: 100%;
   }
 
-  .credit-row__role {
-    text-align: center;
+  .paired-headings,
+  .name-grid {
+    column-gap: 0.65rem;
   }
 
-  .credit-row__names p {
-    text-align: center;
+  .credit-group h3 {
+    font-size: 0.72rem;
+  }
+
+  .credit-group p {
+    font-size: 0.7rem;
+    line-height: 1.5;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .credit-row {
+  .credit-group {
     will-change: auto;
   }
 }
