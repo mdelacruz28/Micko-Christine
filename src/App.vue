@@ -40,7 +40,7 @@ const handleInvitationOpened = () => {
     <WeddingTimeline />
     <EntourageSection />
     <DressCodeSection />
-    <GallerySection />
+    <!-- <GallerySection /> -->
     <RSVPSection />
     <FAQSection />
     <ClosingSection />
