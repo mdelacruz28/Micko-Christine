@@ -329,7 +329,7 @@ onBeforeUnmount(() => {
 .credit-group h3 {
   margin: 0 0 0.55rem;
   font-family: 'Allura', cursive;
-  font-size: clamp(0.82rem, 3vw, 2.4rem);
+  font-size: clamp(2.4rem, 3vw, 2.4rem);
   font-weight: 700;
   line-height: 1.25;
   color: var(--entourage-ink);
