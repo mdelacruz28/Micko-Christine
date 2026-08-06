@@ -286,7 +286,7 @@ onBeforeUnmount(() => {
 
 .entourage-header h2 {
   margin: 0;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel Decorative', serif;
   font-size: clamp(3.6rem, 8vw, 6.6rem);
   font-style: italic;
   font-weight: 500;
@@ -328,7 +328,7 @@ onBeforeUnmount(() => {
 
 .credit-group h3 {
   margin: 0 0 0.55rem;
-  font-family: 'Cinzel Decorative', cursive;
+  font-family: 'Cormorant Garamond', cursive;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   font-weight: 700;
   line-height: 1.25;

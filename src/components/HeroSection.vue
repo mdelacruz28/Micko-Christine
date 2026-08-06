@@ -353,7 +353,7 @@ onBeforeUnmount(() => {
 }
 .countdown {
   display: grid;
-  /* grid-template-columns: repeat(4, minmax(70px, 1fr)); */
+  grid-template-columns: repeat(4, minmax(70px, 1fr));
   gap: clamp(0.5rem, 2vw, 1rem);
   width: min(100%, 620px);
   margin-top: clamp(2rem, 5vw, 3rem);
