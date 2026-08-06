@@ -11,7 +11,7 @@
         <span></span><i></i><span></span>
       </div>
 
-      <p class="intro-content__date">January 17, 2027</p>
+      <!-- <p class="intro-content__date">January 17, 2027</p> -->
 
       <button class="intro-button" type="button" :disabled="isOpening" @click="openInvitation">
         <span>{{ isOpening ? 'Opening Invitation' : 'Open Invitation' }}</span>
@@ -208,7 +208,7 @@ const openInvitation = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 80px;
+  padding-top: 100px;
   gap: .8rem;
   margin: clamp(1.6rem, 4vw, 2.5rem) 0 1.2rem;
 }
