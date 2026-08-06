@@ -5,13 +5,14 @@
     <div class="intro-screen__frame" aria-hidden="true"></div>
 
     <div class="intro-content">
-      <h1>You are invited</h1>
+      <h1>A love letter from</h1>
+      <p>Micko & Christine</p>
 
-      <div class="intro-content__ornament" aria-hidden="true">
+      <!-- <div class="intro-content__ornament" aria-hidden="true">
         <span></span><i></i><span></span>
       </div>
 
-      <!-- <p class="intro-content__date">January 17, 2027</p> -->
+      <p class="intro-content__date">January 17, 2027</p> -->
 
       <button class="intro-button" type="button" :disabled="isOpening" @click="openInvitation">
         <span>{{ isOpening ? 'Opening Invitation' : 'Open Invitation' }}</span>
