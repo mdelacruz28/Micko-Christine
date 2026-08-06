@@ -15,7 +15,7 @@
       <p class="intro-content__date">January 17, 2027</p> -->
 
       <button class="intro-button" type="button" :disabled="isOpening" @click="openInvitation">
-        <span>{{ isOpening ? 'Opening Invitation' : 'Open Invitation' }}</span>
+        <span>{{ isOpening ? 'Opening Invitation' : 'Open the Invitation' }}</span>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 12h14M13 6l6 6-6 6" />
         </svg>
@@ -256,11 +256,11 @@ const openInvitation = () => {
   justify-content: center;
   gap: .75rem;
   margin-top: clamp(2rem, 5vw, 3rem);
-  border: 1px solid rgba(255,255,255,.65);
+  border: 1px solid rgba(0, 0, 128, 1.0);
   border-radius: 999px;
   padding: .95rem 1.55rem;
   background: transparent;
-  color: #183447;
+  color: #ffffff;
   font-family: 'Manrope', sans-serif;
   font-size: .68rem;
   font-weight: 500;
