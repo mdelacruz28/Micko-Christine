@@ -256,7 +256,7 @@ const openInvitation = () => {
   justify-content: center;
   gap: .75rem;
   margin-top: clamp(2rem, 5vw, 3rem);
-  border: 1px solid rgba(0, 0, 128, 1.0);
+  border: 1px solid rgb(255, 255, 255);
   border-radius: 999px;
   padding: .95rem 1.55rem;
   background: transparent;
@@ -273,6 +273,7 @@ const openInvitation = () => {
 
 .intro-button:hover {
   transform: translateY(-2px);
+  color: #0000;
   background: #fff;
 }
 
