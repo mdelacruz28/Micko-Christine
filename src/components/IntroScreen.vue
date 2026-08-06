@@ -259,7 +259,7 @@ const openInvitation = () => {
   border: 1px solid rgba(255,255,255,.65);
   border-radius: 999px;
   padding: .95rem 1.55rem;
-  background: transparent;
+  background: rgba(255,250,245,.95);
   color: #183447;
   font-family: 'Manrope', sans-serif;
   font-size: .68rem;
