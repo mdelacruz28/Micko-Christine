@@ -289,7 +289,7 @@ onBeforeUnmount(() => {
   font-family: 'Cinzel Decorative', serif;
   font-size: clamp(3.6rem, 8vw, 6.6rem);
   font-style: italic;
-  font-weight: 500;
+  font-weight: bold;
   line-height: 0.95;
   letter-spacing: -0.045em;
   color: var(--entourage-blue);
