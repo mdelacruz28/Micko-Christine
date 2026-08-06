@@ -226,7 +226,7 @@ const openInvitation = () => {
 
 .intro-content__date {
   margin: 0;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Cinzel Decorative', serif;
   font-size: clamp(.75rem, 1.4vw, .95rem);
   font-weight: 500;
   letter-spacing: .32em;
