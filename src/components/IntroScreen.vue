@@ -201,6 +201,7 @@ const openInvitation = () => {
   line-height: .9;
   letter-spacing: -.045em;
   text-wrap: balance;
+  padding-bottom: 50px;
 }
 
 .intro-content__ornament {
@@ -226,6 +227,7 @@ const openInvitation = () => {
 
 .intro-content__date {
   margin: 0;
+  padding-top: 50px;
   font-family: 'Cinzel Decorative', serif;
   font-size: clamp(.75rem, 1.4vw, .95rem);
   font-weight: 500;
