@@ -195,6 +195,18 @@ const openInvitation = () => {
 
 .intro-content h1 {
   margin: 0;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(4rem, 10vw, 8.5rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: .9;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+  padding-bottom: 50px;
+}
+
+.intro-content p {
+  margin: 0;
   font-family: 'Imperial Script', serif;
   font-size: clamp(4rem, 10vw, 8.5rem);
   font-style: italic;
