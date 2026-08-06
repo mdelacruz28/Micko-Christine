@@ -196,7 +196,7 @@ const openInvitation = () => {
 .intro-content h1 {
   margin: 0;
   font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(4rem, 10vw, 8.5rem);
+  font-size: clamp(3rem, 10vw, 8.5rem);
   font-style: italic;
   font-weight: 500;
   line-height: .9;
