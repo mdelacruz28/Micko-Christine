@@ -5,7 +5,7 @@
     <div class="intro-screen__frame" aria-hidden="true"></div>
 
     <div class="intro-content">
-      <h1>You Are Invited</h1>
+      <h1>You are invited</h1>
 
       <div class="intro-content__ornament" aria-hidden="true">
         <span></span><i></i><span></span>
