@@ -208,6 +208,7 @@ const openInvitation = () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 80px;
   gap: .8rem;
   margin: clamp(1.6rem, 4vw, 2.5rem) 0 1.2rem;
 }
@@ -227,12 +228,11 @@ const openInvitation = () => {
 
 .intro-content__date {
   margin: 0;
-  padding-top: 50px;
   font-family: 'Cinzel Decorative', serif;
   font-size: clamp(.75rem, 1.4vw, .95rem);
   font-weight: 500;
   letter-spacing: .32em;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   color: rgba(255,250,245,.9);
 }
 
