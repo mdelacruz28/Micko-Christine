@@ -202,7 +202,6 @@ const openInvitation = () => {
   line-height: .9;
   letter-spacing: 0.0em;
   text-wrap: balance;
-  padding-bottom: 50px;
 }
 
 .intro-content p {
