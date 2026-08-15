@@ -39,7 +39,7 @@
       <div class="hero-details">
         <p class="hero-details__date">January 17, 2027</p>
         <p class="hero-details__venue">
-          Bell Amphitheater · Camp John Hay, Baguio City
+         Baguio City
         </p>
       </div>
 
