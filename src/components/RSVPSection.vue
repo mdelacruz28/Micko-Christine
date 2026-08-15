@@ -78,7 +78,7 @@
               </label>
             </div>
 
-            <div class="form-section">
+            <div class="form-section attendance-section">
               <p class="form-section__label">Will you be joining us?</p>
 
               <div class="attendance-options">
@@ -94,11 +94,14 @@
                     name="attendance"
                     :value="option.value"
                   />
+
                   <span
                     class="attendance-option__icon"
                     v-html="option.icon"
+                    aria-hidden="true"
                   ></span>
-                  <span>
+
+                  <span class="attendance-option__copy">
                     <strong>{{ option.title }}</strong>
                     <small>{{ option.caption }}</small>
                   </span>
@@ -111,7 +114,7 @@
                 <p class="form-section__label">Guest details</p>
 
                 <label class="form-field">
-                  <span>Companion’s full name</span>
+                  <span>Companion's full name</span>
                   <input
                     v-model="form.companionName"
                     type="text"
@@ -162,11 +165,10 @@
 
             <label class="form-consent">
               <input v-model="form.confirmed" type="checkbox" />
-              <span
-                >I understand that once my RSVP is submitted, changes may no
-                longer be accommodated without contacting the couple
-                directly.</span
-              >
+              <span>
+                I understand that once my RSVP is submitted, changes may no
+                longer be accommodated without contacting the couple directly.
+              </span>
             </label>
 
             <button class="rsvp-submit" type="submit">
@@ -185,7 +187,7 @@
       </div>
 
       <footer class="rsvp-footer">
-        <p class="rsvp-footer__script">We can’t wait to celebrate with you.</p>
+        <p class="rsvp-footer__script">We can't wait to celebrate with you.</p>
         <div class="rsvp-footer__ornament" aria-hidden="true">
           <span></span><i></i><span></span>
         </div>
@@ -230,20 +232,22 @@ const attendanceOptions = [
 ];
 
 const activities = [
-  { value: "karaoke", label: "I’m willing to join the karaoke" },
-  { value: "activities", label: "I’m willing to join wedding activities" },
-  { value: "photos", label: "I’m happy to join group photos" },
+  { value: "karaoke", label: "I'm willing to join the karaoke" },
+  { value: "activities", label: "I'm willing to join wedding activities" },
+  { value: "photos", label: "I'm happy to join group photos" },
 ];
 
 onMounted(async () => {
   await nextTick();
+  if (!sectionRef.value) return;
 
   context = gsap.context(() => {
     const header = sectionRef.value.querySelector(".rsvp-header");
     const info = sectionRef.value.querySelector(".rsvp-info");
     const card = sectionRef.value.querySelector(".rsvp-card");
-    const sections = gsap.utils.toArray(".form-section");
-    const footer = sectionRef.value.querySelector(".rsvp-footer");
+    const attendance = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll(".attendance-option"),
+    );
 
     gsap.from(header.children, {
       scrollTrigger: { trigger: header, start: "top 84%", once: true },
@@ -252,6 +256,7 @@ onMounted(async () => {
       filter: "blur(5px)",
       duration: 0.95,
       stagger: 0.12,
+      ease: "power3.out",
     });
 
     gsap.from(info, {
@@ -260,55 +265,52 @@ onMounted(async () => {
       x: -55,
       y: 20,
       duration: 0.95,
+      ease: "power3.out",
     });
 
-    gsap.from(info.children, {
-      scrollTrigger: { trigger: info, start: "top 78%", once: true },
-      opacity: 0,
-      y: 18,
-      duration: 0.6,
-      stagger: 0.1,
-      delay: 0.15,
-    });
-
-    gsap.from(card, {
+    const cardTl = gsap.timeline({
       scrollTrigger: { trigger: card, start: "top 80%", once: true },
-      opacity: 0,
-      x: 55,
-      y: 20,
-      duration: 0.95,
     });
 
-    sections.forEach((section) => {
-      gsap.from(section.children, {
-        scrollTrigger: { trigger: section, start: "top 88%", once: true },
+    cardTl
+      .from(card, {
         opacity: 0,
-        y: 18,
-        duration: 0.55,
-        stagger: 0.08,
+        x: 55,
+        y: 20,
+        duration: 0.95,
+        ease: "power3.out",
+      })
+      .fromTo(
+        attendance,
+        { autoAlpha: 0, y: 16, scale: 0.96 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.55,
+          stagger: 0.1,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+        },
+        "-=0.35",
+      );
+
+    gsap.utils
+      .toArray(
+        sectionRef.value.querySelectorAll(
+          ".form-section:not(.attendance-section)",
+        ),
+      )
+      .forEach((section) => {
+        gsap.from(section.children, {
+          scrollTrigger: { trigger: section, start: "top 88%", once: true },
+          opacity: 0,
+          y: 18,
+          duration: 0.55,
+          stagger: 0.08,
+          ease: "power3.out",
+        });
       });
-    });
-
-    gsap.from(".attendance-option", {
-      scrollTrigger: {
-        trigger: ".attendance-options",
-        start: "top 88%",
-        once: true,
-      },
-      opacity: 0,
-      scale: 0.94,
-      y: 16,
-      duration: 0.55,
-      stagger: 0.1,
-    });
-
-    gsap.from(footer.children, {
-      scrollTrigger: { trigger: footer, start: "top 86%", once: true },
-      opacity: 0,
-      y: 28,
-      duration: 0.8,
-      stagger: 0.12,
-    });
   }, sectionRef.value);
 
   ScrollTrigger.refresh();
@@ -334,7 +336,6 @@ onBeforeUnmount(() => context?.revert());
   padding: clamp(6rem, 10vw, 10rem) clamp(1.25rem, 5vw, 5rem);
   color: var(--rsvp-cream);
 }
-
 .rsvp-section__background {
   position: absolute;
   inset: 0;
@@ -344,7 +345,6 @@ onBeforeUnmount(() => context?.revert());
   background-position: center;
   background-color: #173246;
 }
-
 .rsvp-section__overlay {
   position: absolute;
   inset: 0;
@@ -356,7 +356,6 @@ onBeforeUnmount(() => context?.revert());
     rgba(74, 55, 50, 0.82)
   );
 }
-
 .rsvp-shell {
   width: min(100%, 1180px);
   margin: 0 auto;
@@ -390,7 +389,6 @@ onBeforeUnmount(() => context?.revert());
   line-height: 1.9;
   color: rgba(255, 250, 245, 0.76);
 }
-
 .rsvp-layout {
   display: grid;
   grid-template-columns: minmax(250px, 0.75fr) minmax(0, 1.45fr);
@@ -467,7 +465,6 @@ onBeforeUnmount(() => context?.revert());
   line-height: 1.7;
   color: rgba(255, 250, 245, 0.68);
 }
-
 .rsvp-card {
   padding: clamp(1.4rem, 4vw, 3rem);
   background: rgba(255, 250, 245, 0.96);
@@ -529,16 +526,25 @@ onBeforeUnmount(() => context?.revert());
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  opacity: 1;
+  visibility: visible;
 }
 .attendance-option {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.9rem;
   min-height: 110px;
   padding: 1.2rem;
   border: 1px solid rgba(40, 77, 103, 0.14);
+  background: transparent;
+  opacity: 1;
+  visibility: visible;
   cursor: pointer;
-  transition: 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
 }
 .attendance-option:hover,
 .attendance-option.is-selected {
@@ -568,6 +574,8 @@ onBeforeUnmount(() => context?.revert());
   fill: none;
   stroke: currentColor;
   stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 .attendance-option strong {
   display: block;
@@ -585,7 +593,6 @@ onBeforeUnmount(() => context?.revert());
   line-height: 1.5;
   color: rgba(36, 49, 58, 0.58);
 }
-
 .preference-grid {
   display: grid;
   gap: 0.75rem;
@@ -614,7 +621,6 @@ onBeforeUnmount(() => context?.revert());
   background: var(--rsvp-pomegranate);
   box-shadow: inset 0 0 0 3px #fffaf5;
 }
-
 .form-consent {
   display: flex;
   align-items: flex-start;
@@ -628,7 +634,6 @@ onBeforeUnmount(() => context?.revert());
   margin-top: 0.22rem;
   accent-color: var(--rsvp-pomegranate);
 }
-
 .rsvp-submit {
   min-height: 58px;
   display: inline-flex;
@@ -660,7 +665,6 @@ onBeforeUnmount(() => context?.revert());
   font-size: 0.66rem;
   color: rgba(36, 49, 58, 0.5);
 }
-
 .rsvp-footer {
   margin-top: clamp(4.5rem, 8vw, 7rem);
   text-align: center;
