@@ -282,6 +282,7 @@ onBeforeUnmount(() => {
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   color: var(--entourage-melon);
   transform: rotate(-3deg);
+  padding-bottom: 15px;
 }
 
 .entourage-header h2 {
