@@ -78,7 +78,7 @@
               </label>
             </div>
 
-            <div class="form-section">
+            <div class="form-section attendance-section">
               <p class="form-section__label">Will you be joining us?</p>
 
               <div class="attendance-options">
@@ -242,7 +242,13 @@ onMounted(async () => {
     const header = sectionRef.value.querySelector(".rsvp-header");
     const info = sectionRef.value.querySelector(".rsvp-info");
     const card = sectionRef.value.querySelector(".rsvp-card");
-    const sections = gsap.utils.toArray(".form-section");
+    const sections = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll(".form-section:not(.attendance-section)")
+    );
+    const attendanceSection = sectionRef.value.querySelector(".attendance-section");
+    const attendanceOptions = gsap.utils.toArray(
+      sectionRef.value.querySelectorAll(".attendance-option")
+    );
     const footer = sectionRef.value.querySelector(".rsvp-footer");
 
     gsap.from(header.children, {
@@ -289,18 +295,40 @@ onMounted(async () => {
       });
     });
 
-    gsap.from('.attendance-option', {
+    const attendanceTl = gsap.timeline({
       scrollTrigger: {
-        trigger: ".attendance-options",
+        trigger: attendanceSection,
         start: "top 88%",
         once: true,
       },
-      opacity: 0,
-      scale: 0.94,
-      y: 16,
-      duration: 0.55,
-      stagger: 0.1,
     });
+
+    attendanceTl
+      .fromTo(
+        attendanceSection.querySelector(".form-section__label"),
+        { autoAlpha: 0, y: 16 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.45,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+        }
+      )
+      .fromTo(
+        attendanceOptions,
+        { autoAlpha: 0, y: 16, scale: 0.96 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.55,
+          stagger: 0.1,
+          ease: "power3.out",
+          clearProps: "opacity,visibility,transform",
+        },
+        "-=0.2"
+      );
 
     gsap.from(footer.children, {
       scrollTrigger: { trigger: footer, start: "top 86%", once: true },
@@ -529,7 +557,10 @@ onBeforeUnmount(() => context?.revert());
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  opacity: 1;
+  visibility: visible;
 }
+
 .attendance-option {
   display: flex;
   align-items: center;
@@ -537,6 +568,8 @@ onBeforeUnmount(() => context?.revert());
   min-height: 110px;
   padding: 1.2rem;
   border: 1px solid rgba(40, 77, 103, 0.14);
+  opacity: 1;
+  visibility: visible;
   cursor: pointer;
   transition: 0.25s ease;
 }
