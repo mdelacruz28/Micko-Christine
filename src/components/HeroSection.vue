@@ -353,20 +353,40 @@ onBeforeUnmount(() => {
 }
 .countdown {
   display: grid;
-  grid-template-columns: repeat(4, minmax(70px, 1fr));
-  gap: clamp(0.5rem, 2vw, 1rem);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   width: min(100%, 620px);
   margin-top: clamp(2rem, 5vw, 3rem);
 }
+
 .countdown__item {
-  min-height: 105px;
+  position: relative;
+  min-width: 0;
+  min-height: 92px;
+
   display: grid;
   place-content: center;
   gap: 0.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(10, 24, 34, 0.2);
-  backdrop-filter: blur(8px);
+
+  padding-inline: clamp(0.6rem, 2vw, 1.2rem);
+
+  background: transparent;
+  border: 0;
+  backdrop-filter: none;
 }
+
+.countdown__item:not(:last-child)::after {
+  content: "";
+
+  position: absolute;
+  top: 18%;
+  right: 0;
+  bottom: 18%;
+
+  width: 1px;
+
+  background: rgba(255, 255, 255, 0.28);
+}
+
 .countdown__item strong {
   font-family: "Cormorant Garamond", serif;
   font-size: clamp(2rem, 4vw, 3.2rem);
@@ -374,6 +394,7 @@ onBeforeUnmount(() => {
   font-weight: 500;
   line-height: 1;
 }
+
 .countdown__item span {
   font-family: "Manrope", sans-serif;
   font-size: 0.54rem;
@@ -422,8 +443,28 @@ onBeforeUnmount(() => {
     margin: -0.15rem 0;
   }
   .countdown {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 360px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: min(100%, 420px);
+    max-width: 100%;
+  }
+
+  .countdown__item {
+    min-height: 76px;
+    padding-inline: 0.35rem;
+  }
+
+  .countdown__item strong {
+    font-size: clamp(1.55rem, 7vw, 2.15rem);
+  }
+
+  .countdown__item span {
+    font-size: clamp(0.42rem, 1.9vw, 0.5rem);
+    letter-spacing: 0.12em;
+  }
+
+  .countdown__item:not(:last-child)::after {
+    top: 22%;
+    bottom: 22%;
   }
 }
 </style>
