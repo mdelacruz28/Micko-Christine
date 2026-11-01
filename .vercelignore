@@ -1,0 +1,11 @@
+private-rsvp/
+apps-script/private/
+.env*
+!.env.example
+.git/
+node_modules/
+tests/
+test-results/
+playwright-report/
+review-artifacts/
+work/

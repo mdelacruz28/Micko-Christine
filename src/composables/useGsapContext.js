@@ -2,7 +2,8 @@ import { nextTick, onBeforeUnmount, onMounted } from 'vue'
 import { gsap, ScrollTrigger } from '../plugins/gsap'
 
 /**
- * Creates a GSAP context scoped to one Vue component.
+ * Creates a scoped GSAP context only when motion is allowed. A live preference
+ * change reverts animations; component teardown also disposes custom resources.
  *
  * @param {import('vue').Ref<HTMLElement | null>} scopeRef
  * @param {(helpers: {
@@ -12,31 +13,31 @@ import { gsap, ScrollTrigger } from '../plugins/gsap'
  * }) => void | (() => void)} setup
  */
 export function useGsapContext(scopeRef, setup) {
-  let context
-  let customCleanup
+  let mediaContext
+  let disposed = false
 
   onMounted(async () => {
     await nextTick()
 
     const scope = scopeRef.value
-    if (!scope) return
+    if (disposed || !scope) return
 
-    context = gsap.context(() => {
-      customCleanup = setup({
-        gsap,
-        ScrollTrigger,
-        scope
-      })
-    }, scope)
-
-    ScrollTrigger.refresh()
+    mediaContext = gsap.matchMedia()
+    mediaContext.add('(prefers-reduced-motion: no-preference)', () => {
+      let customCleanup
+      const context = gsap.context(() => {
+        customCleanup = setup({ gsap, ScrollTrigger, scope })
+      }, scope)
+      ScrollTrigger.refresh()
+      return () => {
+        if (typeof customCleanup === 'function') customCleanup()
+        context.revert()
+      }
+    })
   })
 
   onBeforeUnmount(() => {
-    if (typeof customCleanup === 'function') {
-      customCleanup()
-    }
-
-    context?.revert()
+    disposed = true
+    mediaContext?.revert()
   })
 }

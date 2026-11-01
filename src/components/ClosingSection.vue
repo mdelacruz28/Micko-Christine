@@ -1,19 +1,19 @@
 <template>
   <footer id="closing" ref="sectionRef" class="closing-section">
-    <div class="closing-section__background" aria-hidden="true"></div>
     <div class="closing-section__overlay" aria-hidden="true"></div>
     <div class="closing-section__frame" aria-hidden="true"></div>
 
     <div class="closing-content">
       <div
         class="closing-content__monogram-placeholder"
+        role="img"
         aria-label="Micko and Christine monogram"
       >
         M<span>&amp;</span>C
       </div>
 
       <p class="closing-content__eyebrow">With grateful hearts</p>
-      <h2>Thank you for being part of our story.</h2>
+      <h2 class="section-heading">Thank you for being part of our story.</h2>
 
       <p class="closing-content__message">
         Your love, prayers, and presence mean more to us than words can say. We
@@ -34,7 +34,7 @@
         Kindly keep our wedding details and invitation link private.
       </p>
 
-      <a class="closing-content__top" href="#home">
+      <a class="closing-content__top" href="#home" @click="returnToBeginning">
         <span>Back to the beginning</span>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 19V5M6 11l6-6 6 6" />
@@ -49,64 +49,55 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
-import { gsap, ScrollTrigger } from "../plugins/gsap";
+import { ref } from "vue";
+import { useGsapContext } from '../composables/useGsapContext.js';
 
 const sectionRef = ref(null);
-let context;
 
-onMounted(async () => {
-  await nextTick();
+useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
+  const content = scope.querySelector(".closing-content");
+  const children = content.children;
 
-  context = gsap.context(() => {
-    const content = sectionRef.value.querySelector(".closing-content");
-    const children = content.children;
+  gsap.from(".closing-section__frame", {
+    scrollTrigger: {
+      trigger: scope,
+      start: "top 76%",
+      once: true,
+    },
+    opacity: 0,
+    scale: 0.97,
+    duration: 0.9,
+  });
 
-    gsap.from(".closing-section__background", {
-      scrollTrigger: {
-        trigger: sectionRef.value,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1,
-      },
-      scale: 1.12,
-      yPercent: -5,
-      ease: "none",
-    });
+  gsap.from(children, {
+    scrollTrigger: { trigger: content, start: "top 76%", once: true },
+    opacity: 0,
+    y: 30,
+    filter: "blur(5px)",
+    duration: 0.85,
+    stagger: 0.11,
+  });
 
-    gsap.from(".closing-section__frame", {
-      scrollTrigger: {
-        trigger: sectionRef.value,
-        start: "top 76%",
-        once: true,
-      },
-      opacity: 0,
-      scale: 0.97,
-      duration: 0.9,
-    });
+  // gsap.to(".closing-content__monogram-placeholder", {
+  //   y: -6,
+  //   duration: 2.2,
+  //   repeat: -1,
+  //   yoyo: true,
+  //   ease: "sine.inOut",
+  // });
 
-    gsap.from(children, {
-      scrollTrigger: { trigger: content, start: "top 76%", once: true },
-      opacity: 0,
-      y: 30,
-      filter: "blur(5px)",
-      duration: 0.85,
-      stagger: 0.11,
-    });
-
-    // gsap.to(".closing-content__monogram-placeholder", {
-    //   y: -6,
-    //   duration: 2.2,
-    //   repeat: -1,
-    //   yoyo: true,
-    //   ease: "sine.inOut",
-    // });
-  }, sectionRef.value);
-
-  ScrollTrigger.refresh();
 });
 
-onBeforeUnmount(() => context?.revert());
+function returnToBeginning(event) {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  const home = document.getElementById('home');
+  const heading = document.getElementById('hero-title');
+  if (!home || !heading) return;
+  event.preventDefault();
+  if (window.location.hash !== '#home') window.history.pushState(null, '', '#home');
+  home.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
+  heading.focus({ preventScroll: true });
+}
 </script>
 
 <style scoped>
@@ -125,16 +116,7 @@ onBeforeUnmount(() => context?.revert());
   background: #102634;
 }
 
-.closing-section__background {
-  position: absolute;
-  inset: -8%;
-  z-index: -4;
-  background-image: url("/images/closing/closing-bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-color: #102634;
-  will-change: transform;
-}
+
 
 .closing-section__overlay {
   position: absolute;
@@ -192,12 +174,8 @@ onBeforeUnmount(() => context?.revert());
 .closing-content h2 {
   width: min(100%, 760px);
   margin: 0;
-  font-family: "Cormorant Garamond", serif;
   font-size: clamp(3.2rem, 7.5vw, 6.5rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: 0.98;
-}
+  }
 .closing-content__message {
   width: min(100%, 610px);
   margin: 1.8rem auto 0;
@@ -257,9 +235,9 @@ onBeforeUnmount(() => context?.revert());
 .closing-content__privacy {
   margin: 1.4rem 0 0;
   font-family: "Manrope", sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
-  color: rgba(255, 250, 245, 0.56);
+  color: rgba(255, 250, 245, 0.85);
 }
 .closing-content__top {
   display: inline-flex;
@@ -304,5 +282,21 @@ onBeforeUnmount(() => context?.revert());
     flex-direction: column;
     gap: 0.2rem;
   }
+}
+.closing-content, .closing-content h2, .closing-content__names, .closing-content__names span { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.closing-section { row-gap: 3rem; }
+.closing-footer { position: static; width: 100%; }
+.closing-footer p { font-size: .75rem; color: rgba(255,250,245,.8); }
+.closing-section__background, .closing-section__overlay, .closing-section__frame { pointer-events: none; }
+.closing-content__top { max-width: 100%; text-align: center; overflow-wrap: anywhere; }
+.closing-content__top span { min-width: 0; }
+.closing-content__top svg { flex: 0 0 17px; }
+.closing-content__top:focus-visible { outline: 2px solid var(--closing-melon); outline-offset: 5px; opacity: 1 !important; filter: none !important; transform: none !important; }
+@media (max-width: 620px) {
+  .closing-content__names span { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+
+  .closing-content__names span, .closing-content__eyebrow { transform: none; }
 }
 </style>

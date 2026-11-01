@@ -1,886 +1,136 @@
-<template>
-  <section id="timeline" ref="sectionRef" class="timeline-section">
-    <div class="timeline-section__wash" aria-hidden="true"></div>
+<script setup>
+import { ref } from 'vue'
+import { useGsapContext } from '../composables/useGsapContext.js'
+const sectionRef = ref(null)
+const timelineRef = ref(null)
+// Original decorative SVG illustrations; static markup only.
+const timelineIcons = [
+  "<path d=\"M20 105V20H100V105 M23 20V17H97V20 M21 22Q40 26 49 22Q43 53 27 67Q31 85 39 105L13 105Q25 85 23 67Q28 43 21 22 M99 22Q80 26 71 22Q77 53 93 67Q89 85 81 105L107 105Q95 85 97 67Q92 43 99 22 M28 25Q34 43 26 63 M36 26Q35 49 28 63 M44 26Q37 53 30 64 M18 103Q29 86 26 72 M26 103Q32 89 29 76 M34 102L30 88 M92 25Q86 43 94 63 M84 26Q85 49 92 63 M76 26Q83 53 90 64 M102 103Q91 86 94 72 M94 103Q88 89 91 76 M86 102L90 88 M43 23Q60 34 77 23 M46 25Q60 38 74 25\"/><g transform=\"translate(23 24) scale(0.9)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(97 24) scale(0.9)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(26 67) scale(0.4)\"><path d=\"M0 0C-20-21-29-4-4 1C-22-11-23-2-4 1 M0 0C20-21 29-4 4 1C22-11 23-2 4 1 M-3-2Q0-5 3-2L4 3Q0 5-4 3Z M-3 4C-3 17-15 28-9 35L-2 31 1 35C-3 19 6 12 3 4 M3 4C9 17 18 18 16 31L10 28 7 31C12 19 1 15 0 5\"/></g><g transform=\"translate(94 67) scale(0.4)\"><path d=\"M0 0C-20-21-29-4-4 1C-22-11-23-2-4 1 M0 0C20-21 29-4 4 1C22-11 23-2 4 1 M-3-2Q0-5 3-2L4 3Q0 5-4 3Z M-3 4C-3 17-15 28-9 35L-2 31 1 35C-3 19 6 12 3 4 M3 4C9 17 18 18 16 31L10 28 7 31C12 19 1 15 0 5\"/></g>",
+  "<g transform=\"translate(44 65) scale(1)\"><g transform=\"rotate(-20)\"><ellipse cx=\"0\" cy=\"0\" rx=\"22\" ry=\"27\"/><ellipse cx=\"0\" cy=\"0\" rx=\"18\" ry=\"23\"/><path d=\"M-12-23L-17-32-9-41H9L17-32 12-23 M-17-32H17 M-9-41L-5-32 0-23 5-32 9-41 M-15 14L-12 17 M-16 8L-14 11\"/></g></g><g transform=\"translate(78 70) scale(1)\"><g transform=\"rotate(24)\"><ellipse cx=\"0\" cy=\"0\" rx=\"20\" ry=\"25\"/><ellipse cx=\"0\" cy=\"0\" rx=\"16\" ry=\"21\"/><path d=\"M-10 19L-7 21 M-14 14L-11 17\"/></g></g><g transform=\"translate(62 24) scale(0.75)\"><path d=\"M0 0C-20-21-29-4-4 1C-22-11-23-2-4 1 M0 0C20-21 29-4 4 1C22-11 23-2 4 1 M-3-2Q0-5 3-2L4 3Q0 5-4 3Z M-3 4C-3 17-15 28-9 35L-2 31 1 35C-3 19 6 12 3 4 M3 4C9 17 18 18 16 31L10 28 7 31C12 19 1 15 0 5\"/></g><g transform=\"translate(25 92) scale(0.72)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(97 42) scale(0.65)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g>",
+  "<g transform=\"translate(60 15) scale(0.95)\"><g transform=\"translate(0 0) scale(1)\"><path d=\"M-11 0Q-10 13 0 14Q10 13 11 0Z M-10 3Q0 6 10 3 M0 14V28 M-8 30Q0 26 8 30Z M-7 7L-3 10 M3 10L7 7\"/></g></g><g transform=\"translate(48 44) scale(0.95)\"><g transform=\"translate(0 0) scale(1)\"><path d=\"M-11 0Q-10 13 0 14Q10 13 11 0Z M-10 3Q0 6 10 3 M0 14V28 M-8 30Q0 26 8 30Z M-7 7L-3 10 M3 10L7 7\"/></g></g><g transform=\"translate(72 44) scale(0.95)\"><g transform=\"translate(0 0) scale(1)\"><path d=\"M-11 0Q-10 13 0 14Q10 13 11 0Z M-10 3Q0 6 10 3 M0 14V28 M-8 30Q0 26 8 30Z M-7 7L-3 10 M3 10L7 7\"/></g></g><g transform=\"translate(36 73) scale(0.95)\"><g transform=\"translate(0 0) scale(1)\"><path d=\"M-11 0Q-10 13 0 14Q10 13 11 0Z M-10 3Q0 6 10 3 M0 14V28 M-8 30Q0 26 8 30Z M-7 7L-3 10 M3 10L7 7\"/></g></g><g transform=\"translate(60 73) scale(0.95)\"><g transform=\"translate(0 0) scale(1)\"><path d=\"M-11 0Q-10 13 0 14Q10 13 11 0Z M-10 3Q0 6 10 3 M0 14V28 M-8 30Q0 26 8 30Z M-7 7L-3 10 M3 10L7 7\"/></g></g><g transform=\"translate(84 73) scale(0.95)\"><g transform=\"translate(0 0) scale(1)\"><path d=\"M-11 0Q-10 13 0 14Q10 13 11 0Z M-10 3Q0 6 10 3 M0 14V28 M-8 30Q0 26 8 30Z M-7 7L-3 10 M3 10L7 7\"/></g></g><path d=\"M18 105Q60 111 102 105 M23 108Q60 115 97 108\"/><g transform=\"translate(95 36) scale(0.5)\"><path d=\"M0 0C-20-21-29-4-4 1C-22-11-23-2-4 1 M0 0C20-21 29-4 4 1C22-11 23-2 4 1 M-3-2Q0-5 3-2L4 3Q0 5-4 3Z M-3 4C-3 17-15 28-9 35L-2 31 1 35C-3 19 6 12 3 4 M3 4C9 17 18 18 16 31L10 28 7 31C12 19 1 15 0 5\"/></g><path d=\"M20 35v9 M16 39h8 M97 14v8 M93 18h8\"/>",
+  "<ellipse cx=\"60\" cy=\"61\" rx=\"31\" ry=\"35\"/><ellipse cx=\"60\" cy=\"61\" rx=\"27\" ry=\"31\"/><ellipse cx=\"60\" cy=\"61\" rx=\"22\" ry=\"26\"/><path d=\"M16 26V48Q21 56 26 48V26 M21 26V101 M17 56L18 101Q21 106 24 101L25 56 M20 28V45 M23 28V45 M101 101V25Q90 39 92 63H98 M98 65L96 100Q99 105 102 100 M39 40Q60 31 81 40 M42 43Q60 36 78 43\"/><g transform=\"translate(60 53) scale(0.7)\"><path d=\"M0 0C-20-21-29-4-4 1C-22-11-23-2-4 1 M0 0C20-21 29-4 4 1C22-11 23-2 4 1 M-3-2Q0-5 3-2L4 3Q0 5-4 3Z M-3 4C-3 17-15 28-9 35L-2 31 1 35C-3 19 6 12 3 4 M3 4C9 17 18 18 16 31L10 28 7 31C12 19 1 15 0 5\"/></g><g transform=\"translate(56 18) scale(0.65)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g>",
+  "<path d=\"M20 96Q60 105 100 96L100 101Q60 113 20 101Z M28 94V70 M92 94V70 M36 66V46 M84 66V46 M44 42V26 M76 42V26\"/><ellipse cx=\"60\" cy=\"70\" rx=\"32\" ry=\"7\"/><ellipse cx=\"60\" cy=\"46\" rx=\"24\" ry=\"5\"/><ellipse cx=\"60\" cy=\"26\" rx=\"16\" ry=\"4\"/><path d=\"M28 76Q36 90 44 77Q52 91 60 78Q68 91 76 77Q84 90 92 76 M36 51Q44 65 52 53Q60 66 68 53Q76 65 84 51 M44 31Q52 44 60 32Q68 44 76 31\"/><ellipse cx=\"30\" cy=\"96\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"35\" cy=\"96.77645713530757\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"40\" cy=\"97.5\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"45\" cy=\"98.12132034355965\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"50\" cy=\"98.59807621135332\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"55\" cy=\"98.8977774788672\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"60\" cy=\"99\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"65\" cy=\"98.8977774788672\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"70\" cy=\"98.59807621135332\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"75\" cy=\"98.12132034355965\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"80\" cy=\"97.5\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"85\" cy=\"96.77645713530757\" rx=\"0.8\" ry=\"0.8\"/><ellipse cx=\"90\" cy=\"96\" rx=\"0.8\" ry=\"0.8\"/><g transform=\"translate(60 22) scale(0.65)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(86 68) scale(0.6)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(35 92) scale(0.6)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g>",
+  "<ellipse cx=\"60\" cy=\"59\" rx=\"31\" ry=\"31\"/><ellipse cx=\"60\" cy=\"59\" rx=\"22\" ry=\"31\"/><ellipse cx=\"60\" cy=\"59\" rx=\"10\" ry=\"31\"/><path d=\"M60 10V28 M31 49Q60 57 89 49 M29 61Q60 69 91 61 M34 75Q60 83 86 75 M38 37Q60 43 82 37 M60 28V90\"/><g transform=\"translate(60 15) scale(0.5)\"><path d=\"M0 0C-20-21-29-4-4 1C-22-11-23-2-4 1 M0 0C20-21 29-4 4 1C22-11 23-2 4 1 M-3-2Q0-5 3-2L4 3Q0 5-4 3Z M-3 4C-3 17-15 28-9 35L-2 31 1 35C-3 19 6 12 3 4 M3 4C9 17 18 18 16 31L10 28 7 31C12 19 1 15 0 5\"/></g><path d=\"M16 45V64 M16 45L26 42V59 M16 49L26 46 M99 80V99 M99 80L110 77V94 M99 84L110 81 M93 28v12 M87 34h12 M23 87v12 M17 93h12 M37 15l2 4-2 4-2-4Z\"/><ellipse cx=\"12\" cy=\"65\" rx=\"4\" ry=\"3\"/><ellipse cx=\"22\" cy=\"60\" rx=\"4\" ry=\"3\"/><ellipse cx=\"95\" cy=\"100\" rx=\"4\" ry=\"3\"/><ellipse cx=\"106\" cy=\"95\" rx=\"4\" ry=\"3\"/>",
+  "<path d=\"M25 62L32 38Q60 30 88 38L95 62 M31 59L37 42Q60 36 83 42L89 59Z M18 65Q20 59 29 60Q60 66 91 60Q100 59 102 65L106 85Q108 95 98 96H22Q12 95 14 85Z M19 78Q25 70 34 77L36 88H18Z M101 78Q95 70 86 77L84 88H102Z M38 75Q60 80 82 75 M40 86H80V96H40Z M45 89Q60 93 75 89 M21 98V104Q26 109 31 104V98 M89 98V104Q94 109 99 104V98 M13 65L8 61 9 57 22 58 M107 65L112 61 111 57 98 58 M49 45L40 56 M55 44L46 56 M21 91H31 M89 91H99\"/><g transform=\"translate(41 37) scale(0.65)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(62 34) scale(0.7)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(82 37) scale(0.65)\"><path d=\"M0 12Q-5-5 2-20 M0 8Q10 0 14-14 M-1 0Q-11-5-14-18\"/><g transform=\"translate(0 1) scale(0.8)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(7 -7) scale(0.7)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(-6 -9) scale(0.6)\"><path d=\"M0 0Q-10-1-8-12Q1-11 0 0 M0 0L-6-9 M0 0Q10-1 8-12Q-1-11 0 0 M0 0L6-9\"/></g><g transform=\"translate(0 -10) scale(0.8)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(10 0) scale(0.65)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g><g transform=\"translate(-8 5) scale(0.55)\"><ellipse cx=\"0\" cy=\"0\" rx=\"2\" ry=\"2\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(0)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(51.42857142857143)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(102.85714285714286)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(154.28571428571428)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(205.71428571428572)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(257.14285714285717)\"/><ellipse cx=\"0\" cy=\"-4\" rx=\"2.7\" ry=\"4\" transform=\"rotate(308.57142857142856)\"/><path d=\"M-3 1Q0-4 3 0Q1 4-2 2\"/></g></g><g transform=\"translate(60 72) scale(0.4)\"><path d=\"M0 0C-20-21-29-4-4 1C-22-11-23-2-4 1 M0 0C20-21 29-4 4 1C22-11 23-2 4 1 M-3-2Q0-5 3-2L4 3Q0 5-4 3Z M-3 4C-3 17-15 28-9 35L-2 31 1 35C-3 19 6 12 3 4 M3 4C9 17 18 18 16 31L10 28 7 31C12 19 1 15 0 5\"/></g>"
+]
+const timelineItems = [
+  {
+    "time": "2:00 PM",
+    "title": "Guest Arrival"
+  },
+  {
+    "time": "2:30 PM",
+    "title": "Wedding Ceremony"
+  },
+  {
+    "time": "4:00 PM",
+    "title": "Cocktail Hour"
+  },
+  {
+    "time": "5:00 PM",
+    "title": "Grand Reception"
+  },
+  {
+    "time": "6:45 PM",
+    "title": "Wine, Cake & Speeches"
+  },
+  {
+    "time": "7:45 PM",
+    "title": "Music & After Party"
+  },
+  {
+    "time": "9:00 PM",
+    "title": "A Grateful Farewell"
+  }
+]
 
+useGsapContext(sectionRef, ({ gsap, scope }) => {
+  const header = scope.querySelector('.timeline-header')
+  gsap.from(header.children, {
+    opacity: 0, y: 20, duration: .85, stagger: .1,
+    scrollTrigger: { trigger: header, start: 'top 88%', once: true }
+  })
+  gsap.fromTo(scope.querySelectorAll('.timeline__progress'), { scaleY: 0 }, {
+    scaleY: 1, ease: 'none', transformOrigin: 'top center',
+    scrollTrigger: { trigger: timelineRef.value, start: 'top 65%', end: 'bottom 65%', scrub: .75 }
+  })
+  scope.querySelectorAll('.timeline-item').forEach(item => {
+    gsap.from(item.querySelectorAll('.timeline-item__time, .timeline-card'), {
+      opacity: 0, y: 16, duration: .75, stagger: .1, ease: 'power2.out',
+      scrollTrigger: { trigger: item, start: 'top 88%', once: true,
+        onEnter: () => item.classList.add('is-active') }
+    })
+  })
+})
+</script>
+
+<template>
+  <section id="timeline" ref="sectionRef" class="timeline-section" aria-labelledby="timeline-heading">
+    <div class="timeline-section__wash" aria-hidden="true"></div>
     <header class="timeline-header">
       <p class="timeline-header__eyebrow">The celebration unfolds</p>
-      <h2>Wedding Day Timeline</h2>
-      <p class="timeline-header__intro">
-        A thoughtfully planned celebration, from the first welcome
-        to the final song of the evening.
-      </p>
+      <h2 id="timeline-heading" class="section-heading">Wedding Day Timeline</h2>
+      <p class="timeline-header__intro">From the first welcome to the last dance.</p>
     </header>
 
-    <div ref="timelineRef" class="timeline">
-      <div class="timeline__spine" aria-hidden="true">
-        <span class="timeline__progress"></span>
-      </div>
-
-      <article
-        v-for="(item, index) in timelineItems"
-        :key="item.time + item.title"
-        class="timeline-item"
-        :class="{ 'timeline-item--reverse': index % 2 === 1 }"
-      >
-        <div class="timeline-item__time">
-          <span>{{ item.time }}</span>
+    <div ref="timelineRef" class="timeline" role="list" aria-label="Wedding day schedule">
+      <article v-for="(item, index) in timelineItems" :key="item.time" class="timeline-item" role="listitem">
+        <div class="timeline-item__content">
+          <p class="timeline-item__time">{{ item.time }}</p>
+          <div class="timeline-card">
+            <svg class="timeline-card__icon" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <g v-html="timelineIcons[index]" />
+            </svg>
+            <h3>{{ item.title }}</h3>
+          </div>
         </div>
-
-        <div class="timeline-item__marker" aria-hidden="true">
-          <span class="timeline-item__marker-ring"></span>
-          <span class="timeline-item__icon" v-html="item.icon"></span>
-        </div>
-
-        <div class="timeline-card">
-          <p class="timeline-card__step">
-            {{ String(index + 1).padStart(2, '0') }}
-          </p>
-
-          <p class="timeline-card__label">{{ item.label }}</p>
-          <h3>{{ item.title }}</h3>
-          <p class="timeline-card__venue">{{ item.venue }}</p>
-
-          <p class="timeline-card__description">
-            {{ item.description }}
-          </p>
-
-          <span v-if="item.note" class="timeline-card__note">
-            {{ item.note }}
-          </span>
-        </div>
+        <span class="timeline-item__marker" aria-hidden="true"></span>
+        <span class="timeline-item__connector" aria-hidden="true"><span class="timeline__progress"></span></span>
       </article>
     </div>
 
     <footer class="timeline-footer">
-      <div class="timeline-footer__ornament" aria-hidden="true">
-        <span></span>
-        <i></i>
-        <span></span>
-      </div>
-
-      <p class="timeline-footer__script">
-        Come for the vows, stay for the celebration.
-      </p>
-
-      <p class="timeline-footer__note">
-        Event schedule may be adjusted slightly on the day.
-      </p>
+      <p class="timeline-footer__script">Come for the vows, stay for the celebration.</p>
+      <p class="timeline-footer__note">Event schedule may be adjusted slightly on the day.</p>
     </footer>
   </section>
 </template>
 
-<script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { gsap, ScrollTrigger } from '../plugins/gsap'
-
-const sectionRef = ref(null)
-const timelineRef = ref(null)
-
-let context
-let mediaContext
-
-const timelineItems = [
-  {
-    time: '2:00 PM',
-    label: 'Welcome',
-    title: 'Guest Arrival',
-    venue: 'Bell Amphitheater · Camp John Hay',
-    description:
-      'Guests are invited to arrive early, settle into their seats, and enjoy the garden atmosphere before the ceremony begins.',
-    note: 'Please be seated by 2:20 PM.',
-    icon: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 21s7-4.4 7-11A7 7 0 1 0 5 10c0 6.6 7 11 7 11Z"/>
-        <circle cx="12" cy="10" r="2.2"/>
-      </svg>
-    `
-  },
-  {
-    time: '2:30 PM',
-    label: 'Ceremony',
-    title: 'Wedding Ceremony',
-    venue: 'Bell Amphitheater',
-    description:
-      'Join us as we exchange vows, celebrate our faith, and begin our life together in the presence of the people we love.',
-    note: 'An unplugged ceremony is kindly encouraged.',
-    icon: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="9" cy="12" r="5"/>
-        <circle cx="15" cy="12" r="5"/>
-      </svg>
-    `
-  },
-  {
-    time: '4:00 PM',
-    label: 'Interlude',
-    title: 'Cocktail Hour',
-    venue: 'Lafaayette Luxury Suites',
-    description:
-      'Enjoy light refreshments, coffee, taho, and interactive guest activities while the newlyweds complete their portraits.',
-    note: 'Travel time from Camp John Hay is approximately 10–30 minutes.',
-    icon: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 4h14l-3 6.5a4.4 4.4 0 0 1-8 0L5 4Z"/>
-        <path d="M12 14.5V20"/>
-        <path d="M8.5 20h7"/>
-      </svg>
-    `
-  },
-  {
-    time: '5:00 PM',
-    label: 'Reception',
-    title: 'Grand Reception',
-    venue: 'Lafaayette Luxury Suites',
-    description:
-      'The celebration continues with our entrance, first dance, prayer, group photos, dinner, and a warm visit to every table.',
-    note: 'Group photographs will be taken before dinner.',
-    icon: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4 11h16"/>
-        <path d="M6 11v8"/>
-        <path d="M18 11v8"/>
-        <path d="M8 7h8a2 2 0 0 1 2 2v2H6V9a2 2 0 0 1 2-2Z"/>
-        <path d="M9 7V5h6v2"/>
-      </svg>
-    `
-  },
-  {
-    time: '6:45 PM',
-    label: 'Traditions',
-    title: 'Wine, Cake & Speeches',
-    venue: 'Lafaayette Ballroom',
-    description:
-      'We raise a glass, cut the wedding cake, and hear meaningful words from our closest family and friends.',
-    note: 'MOH, Best Man, guest, and parent speeches.',
-    icon: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M7 3h10l-1 6a4 4 0 0 1-8 0L7 3Z"/>
-        <path d="M12 13v6"/>
-        <path d="M9 21h6"/>
-        <path d="M5 15h3v5H5z"/>
-      </svg>
-    `
-  },
-  {
-    time: '7:45 PM',
-    label: 'Celebration',
-    title: 'Music & After Party',
-    venue: 'Lafaayette Luxury Suites',
-    description:
-      'An intimate after-party filled with karaoke favorites, timeless love songs, and music for every generation.',
-    note: 'The final song will be “Ride Home” by Ben&Ben.',
-    icon: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M9 18V5l10-2v13"/>
-        <circle cx="6" cy="18" r="3"/>
-        <circle cx="16" cy="16" r="3"/>
-      </svg>
-    `
-  },
-  {
-    time: '9:00 PM',
-    label: 'Closing',
-    title: 'A Grateful Farewell',
-    venue: 'With love, Micko & Christine',
-    description:
-      'Before the evening ends, we will share our final words of thanks and send everyone home with full hearts.',
-    note: 'Thank you for being part of our beginning.',
-    icon: `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/>
-      </svg>
-    `
-  }
-]
-
-onMounted(async () => {
-  await nextTick()
-
-  if (!sectionRef.value || !timelineRef.value) return
-
-  context = gsap.context(() => {
-    const header = sectionRef.value.querySelector('.timeline-header')
-    const footer = sectionRef.value.querySelector('.timeline-footer')
-    const progress = sectionRef.value.querySelector('.timeline__progress')
-    const items = gsap.utils.toArray(
-      sectionRef.value.querySelectorAll('.timeline-item')
-    )
-
-    gsap.from(header.children, {
-      scrollTrigger: {
-        trigger: header,
-        start: 'top 84%',
-        once: true
-      },
-      opacity: 0,
-      y: 38,
-      filter: 'blur(5px)',
-      duration: 0.95,
-      stagger: 0.12,
-      ease: 'power3.out'
-    })
-
-    gsap.fromTo(
-      progress,
-      {
-        scaleY: 0,
-        transformOrigin: 'top center'
-      },
-      {
-        scaleY: 1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: timelineRef.value,
-          start: 'top 68%',
-          end: 'bottom 58%',
-          scrub: 0.75
-        }
-      }
-    )
-
-    mediaContext = gsap.matchMedia()
-
-    mediaContext.add('(min-width: 861px)', () => {
-      items.forEach(item => {
-        const isReverse = item.classList.contains('timeline-item--reverse')
-        const time = item.querySelector('.timeline-item__time')
-        const marker = item.querySelector('.timeline-item__marker')
-        const icon = item.querySelector('.timeline-item__icon')
-        const card = item.querySelector('.timeline-card')
-        const cardChildren = card.querySelectorAll(
-          '.timeline-card__label, .timeline-card h3, .timeline-card__venue, .timeline-card__description, .timeline-card__note'
-        )
-
-        const itemTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 76%',
-            once: true,
-            onEnter: () => item.classList.add('is-active')
-          }
-        })
-
-        itemTimeline
-          .from(time, {
-            opacity: 0,
-            x: isReverse ? 55 : -55,
-            filter: 'blur(5px)',
-            duration: 0.85
-          })
-          .from(
-            marker,
-            {
-              opacity: 0,
-              scale: 0.2,
-              duration: 0.55,
-              ease: 'back.out(2.1)'
-            },
-            '-=0.55'
-          )
-          .from(
-            card,
-            {
-              opacity: 0,
-              x: isReverse ? -72 : 72,
-              y: 18,
-              duration: 0.95,
-              ease: 'power3.out'
-            },
-            '-=0.62'
-          )
-          .from(
-            cardChildren,
-            {
-              opacity: 0,
-              y: 18,
-              duration: 0.55,
-              stagger: 0.07
-            },
-            '-=0.55'
-          )
-          .from(
-            icon,
-            {
-              rotate: -28,
-              scale: 0.65,
-              duration: 0.5,
-              ease: 'back.out(2)'
-            },
-            '-=0.5'
-          )
-
-        ScrollTrigger.create({
-          trigger: item,
-          start: 'top 58%',
-          end: 'bottom 42%',
-          toggleClass: {
-            targets: item,
-            className: 'is-current'
-          }
-        })
-      })
-    })
-
-    mediaContext.add('(max-width: 860px)', () => {
-      items.forEach(item => {
-        const time = item.querySelector('.timeline-item__time')
-        const marker = item.querySelector('.timeline-item__marker')
-        const card = item.querySelector('.timeline-card')
-        const cardChildren = card.querySelectorAll(
-          '.timeline-card__label, .timeline-card h3, .timeline-card__venue, .timeline-card__description, .timeline-card__note'
-        )
-
-        const itemTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 82%',
-            once: true,
-            onEnter: () => item.classList.add('is-active')
-          }
-        })
-
-        itemTimeline
-          .from(time, {
-            opacity: 0,
-            y: 24,
-            duration: 0.7
-          })
-          .from(
-            marker,
-            {
-              opacity: 0,
-              scale: 0.25,
-              duration: 0.5,
-              ease: 'back.out(2)'
-            },
-            '-=0.42'
-          )
-          .from(
-            card,
-            {
-              opacity: 0,
-              y: 42,
-              duration: 0.85
-            },
-            '-=0.36'
-          )
-          .from(
-            cardChildren,
-            {
-              opacity: 0,
-              y: 14,
-              duration: 0.5,
-              stagger: 0.06
-            },
-            '-=0.5'
-          )
-
-        ScrollTrigger.create({
-          trigger: item,
-          start: 'top 60%',
-          end: 'bottom 45%',
-          toggleClass: {
-            targets: item,
-            className: 'is-current'
-          }
-        })
-      })
-    })
-
-    gsap.from(footer.children, {
-      scrollTrigger: {
-        trigger: footer,
-        start: 'top 86%',
-        once: true
-      },
-      opacity: 0,
-      y: 30,
-      duration: 0.8,
-      stagger: 0.12,
-      ease: 'power3.out'
-    })
-  }, sectionRef.value)
-
-  ScrollTrigger.refresh()
-})
-
-onBeforeUnmount(() => {
-  mediaContext?.revert()
-  context?.revert()
-})
-</script>
-
 <style scoped>
 .timeline-section {
   --timeline-blue: #284d67;
-  --timeline-melon: #efb49f;
-  --timeline-pomegranate: #a64248;
   --timeline-bistre: #78614b;
-  --timeline-ink: #26323a;
-  --timeline-paper: #f8f2eb;
-
+  --timeline-pomegranate: #a64248;
+  --timeline-paper: #fbf7f1;
   position: relative;
   isolation: isolate;
-  overflow: hidden;
-  padding: clamp(6rem, 10vw, 10rem) clamp(1.25rem, 5vw, 5rem);
-  color: var(--timeline-ink);
-  background:
-    linear-gradient(
-      180deg,
-      #f8f2eb 0%,
-      #fdf9f5 50%,
-      #f5ede5 100%
-    );
-}
-
-.timeline-section__wash {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 8% 18%, rgba(239, 180, 159, 0.2), transparent 24rem),
-    radial-gradient(circle at 94% 72%, rgba(40, 77, 103, 0.12), transparent 28rem);
-}
-
-.timeline-header {
-  width: min(100%, 790px);
-  margin: 0 auto clamp(5rem, 9vw, 8rem);
-  text-align: center;
-}
-
-.timeline-header__eyebrow {
-  margin: 0 0 0.75rem;
-  font-family: 'Allura', cursive;
-  font-size: clamp(1.7rem, 3vw, 2.5rem);
-  color: var(--timeline-melon);
-  transform: rotate(-3deg);
-}
-
-.timeline-header h2 {
-  margin: 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3.6rem, 8vw, 7rem);
-  font-weight: 500;
-  font-style: italic;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
+  padding: clamp(3.5rem,7vw,6rem) clamp(1.25rem,5vw,4rem);
   color: var(--timeline-blue);
 }
-
-.timeline-header__intro {
-  width: min(100%, 600px);
-  margin: 1.7rem auto 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(0.92rem, 1.5vw, 1.05rem);
-  font-weight: 300;
-  line-height: 1.9;
-  color: rgba(38, 50, 58, 0.72);
+.timeline-section__wash { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(circle at 8% 18%,rgba(239,180,159,.2),transparent 24rem),radial-gradient(circle at 94% 72%,rgba(40,77,103,.12),transparent 28rem); }
+.timeline-header { max-width: 850px; margin: 0 auto clamp(2.5rem,5vw,4rem); text-align: center; }
+.timeline-header__eyebrow { margin: 0 0 .6rem; color: var(--timeline-bistre); font-family: 'Allura',serif; }
+.timeline-header h2 { margin: 0; }
+.timeline-header__intro { margin: 1rem 0 0; font-size: .9rem; line-height: 1.7; color: #65727a; }
+.timeline { position: relative; max-width: 620px; margin: 0 auto; }
+.timeline-item__connector { position: absolute; bottom: 0; left: 50%; width: 1px; height: 1.4rem; background: #d6c5a7; }
+.timeline-item:last-child .timeline-item__connector { display: none; }
+.timeline__progress { position: absolute; inset: 0; display: block; background: #a64248; transform-origin: top center; }
+.timeline-item { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 1.8rem; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item__content { position: relative; z-index: 1; width: 100%; padding: .7rem .5rem 1rem; background: transparent; }
+.timeline-item__time { margin: 0 0 .45rem; font-family: 'Manrope',sans-serif; font-size: .75rem; font-weight: 500; letter-spacing: .17em; line-height: 1.5; color: var(--timeline-pomegranate); }
+.timeline-card { min-width: 0; }
+.timeline-card__icon { display: block; width: clamp(104px, 9vw, 132px); height: auto; margin: .65rem auto .75rem; color: var(--timeline-bistre); }
+.timeline-card h3 { margin: 0; font-family: 'Cormorant Garamond',serif; font-size: clamp(1.7rem,3vw,2.25rem); font-weight: 500; line-height: 1.2; overflow-wrap: anywhere; }
+.timeline-item__marker { position: relative; z-index: 2; display: block; width: 7px; height: 7px; background: var(--timeline-pomegranate); border: 1px solid var(--timeline-pomegranate); transform: rotate(45deg);  }
+.timeline-footer { max-width: 650px; margin: clamp(2.5rem,5vw,4rem) auto 0; text-align: center; }
+.timeline-footer__script { margin: 0; font-family: 'Parisienne','Cormorant Garamond',serif; font-size: clamp(1.6rem,3vw,2.2rem); line-height: 1.4; }
+.timeline-footer__note { margin: .8rem 0 0; color: #65727a; font-size: .75rem; line-height: 1.7; }
+@media(max-width:520px) {
+ .timeline-item__connector { height: 1rem; }
+ .timeline-item { padding-bottom: 1.4rem; }
+ .timeline-item__time { font-size: .7rem; }
 }
-
-.timeline {
-  position: relative;
-  width: min(100%, 1180px);
-  margin: 0 auto;
-}
-
-.timeline__spine {
-  position: absolute;
-  top: 1rem;
-  bottom: 1rem;
-  left: 50%;
-  width: 2px;
-  transform: translateX(-50%);
-  background:
-    linear-gradient(
-      to bottom,
-      transparent,
-      rgba(40, 77, 103, 0.18) 5%,
-      rgba(40, 77, 103, 0.18) 95%,
-      transparent
-    );
-}
-
-.timeline__progress {
-  position: absolute;
-  inset: 0;
-  display: block;
-  background:
-    linear-gradient(
-      to bottom,
-      transparent,
-      var(--timeline-melon) 7%,
-      var(--timeline-pomegranate) 50%,
-      var(--timeline-blue) 93%,
-      transparent
-    );
-  box-shadow: 0 0 16px rgba(166, 66, 72, 0.2);
-  transform-origin: top center;
-}
-
-.timeline-item {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 92px 1fr;
-  align-items: center;
-  min-height: 390px;
-}
-
-.timeline-item__time {
-  grid-column: 1;
-  justify-self: end;
-  padding-right: clamp(2rem, 5vw, 4.5rem);
-}
-
-.timeline-item--reverse .timeline-item__time {
-  grid-column: 3;
-  justify-self: start;
-  padding-right: 0;
-  padding-left: clamp(2rem, 5vw, 4.5rem);
-}
-
-.timeline-item__time span {
-  display: inline-block;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.2rem, 4.8vw, 4.5rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: 1;
-  color: var(--timeline-blue);
-  white-space: nowrap;
-  transition:
-    color 0.35s ease,
-    text-shadow 0.35s ease;
-}
-
-.timeline-item__marker {
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: center;
-  position: relative;
-  z-index: 3;
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(40, 77, 103, 0.22);
-  border-radius: 50%;
-  background: rgba(255, 250, 246, 0.96);
-  box-shadow:
-    0 10px 30px rgba(50, 55, 58, 0.1),
-    0 0 0 8px rgba(248, 242, 235, 0.95);
-  color: var(--timeline-pomegranate);
-  transition:
-    color 0.35s ease,
-    border-color 0.35s ease,
-    background 0.35s ease,
-    box-shadow 0.35s ease;
-}
-
-.timeline-item__marker-ring {
-  position: absolute;
-  inset: -7px;
-  border: 1px solid transparent;
-  border-radius: 50%;
-  transition:
-    border-color 0.35s ease,
-    transform 0.35s ease;
-}
-
-.timeline-item__icon {
-  display: grid;
-  place-items: center;
-}
-
-.timeline-item__icon :deep(svg) {
-  width: 24px;
-  height: 24px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.35;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.timeline-card {
-  grid-column: 3;
-  position: relative;
-  width: min(100%, 470px);
-  padding: clamp(1.7rem, 4vw, 3rem);
-  border: 1px solid rgba(40, 77, 103, 0.12);
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 24px 65px rgba(62, 56, 51, 0.09);
-  backdrop-filter: blur(10px);
-  transition:
-    transform 0.35s ease,
-    box-shadow 0.35s ease,
-    border-color 0.35s ease;
-}
-
-.timeline-item--reverse .timeline-card {
-  grid-column: 1;
-  grid-row: 1;
-  justify-self: end;
-  text-align: right;
-}
-
-.timeline-card::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -9px;
-  width: 16px;
-  height: 16px;
-  border-left: 1px solid rgba(40, 77, 103, 0.12);
-  border-bottom: 1px solid rgba(40, 77, 103, 0.12);
-  background: rgba(255, 255, 255, 0.9);
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.timeline-item--reverse .timeline-card::before {
-  right: -9px;
-  left: auto;
-  border: 0;
-  border-top: 1px solid rgba(40, 77, 103, 0.12);
-  border-right: 1px solid rgba(40, 77, 103, 0.12);
-}
-
-.timeline-card__step {
-  position: absolute;
-  top: 0.7rem;
-  right: 1.1rem;
-  margin: 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(3.5rem, 6vw, 5.5rem);
-  font-style: italic;
-  line-height: 1;
-  color: rgba(40, 77, 103, 0.08);
-}
-
-.timeline-item--reverse .timeline-card__step {
-  right: auto;
-  left: 1.1rem;
-}
-
-.timeline-card__label {
-  position: relative;
-  margin: 0 0 0.75rem;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--timeline-melon);
-}
-
-.timeline-card h3 {
-  position: relative;
-  margin: 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.25rem, 4vw, 3.7rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: 1;
-  color: var(--timeline-blue);
-}
-
-.timeline-card__venue {
-  position: relative;
-  margin: 0.8rem 0 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.09em;
-  color: var(--timeline-bistre);
-}
-
-.timeline-card__description {
-  position: relative;
-  margin: 1.3rem 0 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 300;
-  line-height: 1.8;
-  color: rgba(38, 50, 58, 0.72);
-}
-
-.timeline-card__note {
-  position: relative;
-  display: inline-block;
-  margin-top: 1.3rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(40, 77, 103, 0.13);
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.05rem;
-  font-style: italic;
-  color: var(--timeline-pomegranate);
-}
-
-.timeline-item.is-current .timeline-item__marker {
-  color: #fffaf6;
-  border-color: var(--timeline-pomegranate);
-  background: var(--timeline-pomegranate);
-  box-shadow:
-    0 12px 34px rgba(166, 66, 72, 0.25),
-    0 0 0 8px rgba(248, 242, 235, 0.96);
-}
-
-.timeline-item.is-current .timeline-item__marker-ring {
-  border-color: rgba(166, 66, 72, 0.32);
-  transform: scale(1.16);
-}
-
-.timeline-item.is-current .timeline-item__time span {
-  color: var(--timeline-pomegranate);
-  text-shadow: 0 8px 24px rgba(166, 66, 72, 0.15);
-}
-
-.timeline-item.is-current .timeline-card {
-  border-color: rgba(166, 66, 72, 0.22);
-  box-shadow: 0 30px 75px rgba(62, 56, 51, 0.13);
-  transform: translateY(-4px);
-}
-
-.timeline-footer {
-  width: min(100%, 720px);
-  margin: clamp(5rem, 10vw, 8rem) auto 0;
-  text-align: center;
-}
-
-.timeline-footer__ornament {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.timeline-footer__ornament span {
-  width: clamp(2rem, 7vw, 5rem);
-  height: 1px;
-  background: rgba(120, 97, 75, 0.38);
-}
-
-.timeline-footer__ornament i {
-  width: 6px;
-  height: 6px;
-  border: 1px solid var(--timeline-melon);
-  transform: rotate(45deg);
-}
-
-.timeline-footer__script {
-  margin: 1.2rem 0 0;
-  font-family: 'Allura', cursive;
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
-  color: var(--timeline-blue);
-}
-
-.timeline-footer__note {
-  margin: 0.5rem 0 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.76rem;
-  font-weight: 300;
-  letter-spacing: 0.08em;
-  color: rgba(38, 50, 58, 0.58);
-}
-
-@media (max-width: 860px) {
-  .timeline__spine {
-    left: 1.8rem;
-    transform: none;
-  }
-
-  .timeline-item,
-  .timeline-item--reverse {
-    grid-template-columns: 72px minmax(0, 1fr);
-    min-height: auto;
-    margin-bottom: 3.5rem;
-  }
-
-  .timeline-item__marker,
-  .timeline-item--reverse .timeline-item__marker {
-    grid-column: 1;
-    grid-row: 1;
-    width: 48px;
-    height: 48px;
-  }
-
-  .timeline-item__time,
-  .timeline-item--reverse .timeline-item__time {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: start;
-    align-self: start;
-    padding: 0;
-    margin-bottom: 1rem;
-  }
-
-  .timeline-item__time span {
-    font-size: 2.2rem;
-  }
-
-  .timeline-card,
-  .timeline-item--reverse .timeline-card {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: stretch;
-    width: 100%;
-    margin-top: 3.5rem;
-    text-align: left;
-  }
-
-  .timeline-card::before,
-  .timeline-item--reverse .timeline-card::before {
-    top: 1.2rem;
-    left: -9px;
-    right: auto;
-    border: 0;
-    border-left: 1px solid rgba(40, 77, 103, 0.12);
-    border-bottom: 1px solid rgba(40, 77, 103, 0.12);
-  }
-
-  .timeline-card__step,
-  .timeline-item--reverse .timeline-card__step {
-    right: 1rem;
-    left: auto;
-  }
-}
-
-@media (max-width: 520px) {
-  .timeline-section {
-    padding-inline: 1rem;
-  }
-
-  .timeline__spine {
-    left: 1.25rem;
-  }
-
-  .timeline-item,
-  .timeline-item--reverse {
-    grid-template-columns: 52px minmax(0, 1fr);
-  }
-
-  .timeline-item__marker,
-  .timeline-item--reverse .timeline-item__marker {
-    width: 42px;
-    height: 42px;
-  }
-
-  .timeline-item__icon :deep(svg) {
-    width: 20px;
-    height: 20px;
-  }
-
-  .timeline-card {
-    padding: 1.45rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .timeline-item__marker,
-  .timeline-item__marker-ring,
-  .timeline-item__time span,
-  .timeline-card {
-    transition: none;
-  }
-}
+@media(prefers-reduced-motion:reduce) { .timeline__progress { transform: none !important; } }
 </style>

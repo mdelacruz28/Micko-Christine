@@ -1,0 +1,36 @@
+/* One page image, section-local readable surfaces, and an editorial heading scale. */
+.site-shell { position: relative; isolation: isolate; overflow: clip; }
+#app .site-shell .section-heading {
+  font-size: clamp(2.5rem, calc(1.8rem + 3vw), 4.5rem);
+  font-family: 'Parisienne', 'Cormorant Garamond', serif; font-weight: 400; font-style: normal;
+  line-height: 1.25; letter-spacing: 0; text-wrap: balance;
+  overflow-wrap: break-word; hyphens: none; max-width: 100%; margin-inline: auto;
+}
+#app .site-shell :is(#story, #rsvp) .section-heading { font-size: clamp(2.75rem, calc(2rem + 3vw), 4.75rem); }
+#app .site-shell #rsvp .section-heading { color: #284d67; }
+#app .site-shell :is(.story-chapter, .event-card, .dress-card, .faq-aside) h3 { font-size: clamp(1.55rem, calc(1.1rem + 1.8vw), 2.65rem); line-height: 1.2; text-wrap: balance; }
+#app .site-shell :is(.story-header, .details-header, .entourage-header, .dress-header, .rsvp-header, .faq-header) { margin-bottom: clamp(2.4rem, 5vw, 4rem); }
+#app .site-shell :is(#story, #details, #timeline, #entourage, #dress-code, #faq) { background: rgba(255, 250, 245, .76); }
+#app .site-shell :is(#home, #rsvp, #closing) { background: transparent; }
+#app .site-shell :is(.story-chapter, .event-card, .faq-aside) { background-color: rgba(255, 250, 245, .94); }
+#app .site-shell :is(.story-section__wash, .details-section__wash, .timeline-section__wash, .entourage-section__wash, .dress-section__wash, .faq-section__wash) { opacity: .35; }
+#app .rsvp-section__overlay { background: linear-gradient(135deg, rgba(20,42,57,.7), rgba(29,55,72,.65) 52%, rgba(47,38,36,.7)); }
+#app .closing-section__overlay { background: linear-gradient(180deg, rgba(12,29,40,.58), rgba(10,24,34,.78)); }
+/* Hero is secondary to the distinct Intro script names, with a calm mobile scale. */
+#app .hero-names { font-size: clamp(3.25rem, 8vw, 7rem); }
+@media (max-width: 620px) { #app .hero-names { font-size: clamp(2.75rem, 11vw, 4rem); } }
+
+#app .site-shell :is(.story-header__eyebrow, .details-header__eyebrow, .timeline-header__eyebrow, .entourage-header__eyebrow, .dress-header__eyebrow, .rsvp-header__eyebrow, .faq-header__eyebrow, .closing-content__eyebrow) { font-size: clamp(1.25rem, 2.2vw, 1.8rem); }
+
+/* Keep hero text unoutlined and outline the other section headings. */
+#app .site-shell :is(.hero-names, .hero-content__eyebrow) { -webkit-text-stroke: 0; }
+#app .site-shell .hero-content__eyebrow { color: #efb49f; }
+#app .site-shell :is(.section-heading, .gallery-header h2) {
+  -webkit-text-stroke: 2px #fff;
+  paint-order: stroke fill;
+}
+#app .site-shell :is(.story-header__eyebrow, .details-header__eyebrow, .timeline-header__eyebrow, .entourage-header__eyebrow, .dress-header__eyebrow, .gallery-header__eyebrow, .dress-header__eyebrow, .rsvp-header__eyebrow, .faq-header__eyebrow, .closing-content__eyebrow) {
+  color: var(--pomegranate);
+  -webkit-text-stroke: 1px #fff;
+  paint-order: stroke fill;
+}

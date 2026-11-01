@@ -35,6 +35,18 @@ a {
     overflow: hidden; 
 }
 
+/* Let enlarged invitation text wrap instead of being hidden by section edges. */
+.site-shell :where(h2, h3, p, li, dt, dd, strong) {
+    overflow-wrap: anywhere;
+}
+
+.site-shell .section-heading {
+    font-family: 'Cinzel Decorative', serif;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.12;
+}
+
 .section { 
     padding: var(--section-space) 1.25rem; 
 }

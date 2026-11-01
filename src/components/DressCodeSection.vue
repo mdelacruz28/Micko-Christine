@@ -4,7 +4,7 @@
 
     <header class="dress-header">
       <p class="dress-header__eyebrow">Dressed for the occasion</p>
-      <h2>Wedding Attire</h2>
+      <h2 class="section-heading">Wedding Attire</h2>
       <p class="dress-header__intro">
         We would love for everyone to feel comfortable, polished, and beautifully
         part of our garden celebration.
@@ -18,7 +18,8 @@
         class="dress-card"
       >
         <div class="dress-card__image">
-          <img :src="group.image" :alt="group.imageAlt" loading="lazy" />
+          <img v-show="!failedImages.has(group.image)" :src="group.image" :alt="group.imageAlt" loading="lazy" decoding="async" @error="failedImages.add(group.image)" />
+          <p v-if="failedImages.has(group.image)" class="dress-card__image-fallback" role="img" :aria-label="group.imageAlt">{{ group.imageAlt }}</p>
           <div class="dress-card__overlay" aria-hidden="true"></div>
           <span class="dress-card__label">{{ group.label }}</span>
         </div>
@@ -40,6 +41,7 @@
           <div
             v-if="group.swatches?.length"
             class="dress-card__swatches"
+            role="group"
             aria-label="Suggested colors"
           >
             <span
@@ -49,32 +51,26 @@
               :title="swatch.name"
               :style="{ '--swatch-color': swatch.color }"
             >
-              <i></i>
+              <i aria-hidden="true"></i>
               <small>{{ swatch.name }}</small>
             </span>
           </div>
         </div>
       </article>
-    </div>
-
-    <section class="guest-guide">
-      <div class="guest-guide__heading">
-        <p>For our beloved guests</p>
-        <h3>Garden Formal</h3>
-        <span>
-          Refined, romantic, and comfortable for a Baguio garden celebration
-        </span>
-      </div>
-
-      <div class="guest-guide__grid">
         <article
           v-for="guide in guestGuides"
           :key="guide.title"
           class="guest-card"
         >
+          <div class="guest-card__image">
+            <img v-if="!failedImages.has(guide.image)" :src="guide.image" :alt="guide.imageAlt" loading="lazy" decoding="async" @error="failedImages.add(guide.image)" />
+            <p v-else role="img" :aria-label="guide.imageAlt">{{ guide.imageAlt }}</p>
+            <span class="dress-card__label">{{ guide.imageLabel }}</span>
+          </div>
+          <div class="guest-card__content">
           <div class="guest-card__icon" v-html="guide.icon" aria-hidden="true"></div>
           <p class="guest-card__label">{{ guide.label }}</p>
-          <h4>{{ guide.title }}</h4>
+          <h3>{{ guide.title }}</h3>
           <p>{{ guide.description }}</p>
 
           <ul>
@@ -82,27 +78,9 @@
               {{ item }}
             </li>
           </ul>
+          </div>
         </article>
-      </div>
-    </section>
-
-    <section class="palette-guide">
-      <div class="palette-guide__heading">
-        <p>Guest color inspiration</p>
-        <h3>Warm garden shades</h3>
-      </div>
-
-      <div class="palette-guide__swatches">
-        <div
-          v-for="swatch in guestPalette"
-          :key="swatch.name"
-          class="palette-swatch"
-        >
-          <span :style="{ backgroundColor: swatch.color }"></span>
-          <p>{{ swatch.name }}</p>
-        </div>
-      </div>
-    </section>
+    </div>
 
     <section class="avoid-guide">
       <div class="avoid-guide__heading">
@@ -118,6 +96,7 @@
         >
           <span
             class="avoid-item__color"
+            aria-hidden="true"
             :style="{
               background: item.background,
               borderColor: item.border || 'transparent'
@@ -151,19 +130,18 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { gsap, ScrollTrigger } from '../plugins/gsap'
+import { reactive, ref } from 'vue'
+import { useGsapContext } from '../composables/useGsapContext.js'
 
 const sectionRef = ref(null)
+const failedImages = reactive(new Set())
 
-let context
-let mediaContext
 
 const featuredGroups = [
   {
     label: 'Principal Sponsors',
     title: 'Formal & Distinguished',
-    image: '/images/dress-code/principal-sponsors.jpg',
+    image: '/images/main%20sponsor.png',
     imageAlt: 'Formal attire inspiration for principal sponsors',
     details: [
       {
@@ -183,36 +161,15 @@ const featuredGroups = [
       { name: 'Glazed Apricot', color: '#e8a078' },
       { name: 'Soft Bistre', color: '#b49b7a' }
     ]
-  },
-  {
-    label: 'Immediate Family',
-    title: 'Coordinated in Soft Hues',
-    image: '/images/dress-code/family.jpg',
-    imageAlt: 'Formal attire inspiration for the couple’s immediate family',
-    details: [
-      {
-        heading: 'Bride & Groom’s Family',
-        copy:
-          'Light shades of blue such as powder blue, dusty blue, and softened Van Gogh blue.'
-      },
-      {
-        heading: 'Mothers & Fathers',
-        copy:
-          'Mothers may wear light melon, dusty rose, or soft pink. Fathers may wear a light Barong Tagalog.'
-      }
-    ],
-    swatches: [
-      { name: 'Dusty Blue', color: '#7899ad' },
-      { name: 'Powder Blue', color: '#a8c7d7' },
-      { name: 'Dusty Rose', color: '#c88f95' },
-      { name: 'Light Melon', color: '#efb49f' }
-    ]
   }
 ]
 
 const guestGuides = [
   {
     label: 'Ladies',
+    imageLabel: 'Guest Attire for Ladies',
+    image: '/images/lads.png',
+    imageAlt: 'Garden wedding dress inspiration for ladies',
     title: 'Romantic & Refined',
     description:
       'Choose a polished silhouette that moves beautifully and feels comfortable throughout the celebration.',
@@ -231,6 +188,9 @@ const guestGuides = [
   },
   {
     label: 'Gentlemen',
+    imageLabel: 'Guest Attire for Men',
+    image: '/images/gents.png',
+    imageAlt: 'Garden wedding shirt and trouser inspiration for gentlemen',
     title: 'Polished & Relaxed',
     description:
       'A clean, well-fitted look is perfect for the garden setting and the cool Baguio atmosphere.',
@@ -250,19 +210,10 @@ const guestGuides = [
   }
 ]
 
-const guestPalette = [
-  { name: 'Pomegranate', color: '#a64248' },
-  { name: 'Glazed Apricot', color: '#e29a72' },
-  { name: 'Spanish Bistre', color: '#78614b' },
-  { name: 'Muted Sage', color: '#86927e' },
-  { name: 'Dusty Rose', color: '#c88f95' },
-  { name: 'Warm Taupe', color: '#a89583' }
-]
-
 const avoidColors = [
   {
     name: 'Blue shades',
-    reason: 'Reserved for the couple’s immediate family.',
+    reason: 'Please choose warm, muted wedding colors instead.',
     background: 'linear-gradient(135deg, #9fbfd1, #284d67)'
   },
   {
@@ -283,301 +234,234 @@ const avoidColors = [
   }
 ]
 
-onMounted(async () => {
-  await nextTick()
+useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
+  const header = scope.querySelector('.dress-header')
+  const featuredCards = gsap.utils.toArray(
+    scope.querySelectorAll('.dress-card')
+  )
+  const guestCards = gsap.utils.toArray(
+    scope.querySelectorAll('.guest-card')
+  )
+  const avoidHeading = scope.querySelector('.avoid-guide__heading')
+  const avoidItems = gsap.utils.toArray(
+    scope.querySelectorAll('.avoid-item')
+  )
+  const footer = scope.querySelector('.dress-footer')
 
-  if (!sectionRef.value) return
+  gsap.from(header.children, {
+    scrollTrigger: {
+      trigger: header,
+      start: 'top 84%',
+      once: true
+    },
+    opacity: 0,
+    y: 38,
+    filter: 'blur(5px)',
+    duration: 0.95,
+    stagger: 0.12,
+    ease: 'power3.out'
+  })
 
-  context = gsap.context(() => {
-    const header = sectionRef.value.querySelector('.dress-header')
-    const featuredCards = gsap.utils.toArray(
-      sectionRef.value.querySelectorAll('.dress-card')
-    )
-    const guestHeading = sectionRef.value.querySelector('.guest-guide__heading')
-    const guestCards = gsap.utils.toArray(
-      sectionRef.value.querySelectorAll('.guest-card')
-    )
-    const paletteHeading = sectionRef.value.querySelector('.palette-guide__heading')
-    const paletteSwatches = gsap.utils.toArray(
-      sectionRef.value.querySelectorAll('.palette-swatch')
-    )
-    const avoidHeading = sectionRef.value.querySelector('.avoid-guide__heading')
-    const avoidItems = gsap.utils.toArray(
-      sectionRef.value.querySelectorAll('.avoid-item')
-    )
-    const footer = sectionRef.value.querySelector('.dress-footer')
+  const mediaContext = gsap.matchMedia()
 
-    gsap.from(header.children, {
-      scrollTrigger: {
-        trigger: header,
-        start: 'top 84%',
-        once: true
-      },
-      opacity: 0,
-      y: 38,
-      filter: 'blur(5px)',
-      duration: 0.95,
-      stagger: 0.12,
-      ease: 'power3.out'
-    })
+  mediaContext.add('(min-width: 761px)', () => {
+    featuredCards.forEach((card, index) => {
+      const imageWrap = card.querySelector('.dress-card__image')
+      const label = card.querySelector('.dress-card__label')
+      const content = card.querySelector('.dress-card__content')
+      const contentChildren = content.children
+      const swatches = card.querySelectorAll('.swatch')
 
-    mediaContext = gsap.matchMedia()
-
-    mediaContext.add('(min-width: 761px)', () => {
-      featuredCards.forEach((card, index) => {
-        const imageWrap = card.querySelector('.dress-card__image')
-        const image = card.querySelector('.dress-card__image img')
-        const label = card.querySelector('.dress-card__label')
-        const content = card.querySelector('.dress-card__content')
-        const contentChildren = content.children
-        const swatches = card.querySelectorAll('.swatch')
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 78%',
-            once: true
-          }
-        })
-
-        tl
-          .from(card, {
-            opacity: 0,
-            y: 48,
-            x: index === 0 ? -42 : 42,
-            duration: 0.95,
-            ease: 'power3.out'
-          })
-          .from(
-            imageWrap,
-            {
-              clipPath: 'inset(0 0 100% 0)',
-              duration: 1,
-              ease: 'power4.out'
-            },
-            '-=0.78'
-          )
-          .from(
-            label,
-            {
-              opacity: 0,
-              y: 12,
-              duration: 0.45
-            },
-            '-=0.48'
-          )
-          .from(
-            contentChildren,
-            {
-              opacity: 0,
-              y: 18,
-              duration: 0.55,
-              stagger: 0.08
-            },
-            '-=0.52'
-          )
-          .from(
-            swatches,
-            {
-              opacity: 0,
-              scale: 0.65,
-              y: 10,
-              duration: 0.45,
-              stagger: 0.07,
-              ease: 'back.out(1.8)'
-            },
-            '-=0.38'
-          )
-
-        gsap.to(image, {
-          yPercent: index === 0 ? 7 : -7,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: card,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1
-          }
-        })
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 78%',
+          once: true
+        }
       })
-    })
 
-    mediaContext.add('(max-width: 760px)', () => {
-      featuredCards.forEach(card => {
-        const imageWrap = card.querySelector('.dress-card__image')
-        const contentChildren = card.querySelector('.dress-card__content').children
-        const swatches = card.querySelectorAll('.swatch')
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 82%',
-            once: true
-          }
+      tl
+        .from(card, {
+          opacity: 0,
+          y: 48,
+          x: index === 0 ? -42 : 42,
+          duration: 0.95,
+          ease: 'power3.out'
         })
-
-        tl
-          .from(card, {
+        .from(
+          imageWrap,
+          {
+            clipPath: 'inset(0 0 100% 0)',
+            duration: 1,
+            ease: 'power4.out'
+          },
+          '-=0.78'
+        )
+        .from(
+          label,
+          {
             opacity: 0,
-            y: 42,
+            y: 12,
+            duration: 0.45
+          },
+          '-=0.48'
+        )
+        .from(
+          contentChildren,
+          {
+            opacity: 0,
+            y: 18,
+            duration: 0.55,
+            stagger: 0.08
+          },
+          '-=0.52'
+        )
+        .from(
+          swatches,
+          {
+            opacity: 0,
+            scale: 0.96,
+            y: 10,
+            duration: 0.45,
+            stagger: 0.07,
+            ease: 'power2.out'
+          },
+          '-=0.38'
+        )
+
+      // Keep the full attire illustration in frame; card entrance remains animated.
+    })
+  })
+
+  mediaContext.add('(max-width: 760px)', () => {
+    featuredCards.forEach(card => {
+      const imageWrap = card.querySelector('.dress-card__image')
+      const contentChildren = card.querySelector('.dress-card__content').children
+      const swatches = card.querySelectorAll('.swatch')
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 82%',
+          once: true
+        }
+      })
+
+      tl
+        .from(card, {
+          opacity: 0,
+          y: 42,
+          duration: 0.85
+        })
+        .from(
+          imageWrap,
+          {
+            clipPath: 'inset(0 0 100% 0)',
             duration: 0.85
-          })
-          .from(
-            imageWrap,
-            {
-              clipPath: 'inset(0 0 100% 0)',
-              duration: 0.85
-            },
-            '-=0.65'
-          )
-          .from(
-            contentChildren,
-            {
-              opacity: 0,
-              y: 16,
-              duration: 0.5,
-              stagger: 0.07
-            },
-            '-=0.45'
-          )
-          .from(
-            swatches,
-            {
-              opacity: 0,
-              scale: 0.7,
-              duration: 0.4,
-              stagger: 0.06
-            },
-            '-=0.32'
-          )
-      })
+          },
+          '-=0.65'
+        )
+        .from(
+          contentChildren,
+          {
+            opacity: 0,
+            y: 16,
+            duration: 0.5,
+            stagger: 0.07
+          },
+          '-=0.45'
+        )
+        .from(
+          swatches,
+          {
+            opacity: 0,
+            scale: 0.96,
+            duration: 0.4,
+            stagger: 0.06
+          },
+          '-=0.32'
+        )
+    })
+  })
+
+  guestCards.forEach(card => {
+    const icon = card.querySelector('.guest-card__icon')
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: card,
+        start: 'top 82%',
+        once: true
+      }
     })
 
-    gsap.from(guestHeading.children, {
-      scrollTrigger: {
-        trigger: guestHeading,
-        start: 'top 84%',
-        once: true
-      },
-      opacity: 0,
-      y: 30,
-      filter: 'blur(4px)',
-      duration: 0.8,
-      stagger: 0.1
-    })
-
-    gsap.from(guestCards, {
-      scrollTrigger: {
-        trigger: '.guest-guide__grid',
-        start: 'top 80%',
-        once: true
-      },
+    tl.from(card, {
       opacity: 0,
       y: 36,
       scale: 0.96,
       duration: 0.78,
-      stagger: 0.14,
       ease: 'power3.out'
-    })
-
-    gsap.from('.guest-card__icon', {
-      scrollTrigger: {
-        trigger: '.guest-guide__grid',
-        start: 'top 78%',
-        once: true
-      },
+    }).from(icon, {
       rotate: -24,
-      scale: 0.65,
-      duration: 0.55,
-      stagger: 0.12,
-      ease: 'back.out(2)'
-    })
-
-    gsap.from(paletteHeading.children, {
-      scrollTrigger: {
-        trigger: paletteHeading,
-        start: 'top 84%',
-        once: true
-      },
-      opacity: 0,
-      y: 28,
-      duration: 0.8,
-      stagger: 0.1
-    })
-
-    gsap.from(paletteSwatches, {
-      scrollTrigger: {
-        trigger: '.palette-guide__swatches',
-        start: 'top 82%',
-        once: true
-      },
-      opacity: 0,
-      y: 26,
-      scale: 0.5,
-      duration: 0.62,
-      stagger: 0.09,
-      ease: 'back.out(1.8)'
-    })
-
-    gsap.from(avoidHeading.children, {
-      scrollTrigger: {
-        trigger: avoidHeading,
-        start: 'top 84%',
-        once: true
-      },
-      opacity: 0,
-      y: 28,
-      duration: 0.8,
-      stagger: 0.1
-    })
-
-    gsap.from(avoidItems, {
-      scrollTrigger: {
-        trigger: '.avoid-guide__items',
-        start: 'top 82%',
-        once: true
-      },
-      opacity: 0,
-      y: 30,
       scale: 0.96,
-      duration: 0.68,
-      stagger: 0.1,
-      ease: 'power3.out'
-    })
+      duration: 0.55,
+      ease: 'power2.out'
+    }, '-=0.45')
+  })
 
-    gsap.from('.avoid-item__color', {
-      scrollTrigger: {
-        trigger: '.avoid-guide__items',
-        start: 'top 80%',
-        once: true
-      },
-      rotate: -18,
-      scale: 0.6,
-      duration: 0.5,
-      stagger: 0.09,
-      ease: 'back.out(2)'
-    })
+  gsap.from(avoidHeading.children, {
+    scrollTrigger: {
+      trigger: avoidHeading,
+      start: 'top 84%',
+      once: true
+    },
+    opacity: 0,
+    y: 28,
+    duration: 0.8,
+    stagger: 0.1
+  })
 
-    gsap.from(footer.children, {
-      scrollTrigger: {
-        trigger: footer,
-        start: 'top 86%',
-        once: true
-      },
-      opacity: 0,
-      y: 28,
-      duration: 0.8,
-      stagger: 0.12
-    })
-  }, sectionRef.value)
+  gsap.from(avoidItems, {
+    scrollTrigger: {
+      trigger: '.avoid-guide__items',
+      start: 'top 82%',
+      once: true
+    },
+    opacity: 0,
+    y: 30,
+    scale: 0.96,
+    duration: 0.68,
+    stagger: 0.1,
+    ease: 'power3.out'
+  })
 
-  ScrollTrigger.refresh()
+  gsap.from('.avoid-item__color', {
+    scrollTrigger: {
+      trigger: '.avoid-guide__items',
+      start: 'top 80%',
+      once: true
+    },
+    rotate: -18,
+    scale: 0.96,
+    duration: 0.5,
+    stagger: 0.09,
+    ease: 'power2.out'
+  })
+
+  gsap.from(footer.children, {
+    scrollTrigger: {
+      trigger: footer,
+      start: 'top 86%',
+      once: true
+    },
+    opacity: 0,
+    y: 28,
+    duration: 0.8,
+    stagger: 0.12
+  })
+
+  return () => mediaContext.revert()
 })
 
-onBeforeUnmount(() => {
-  mediaContext?.revert()
-  context?.revert()
-})
 </script>
 
 <style scoped>
@@ -604,7 +488,7 @@ onBeforeUnmount(() => {
 
 .dress-section__wash {
   position: absolute;
-  inset: 0;
+  inset: -48px 0;
   z-index: -1;
   pointer-events: none;
   background:
@@ -628,11 +512,7 @@ onBeforeUnmount(() => {
 
 .dress-header h2 {
   margin: 0;
-  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(3.8rem, 8vw, 7rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: 0.95;
   letter-spacing: -0.045em;
   color: var(--dress-blue);
 }
@@ -651,8 +531,25 @@ onBeforeUnmount(() => {
   width: min(100%, 1120px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.5rem, 4vw, 3rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.dress-featured > article { display: flex; flex-direction: column; }
+.dress-featured :is(.dress-card__image, .guest-card__image) { flex-shrink: 0; }
+.dress-featured :is(.dress-card__content, .guest-card__content) {
+  flex: 1;
+  padding: clamp(1.25rem, 2vw, 2rem);
+}
+.dress-featured .dress-card__columns { grid-template-columns: 1fr; gap: 1rem; }
+.dress-featured .dress-card__column + .dress-card__column {
+  padding: 1rem 0 0;
+  border-left: 0;
+  border-top: 1px solid rgba(40, 77, 103, 0.13);
+}
+.dress-featured .guest-card h3 { font-size: clamp(1.8rem, 2.5vw, 2.4rem); }
+@media (min-width: 761px) and (max-width: 900px) {
+  .dress-featured { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .dress-card {
@@ -789,22 +686,16 @@ onBeforeUnmount(() => {
   color: rgba(36, 49, 58, 0.62);
 }
 
-.guest-guide,
-.palette-guide,
 .avoid-guide {
   width: min(100%, 1120px);
   margin: clamp(6rem, 10vw, 9rem) auto 0;
 }
 
-.guest-guide__heading,
-.palette-guide__heading,
 .avoid-guide__heading {
   margin-bottom: clamp(2.5rem, 5vw, 4rem);
   text-align: center;
 }
 
-.guest-guide__heading > p,
-.palette-guide__heading > p,
 .avoid-guide__heading > p {
   margin: 0 0 0.55rem;
   font-family: 'Allura', cursive;
@@ -812,8 +703,6 @@ onBeforeUnmount(() => {
   color: var(--dress-melon);
 }
 
-.guest-guide__heading h3,
-.palette-guide__heading h3,
 .avoid-guide__heading h3 {
   margin: 0;
   font-family: 'Cormorant Garamond', serif;
@@ -821,22 +710,6 @@ onBeforeUnmount(() => {
   font-style: italic;
   font-weight: 500;
   color: var(--dress-blue);
-}
-
-.guest-guide__heading span {
-  display: block;
-  margin-top: 0.7rem;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 300;
-  letter-spacing: 0.07em;
-  color: rgba(36, 49, 58, 0.58);
-}
-
-.guest-guide__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.2rem, 3vw, 2rem);
 }
 
 .guest-card {
@@ -884,7 +757,7 @@ onBeforeUnmount(() => {
   color: var(--dress-melon);
 }
 
-.guest-card h4 {
+.guest-card h3 {
   margin: 0;
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2.2rem, 4vw, 3.5rem);
@@ -893,7 +766,7 @@ onBeforeUnmount(() => {
   color: var(--dress-blue);
 }
 
-.guest-card > p:not(.guest-card__label) {
+.guest-card__content > p:not(.guest-card__label) {
   margin: 1rem 0 0;
   font-family: 'Manrope', sans-serif;
   font-size: 0.86rem;
@@ -923,37 +796,6 @@ onBeforeUnmount(() => {
   position: absolute;
   left: 0;
   color: var(--dress-pomegranate);
-}
-
-.palette-guide__swatches {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.palette-swatch {
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.palette-swatch:hover {
-  transform: translateY(-4px);
-}
-
-.palette-swatch span {
-  display: block;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 6px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 12px 30px rgba(55, 53, 51, 0.12);
-}
-
-.palette-swatch p {
-  margin: 0.8rem 0 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  color: rgba(36, 49, 58, 0.68);
 }
 
 .avoid-guide__items {
@@ -1048,18 +890,13 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 940px) {
-  .palette-guide__swatches {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .avoid-guide__items {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 760px) {
-  .dress-featured,
-  .guest-guide__grid {
+  .dress-featured {
     grid-template-columns: 1fr;
   }
 
@@ -1084,7 +921,6 @@ onBeforeUnmount(() => {
     border-left: 0;
   }
 
-  .palette-guide__swatches,
   .avoid-guide__items {
     grid-template-columns: 1fr 1fr;
   }
@@ -1099,9 +935,39 @@ onBeforeUnmount(() => {
   .dress-card,
   .dress-card__image img,
   .guest-card,
-  .palette-swatch,
   .avoid-item {
     transition: none;
   }
 }
+.dress-header, .dress-card, .dress-card__content, .dress-card__column, .guest-card, .avoid-item { min-width: 0; overflow-wrap: anywhere; }
+.dress-header__eyebrow { color: var(--dress-bistre); }
+.dress-section h2, .dress-section h3 { min-width: 0; overflow-wrap: anywhere; }
+.dress-card__image-fallback { position: absolute; inset: 0; display: grid; place-content: center; margin: 0; padding: 1.5rem 1.5rem 4rem; text-align: center; color: var(--dress-blue); font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 3vw, 1.7rem); line-height: 1.4; }
+.dress-card__overlay { pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+  .dress-card:hover, .guest-card:hover, .avoid-item:hover { transform: none; }
+  .dress-card:hover .dress-card__image img { scale: 1; }
+  .dress-card__image img { will-change: auto; }
+}
+
+/* Full illustrations stay visible rather than cropping outfits. */
+.dress-card__image { aspect-ratio: 3 / 2; background: transparent; }
+.dress-card__image img { height: 100%; margin: 0; object-fit: contain; padding: .5rem .5rem 1.75rem; will-change: auto; }
+.dress-card:hover .dress-card__image img { scale: 1; }
+.dress-card__overlay { display: none; }
+.dress-card__label { left: .5rem; right: .5rem; bottom: .4rem; color: var(--dress-blue); text-align: center; }
+.guest-card__image { position: relative; margin: 0 0 1.25rem; aspect-ratio: 3 / 2; background: transparent; overflow: hidden; }
+.guest-card__image img { width: 100%; height: 100%; object-fit: contain; padding: .5rem .5rem 1.75rem; }
+.guest-card__image p { padding: 1rem; color: var(--dress-blue); }
+
+/* Sponsor illustrations float above the readable cream information panel. */
+.dress-card { background: transparent; border: 0; box-shadow: none; }
+.dress-card:hover { box-shadow: none; }
+.dress-card__content { background: rgba(255,250,245,.94); border: 1px solid rgba(40,77,103,.12); box-shadow: 0 16px 40px rgba(65,56,49,.07); }
+
+/* Guest illustrations share the sponsor cards' transparent upper area. */
+.guest-card { padding: 0; border: 0; background: transparent; }
+.guest-card:hover { box-shadow: none; }
+.guest-card__image { margin: 0; }
+.guest-card__content { min-width: 0; padding: clamp(2rem,5vw,3.5rem); background: rgba(255,250,245,.94); border: 1px solid rgba(40,77,103,.12); box-shadow: 0 16px 40px rgba(65,56,49,.07); }
 </style>

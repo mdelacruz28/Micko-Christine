@@ -1,308 +1,151 @@
 <template>
   <section ref="introRef" class="intro-screen" aria-label="Wedding invitation introduction">
-    <div class="intro-screen__background" aria-hidden="true"></div>
-    <div class="intro-screen__overlay" aria-hidden="true"></div>
-    <div class="intro-screen__frame" aria-hidden="true"></div>
-
-    <div class="intro-content">
-      <h1>A love letter from</h1>
-      <p>Micko & Christine</p>
-
-      <!-- <div class="intro-content__ornament" aria-hidden="true">
-        <span></span><i></i><span></span>
+    <div class="intro-screen__background" aria-hidden="true">
+      <svg class="intro-paper" viewBox="420 300 696 424" preserveAspectRatio="none">
+        <image :href="backgroundUrl" width="1536" height="1024" />
+      </svg>
+      <div class="intro-frame"></div>
+      <svg v-for="corner in backgroundCorners" :key="corner.name" :class="['intro-corner', 'intro-corner--' + corner.name]" :viewBox="corner.viewBox">
+        <image :href="backgroundUrl" width="1536" height="1024" />
+      </svg>
+      <svg class="intro-flourish intro-flourish--top" viewBox="640 0 256 120">
+        <image :href="backgroundUrl" width="1536" height="1024" />
+      </svg>
+      <svg class="intro-flourish intro-flourish--bottom" viewBox="640 904 256 120">
+        <image :href="backgroundUrl" width="1536" height="1024" />
+      </svg>
+    </div>
+    <div class="intro-scroll">
+      <div class="intro-content">
+        <h1 class="intro-names intro-sr-only">Micko &amp; Christine — January 17, 2027</h1>
+        <div ref="artRef" class="intro-art" data-wedding-intro data-intro-viewbox="400 160 736 680">
+          <img
+            :src="artworkUrl"
+            width="1536"
+            height="1024"
+            fetchpriority="high"
+            decoding="async"
+            alt="Gold M and C monogram, Micko and Christine, January 17, 2027, surrounded by cream and blue flowers."
+          />
+        </div>
+        <button class="intro-button" type="button" :disabled="isOpening" @click="openInvitation">
+          <span>{{ isOpening ? 'Opening Invitation' : 'Open the Invitation' }}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </button>
       </div>
-
-      <p class="intro-content__date">January 17, 2027</p> -->
-
-      <button class="intro-button" type="button" :disabled="isOpening" @click="openInvitation">
-        <span>{{ isOpening ? 'Opening Invitation' : 'Open the Invitation' }}</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h14M13 6l6 6-6 6" />
-        </svg>
-      </button>
     </div>
   </section>
 </template>
 
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { gsap } from '../plugins/gsap'
+import { mountWeddingIntro } from '../utils/weddingIntro'
 
 const emit = defineEmits(['opened'])
 const introRef = ref(null)
+const artRef = ref(null)
 const isOpening = ref(false)
+const artworkUrl = import.meta.env.BASE_URL + 'images/intro/invitation-gold-original.png'
+const backgroundUrl = import.meta.env.BASE_URL + 'images/intro/Elegant Gold-Framed Floral Invitation Background.png'
+const backgroundCorners = [{ name: 'tl', viewBox: '0 0 512 512' }, { name: 'tr', viewBox: '1024 0 512 512' }, { name: 'bl', viewBox: '0 512 512 512' }, { name: 'br', viewBox: '1024 512 512 512' }]
+let entrance
+let motionQuery
+let openingAnimation
+let restoreScroll
+let opened = false
+let disposed = false
 
-let context
-let idleTimeline
-
-onMounted(() => {
-  document.documentElement.classList.add('invitation-locked')
-
-  context = gsap.context(() => {
-    const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
-
-    timeline
-      .from('.intro-screen__background', {
-        scale: 1.1,
-        duration: 1.7,
-        ease: 'power2.out'
-      })
-      .from('.intro-screen__frame', {
-        opacity: 0,
-        scale: 0.97,
-        duration: 0.85
-      }, 0.22)
-      .from('.intro-content h1', {
-        opacity: 0,
-        y: 34,
-        filter: 'blur(8px)',
-        duration: 0.95
-      }, 0.45)
-      .from('.intro-content__ornament span', {
-        scaleX: 0,
-        transformOrigin: 'center',
-        duration: 0.55,
-        stagger: 0.08
-      }, 0.75)
-      .from('.intro-content__ornament i', {
-        opacity: 0,
-        scale: 0,
-        duration: 0.4,
-        ease: 'back.out(2)'
-      }, 0.9)
-      .from('.intro-content__date', {
-        opacity: 0,
-        y: 18,
-        duration: 0.65
-      }, 0.98)
-      .from('.intro-button', {
-        opacity: 0,
-        y: 18,
-        scale: 0.96,
-        duration: 0.65
-      }, 1.14)
-
-    idleTimeline = gsap.timeline({
-      repeat: -1,
-      yoyo: true,
-      defaults: { ease: 'sine.inOut' }
-    })
-
-    idleTimeline.to('.intro-button svg', { x: 4, duration: 0.9 })
-  }, introRef.value)
-})
-
-onBeforeUnmount(() => {
-  document.documentElement.classList.remove('invitation-locked')
-  idleTimeline?.kill()
-  context?.revert()
-})
-
-const openInvitation = () => {
-  if (isOpening.value || !introRef.value) return
-
-  isOpening.value = true
-  idleTimeline?.pause()
-
-  gsap.timeline({
-    onComplete: () => {
-      document.documentElement.classList.remove('invitation-locked')
-      emit('opened')
-    }
-  })
-    .to('.intro-content', {
-      opacity: 0,
-      y: -18,
-      duration: 0.48,
-      ease: 'power2.in'
-    })
-    .to('.intro-screen__frame', {
-      opacity: 0,
-      scale: 0.98,
-      duration: 0.5,
-      ease: 'power2.inOut'
-    }, 0.08)
-    .to('.intro-screen__background', {
-      scale: 1.06,
-      duration: 0.8,
-      ease: 'power3.inOut'
-    }, 0.18)
-    .to(introRef.value, {
-      opacity: 0,
-      duration: 0.55,
-      ease: 'power2.inOut'
-    }, 0.52)
+function lockScroll() {
+  const root = document.documentElement
+  const body = document.body
+  const alreadyLocked = root.classList.contains('invitation-locked')
+  const position = { x: window.scrollX, y: window.scrollY }
+  const previous = {}
+  for (const key of ['position', 'top', 'left', 'right', 'width']) previous[key] = body.style[key]
+  root.classList.add('invitation-locked')
+  Object.assign(body.style, { position: 'fixed', top: -position.y + 'px', left: '0', right: '0', width: '100%' })
+  restoreScroll = () => {
+    if (!alreadyLocked) root.classList.remove('invitation-locked')
+    Object.assign(body.style, previous)
+    window.scrollTo({ left: position.x, top: position.y, behavior: 'instant' })
+    restoreScroll = null
+  }
 }
+function finishOpening() {
+  if (opened || disposed) return
+  opened = true
+  restoreScroll?.()
+  emit('opened')
+}
+function onMotionChange(event) {
+  if (event.matches && isOpening.value) {
+    openingAnimation?.cancel()
+    finishOpening()
+  }
+}
+function openInvitation() {
+  if (isOpening.value || disposed) return
+  isOpening.value = true
+  entrance?.finish()
+  if (motionQuery?.matches || !introRef.value?.animate) {
+    finishOpening()
+    return
+  }
+  openingAnimation = introRef.value.animate([{ opacity: 1 }, { opacity: 0 }], {
+    duration: 450, easing: 'ease-in-out', fill: 'forwards', iterations: 1
+  })
+  openingAnimation.finished.then(finishOpening).catch(() => {
+    if (!disposed) finishOpening()
+  })
+}
+onMounted(() => {
+  lockScroll()
+  motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  motionQuery.addEventListener('change', onMotionChange)
+  entrance = mountWeddingIntro(artRef.value)
+})
+onBeforeUnmount(() => {
+  disposed = true
+  entrance?.destroy()
+  openingAnimation?.cancel()
+  motionQuery?.removeEventListener('change', onMotionChange)
+  restoreScroll?.()
+})
 </script>
 
 <style scoped>
-.intro-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  min-height: 100svh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  isolation: isolate;
-  padding: 1.25rem;
-  color: #fffaf5;
-  background: #102634;
-}
+.intro-screen { position: fixed; inset: 0; z-index: 1000; height: 100dvh; overflow: hidden; isolation: isolate; background: #fbf1df; color: #76501f; }
+.intro-screen__background { --corner-size: clamp(130px, 27vmin, 340px); position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.intro-paper { position: absolute; inset: 0; width: 100%; height: 100%; }
+.intro-frame { position: absolute; inset: calc(var(--corner-size) * .13) calc(var(--corner-size) * .055); border: 3px double #aa7c31; border-radius: 4px; opacity: .85; }
+.intro-corner { position: absolute; width: var(--corner-size); height: var(--corner-size); mask-composite: intersect; -webkit-mask-composite: source-in; }
+.intro-corner--tl { top: 0; left: 0; mask-image: linear-gradient(to right, #000 78%, transparent), linear-gradient(to bottom, #000 78%, transparent); }
+.intro-corner--tr { top: 0; right: 0; mask-image: linear-gradient(to left, #000 78%, transparent), linear-gradient(to bottom, #000 78%, transparent); }
+.intro-corner--bl { bottom: 0; left: 0; mask-image: linear-gradient(to right, #000 78%, transparent), linear-gradient(to top, #000 78%, transparent); }
+.intro-corner--br { bottom: 0; right: 0; mask-image: linear-gradient(to left, #000 78%, transparent), linear-gradient(to top, #000 78%, transparent); }
+.intro-flourish { position: absolute; left: 50%; translate: -50% 0; width: calc(var(--corner-size) * .5); height: auto; aspect-ratio: 256 / 120; mask-image: linear-gradient(to right, transparent, #000 25%, #000 75%, transparent); }
+.intro-flourish--top { top: 0; }
+.intro-flourish--bottom { bottom: 0; }
 
-.intro-screen__background {
-  position: absolute;
-  inset: -5%;
-  z-index: -4;
-  background-color: #102634;
-  background-image: url('/images/intro/background.png');
-  background-size: cover;
-  background-position: center;
-  will-change: transform;
-}
-
-.intro-screen__overlay {
-  position: absolute;
-  inset: 0;
-  z-index: -3;
-  background:
-    linear-gradient(180deg, rgba(10,24,34,.34), rgba(10,25,35,.58) 58%, rgba(8,21,30,.76)),
-    radial-gradient(circle at center, rgba(239,180,159,.06), rgba(8,20,28,.34));
-}
-
-.intro-screen__frame {
-  position: absolute;
-  inset: clamp(.75rem, 2vw, 1.5rem);
-  z-index: -1;
-  border: 1px solid rgba(255,255,255,.3);
-  pointer-events: none;
-}
-
-.intro-screen__frame::after {
-  content: '';
-  position: absolute;
-  inset: .45rem;
-  border: 1px solid rgba(239,180,159,.14);
-}
-
-.intro-content {
-  width: min(100%, 820px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.intro-content h1 {
-  margin: 0;
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(0.8rem, 3vw, 6.5rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: .9;
-  letter-spacing: 0.0em;
-  text-wrap: balance;
-}
-
-.intro-content p {
-  margin: 0;
-  font-family: 'Imperial Script', serif;
-  font-size: clamp(4rem, 10vw, 8.5rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: .9;
-  letter-spacing: -.045em;
-  text-wrap: balance;
-  padding-bottom: 50px;
-}
-
-.intro-content__ornament {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 100px;
-  gap: .8rem;
-  margin: clamp(1.6rem, 4vw, 2.5rem) 0 1.2rem;
-}
-
-.intro-content__ornament span {
-  width: clamp(2rem, 7vw, 5rem);
-  height: 1px;
-  background: rgba(255,255,255,.7);
-}
-
-.intro-content__ornament i {
-  width: 6px;
-  height: 6px;
-  border: 1px solid #efb49f;
-  transform: rotate(45deg);
-}
-
-.intro-content__date {
-  margin: 0;
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(.75rem, 1.4vw, .95rem);
-  font-weight: 500;
-  letter-spacing: .32em;
-  /* text-transform: uppercase; */
-  color: rgba(255,250,245,.9);
-}
-
-.intro-button {
-  min-width: 230px;
-  min-height: 56px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .75rem;
-  margin-top: clamp(2rem, 5vw, 3rem);
-  border: 1px solid rgb(255, 255, 255);
-  border-radius: 999px;
-  padding: .95rem 1.55rem;
-  background: transparent;
-  color: #ffffff;
-  font-family: 'Manrope', sans-serif;
-  font-size: .68rem;
-  font-weight: 500;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-shadow: 0 18px 46px rgba(4,16,24,.22);
-  transition: transform .25s ease, background .25s ease;
-}
-
-.intro-button:hover {
-  transform: translateY(-2px);
-  color: #0000;
-  background: #fff;
-}
-
+.intro-scroll { height: 100%; width: 100%; display: grid; place-items: safe center; overflow: auto; overscroll-behavior: contain; padding: max(24px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); box-sizing: border-box; }
+.intro-content { width: 100%; margin: auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.intro-art { position: relative; flex: 0 0 auto; width: min(96vw, calc((100svh - 150px) * 736 / 680), 740px); max-width: 100%; aspect-ratio: 736 / 680; overflow: hidden; mask-image: radial-gradient(ellipse closest-side at center, #000 90%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse closest-side at center, #000 90%, transparent 100%); }
+.intro-art > img { position: absolute; display: block; max-width: none; width: 208.695652%; height: 150.588235%; left: -54.347826%; top: -23.529412%; }
+.intro-art :deep(> svg) { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.intro-button { display: inline-flex; align-items: center; justify-content: center; gap: .8rem; min-height: 48px; max-width: 100%; margin-top: 12px; padding: 12px 24px; border: 1px solid #ac803c; background: #fff8e9ed; color: #78501e; font: 500 .7rem/1.5 Georgia, serif; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
+.intro-button:hover:not(:disabled) { background: #f4e5c8; }
+.intro-button:focus-visible { outline: 2px solid #78501e; outline-offset: 5px; }
 .intro-button:disabled { cursor: wait; }
-
-.intro-button svg {
-  width: 17px;
-  height: 17px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-@media (max-width: 620px) {
-  .intro-screen { padding-inline: 1rem; }
-  .intro-content h1 { max-width: 360px; }
-  .intro-button { min-width: 210px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .intro-button { transition: none; }
+.intro-button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+.intro-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 620px) { .intro-button { letter-spacing: .08em; padding-inline: 18px; } }
+@media (max-height: 500px) and (min-aspect-ratio: 1/1) {
+  .intro-content { flex-direction: row; justify-content: center; gap: clamp(12px, 4vw, 48px); }
+  .intro-art { width: min(50vw, calc((100svh - 52px) * 736 / 680)); }
+  .intro-button { margin-top: 0; max-width: 42vw; }
 }
 </style>
 
 <style>
-html.invitation-locked,
-html.invitation-locked body {
-  overflow: hidden;
-}
+html.invitation-locked, html.invitation-locked body { overflow: hidden; }
 </style>

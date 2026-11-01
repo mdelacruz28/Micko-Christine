@@ -1,15 +1,14 @@
 <template>
   <section id="rsvp" ref="sectionRef" class="rsvp-section">
-    <div class="rsvp-section__background" aria-hidden="true"></div>
     <div class="rsvp-section__overlay" aria-hidden="true"></div>
 
     <div class="rsvp-shell">
       <header class="rsvp-header">
         <p class="rsvp-header__eyebrow">Kindly respond</p>
-        <h2>RSVP</h2>
+        <h2 class="section-heading">RSVP</h2>
         <p class="rsvp-header__intro">
           We hope you can celebrate with us. Please confirm your attendance on
-          or before the RSVP deadline.
+          or before {{ deadlineDate }}.
         </p>
       </header>
 
@@ -17,7 +16,7 @@
         <aside class="rsvp-info">
           <div class="rsvp-info__date">
             <span>Reply by</span>
-            <strong>October 17, 2026</strong>
+            <strong><time :datetime="approvedDeadline">{{ deadlineDate }}</time></strong>
           </div>
 
           <div class="rsvp-info__divider" aria-hidden="true">
@@ -34,11 +33,10 @@
           </div>
 
           <div class="rsvp-info__block">
-            <p class="rsvp-info__label">For guests with a +1</p>
-            <h3>Companion Details</h3>
+            <p class="rsvp-info__label">For every invited guest</p>
+            <h3>Your Seat</h3>
             <p>
-              Only guests whose invitation includes a companion seat may submit
-              companion details.
+              Each invited guest has one reserved seat and responds individually.
             </p>
           </div>
 
@@ -53,134 +51,7 @@
         </aside>
 
         <div class="rsvp-card">
-          <form class="rsvp-form" @submit.prevent="openRsvpForm">
-            <div class="form-section">
-              <p class="form-section__label">Guest information</p>
-
-              <label class="form-field">
-                <span>Full name</span>
-                <input
-                  v-model="form.fullName"
-                  type="text"
-                  placeholder="Enter your full name"
-                  autocomplete="name"
-                />
-              </label>
-
-              <label class="form-field">
-                <span>Email address</span>
-                <input
-                  v-model="form.email"
-                  type="email"
-                  placeholder="name@example.com"
-                  autocomplete="email"
-                />
-              </label>
-            </div>
-
-            <div class="form-section attendance-section">
-              <p class="form-section__label">Will you be joining us?</p>
-
-              <div class="attendance-options">
-                <label
-                  v-for="option in attendanceOptions"
-                  :key="option.value"
-                  class="attendance-option"
-                  :class="{ 'is-selected': form.attendance === option.value }"
-                >
-                  <input
-                    v-model="form.attendance"
-                    type="radio"
-                    name="attendance"
-                    :value="option.value"
-                  />
-                  <span
-                    class="attendance-option__icon"
-                    v-html="option.icon"
-                  ></span>
-                  <span>
-                    <strong>{{ option.title }}</strong>
-                    <small>{{ option.caption }}</small>
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <template v-if="form.attendance === 'attending'">
-              <div class="form-section">
-                <p class="form-section__label">Guest details</p>
-
-                <label class="form-field">
-                  <span>Companion’s full name</span>
-                  <input
-                    v-model="form.companionName"
-                    type="text"
-                    placeholder="Not Applicable"
-                  />
-                </label>
-
-                <label class="form-field">
-                  <span>Food allergies or dietary restrictions</span>
-                  <textarea
-                    v-model="form.dietaryRestrictions"
-                    rows="3"
-                    placeholder="Please write None if not applicable"
-                  ></textarea>
-                </label>
-              </div>
-
-              <div class="form-section">
-                <p class="form-section__label">Celebration preferences</p>
-
-                <div class="preference-grid">
-                  <label
-                    v-for="activity in activities"
-                    :key="activity.value"
-                    class="preference-option"
-                  >
-                    <input
-                      v-model="form.activities"
-                      type="checkbox"
-                      :value="activity.value"
-                    />
-                    <span>{{ activity.label }}</span>
-                  </label>
-                </div>
-              </div>
-            </template>
-
-            <div class="form-section">
-              <label class="form-field">
-                <span>Message for the couple</span>
-                <textarea
-                  v-model="form.message"
-                  rows="4"
-                  placeholder="Share a short note, prayer, or wedding wish"
-                ></textarea>
-              </label>
-            </div>
-
-            <label class="form-consent">
-              <input v-model="form.confirmed" type="checkbox" />
-              <span
-                >I understand that once my RSVP is submitted, changes may no
-                longer be accommodated without contacting the couple
-                directly.</span
-              >
-            </label>
-
-            <button class="rsvp-submit" type="submit">
-              <span>Continue to RSVP Form</span>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </button>
-
-            <p class="rsvp-form__note">
-              Final responses will be submitted through our official Google
-              Form.
-            </p>
-          </form>
+          <InvitationRsvpForm :flow="rsvp" />
         </div>
       </div>
 
@@ -189,167 +60,38 @@
         <div class="rsvp-footer__ornament" aria-hidden="true">
           <span></span><i></i><span></span>
         </div>
+        <div class="rsvp-contact">
+          <p>Questions about your RSVP? Please contact us.</p>
+          <a href="tel:+639499857805"><span>Micko Dela Cruz</span><strong>09499857805</strong></a>
+          <a href="tel:+639683238328"><span>Christine Ferrera</span><strong>09683238328</strong></a>
+        </div>
       </footer>
     </div>
   </section>
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, reactive, ref } from "vue";
-import { gsap, ScrollTrigger } from "../plugins/gsap";
-
+import { RSVP_DEADLINE as approvedDeadline, formatDeadlineDate } from '../config/rsvp.js';
+const deadlineDate = formatDeadlineDate();
+import { onBeforeUnmount, ref } from 'vue';
+import { useGsapContext } from '../composables/useGsapContext.js';
+import InvitationRsvpForm from './InvitationRsvpForm.vue';
+import { useInvitationRsvp } from '../composables/useInvitationRsvp.js';
+const rsvp = useInvitationRsvp();
 const sectionRef = ref(null);
-let context;
-
-const googleFormUrl = "https://forms.google.com/your-rsvp-form-link";
-
-const form = reactive({
-  fullName: "",
-  email: "",
-  attendance: "",
-  companionName: "",
-  dietaryRestrictions: "",
-  activities: [],
-  message: "",
-  confirmed: false,
+useGsapContext(sectionRef, ({ gsap, scope: section }) => {
+  const header = section.querySelector('.rsvp-header');
+  const info = section.querySelector('.rsvp-info');
+  const footer = section.querySelector('.rsvp-footer');
+  gsap.from(header.children, { scrollTrigger: { trigger: header, start: 'top 84%', once: true }, opacity: 0, y: 38, filter: 'blur(5px)', duration: .95, stagger: .12 });
+  gsap.from(info, { scrollTrigger: { trigger: info, start: 'top 80%', once: true }, opacity: 0, x: -55, y: 20, duration: .95 });
+  gsap.from(info.children, { scrollTrigger: { trigger: info, start: 'top 78%', once: true }, opacity: 0, y: 18, duration: .6, stagger: .1, delay: .15 });
+  gsap.from(footer.children, { scrollTrigger: { trigger: footer, start: 'top 86%', once: true }, opacity: 0, y: 28, duration: .8, stagger: .12 });
 });
-
-const attendanceOptions = [
-  {
-    value: "attending",
-    title: "Joyfully accepts",
-    caption: "I will celebrate with you",
-    icon: `<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>`,
-  },
-  {
-    value: "declining",
-    title: "Regretfully declines",
-    caption: "I will be celebrating from afar",
-    icon: `<svg viewBox="0 0 24 24"><path d="M12 21s7-4.4 7-11A7 7 0 1 0 5 10c0 6.6 7 11 7 11Z"/><path d="M9 10h6"/></svg>`,
-  },
-];
-
-const activities = [
-  { value: "karaoke", label: "I’m willing to join the karaoke" },
-  { value: "activities", label: "I’m willing to join wedding activities" },
-  { value: "photos", label: "I’m happy to join group photos" },
-];
-
-onMounted(async () => {
-  await nextTick();
-
-  context = gsap.context(() => {
-    const header = sectionRef.value.querySelector(".rsvp-header");
-    const info = sectionRef.value.querySelector(".rsvp-info");
-    const card = sectionRef.value.querySelector(".rsvp-card");
-    const sections = gsap.utils.toArray(
-      sectionRef.value.querySelectorAll(".form-section:not(.attendance-section)")
-    );
-    const attendanceSection = sectionRef.value.querySelector(".attendance-section");
-    const attendanceOptions = gsap.utils.toArray(
-      sectionRef.value.querySelectorAll(".attendance-option")
-    );
-    const footer = sectionRef.value.querySelector(".rsvp-footer");
-
-    gsap.from(header.children, {
-      scrollTrigger: { trigger: header, start: "top 84%", once: true },
-      opacity: 0,
-      y: 38,
-      filter: "blur(5px)",
-      duration: 0.95,
-      stagger: 0.12,
-    });
-
-    gsap.from(info, {
-      scrollTrigger: { trigger: info, start: "top 80%", once: true },
-      opacity: 0,
-      x: -55,
-      y: 20,
-      duration: 0.95,
-    });
-
-    gsap.from(info.children, {
-      scrollTrigger: { trigger: info, start: "top 78%", once: true },
-      opacity: 0,
-      y: 18,
-      duration: 0.6,
-      stagger: 0.1,
-      delay: 0.15,
-    });
-
-    gsap.from(card, {
-      scrollTrigger: { trigger: card, start: "top 80%", once: true },
-      opacity: 0,
-      x: 55,
-      y: 20,
-      duration: 0.95,
-    });
-
-    sections.forEach((section) => {
-      gsap.from(section.children, {
-        scrollTrigger: { trigger: section, start: "top 88%", once: true },
-        opacity: 0,
-        y: 18,
-        duration: 0.55,
-        stagger: 0.08,
-      });
-    });
-
-    const attendanceTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: attendanceSection,
-        start: "top 88%",
-        once: true,
-      },
-    });
-
-    attendanceTl
-      .fromTo(
-        attendanceSection.querySelector(".form-section__label"),
-        { autoAlpha: 0, y: 16 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.45,
-          ease: "power3.out",
-          clearProps: "opacity,visibility,transform",
-        }
-      )
-      .fromTo(
-        attendanceOptions,
-        { autoAlpha: 0, y: 16, scale: 0.96 },
-        {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.55,
-          stagger: 0.1,
-          ease: "power3.out",
-          clearProps: "opacity,visibility,transform",
-        },
-        "-=0.2"
-      );
-
-    gsap.from(footer.children, {
-      scrollTrigger: { trigger: footer, start: "top 86%", once: true },
-      opacity: 0,
-      y: 28,
-      duration: 0.8,
-      stagger: 0.12,
-    });
-  }, sectionRef.value);
-
-  ScrollTrigger.refresh();
-});
-
-const openRsvpForm = () => {
-  window.open(googleFormUrl, "_blank", "noopener,noreferrer");
-};
-
-onBeforeUnmount(() => context?.revert());
+onBeforeUnmount(() => { rsvp.reset(); });
 </script>
 
-<style scoped>
+<style>
 .rsvp-section {
   --rsvp-blue: #284d67;
   --rsvp-melon: #efb49f;
@@ -363,20 +105,13 @@ onBeforeUnmount(() => context?.revert());
   color: var(--rsvp-cream);
 }
 
-.rsvp-section__background {
-  position: absolute;
-  inset: 0;
-  z-index: -3;
-  background-image: url("/images/rsvp/rsvp-bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-color: #173246;
-}
+
 
 .rsvp-section__overlay {
   position: absolute;
   inset: 0;
   z-index: -2;
+  pointer-events: none;
   background: linear-gradient(
     135deg,
     rgba(20, 42, 57, 0.93),
@@ -388,6 +123,7 @@ onBeforeUnmount(() => context?.revert());
 .rsvp-shell {
   width: min(100%, 1180px);
   margin: 0 auto;
+  overflow-wrap: anywhere;
 }
 .rsvp-header {
   width: min(100%, 760px);
@@ -403,12 +139,8 @@ onBeforeUnmount(() => context?.revert());
 }
 .rsvp-header h2 {
   margin: 0;
-  font-family: "Cormorant Garamond", serif;
   font-size: clamp(4.5rem, 10vw, 8rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: 0.9;
-}
+  }
 .rsvp-header__intro {
   width: min(100%, 590px);
   margin: 1.7rem auto 0;
@@ -426,8 +158,8 @@ onBeforeUnmount(() => context?.revert());
   align-items: start;
 }
 .rsvp-info {
-  position: sticky;
-  top: 2rem;
+  position: relative;
+  min-width: 0;
   padding: clamp(1.7rem, 4vw, 2.8rem);
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: rgba(14, 34, 47, 0.32);
@@ -439,7 +171,7 @@ onBeforeUnmount(() => context?.revert());
 .rsvp-info__date span,
 .rsvp-info__label {
   font-family: "Manrope", sans-serif;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--rsvp-melon);
@@ -490,54 +222,58 @@ onBeforeUnmount(() => context?.revert());
 .rsvp-info__block > p:last-child {
   margin: 0.65rem 0 0;
   font-family: "Manrope", sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   font-weight: 300;
   line-height: 1.7;
-  color: rgba(255, 250, 245, 0.68);
+  color: rgba(255, 250, 245, 0.85);
 }
 
 .rsvp-card {
+  min-width: 0;
   padding: clamp(1.4rem, 4vw, 3rem);
   background: rgba(255, 250, 245, 0.96);
   color: #24313a;
   box-shadow: 0 30px 90px rgba(4, 16, 24, 0.28);
 }
-.rsvp-form {
+.rsvp-section .rsvp-form {
   display: flex;
   flex-direction: column;
   gap: 2.2rem;
 }
-.form-section {
+.rsvp-section .form-section {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
 }
-.form-section + .form-section {
+.rsvp-section .form-section + .form-section {
   padding-top: 2rem;
   border-top: 1px solid rgba(40, 77, 103, 0.12);
 }
-.form-section__label {
+.rsvp-section .form-section__label {
   margin: 0;
   font-family: "Manrope", sans-serif;
-  font-size: 0.64rem;
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--rsvp-pomegranate);
 }
-.form-field {
+.rsvp-section .form-field {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
 }
-.form-field > span {
+.rsvp-section .form-field > span {
   font-family: "Manrope", sans-serif;
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(36, 49, 58, 0.75);
+  color: #284d67;
 }
-.form-field input,
-.form-field textarea {
+.rsvp-section .form-field input,
+.rsvp-section .form-field textarea {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 48px;
   width: 100%;
   border: 0;
   border-bottom: 1px solid rgba(40, 77, 103, 0.26);
@@ -546,14 +282,14 @@ onBeforeUnmount(() => context?.revert());
   padding: 0.8rem 0;
   background: transparent;
   font-family: "Manrope", sans-serif;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #24313a;
 }
-.form-field textarea {
+.rsvp-section .form-field textarea {
   resize: vertical;
 }
 
-.attendance-options {
+.rsvp-section .attendance-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
@@ -561,7 +297,7 @@ onBeforeUnmount(() => context?.revert());
   visibility: visible;
 }
 
-.attendance-option {
+.rsvp-section .attendance-option {
   display: flex;
   align-items: center;
   gap: 0.9rem;
@@ -571,21 +307,20 @@ onBeforeUnmount(() => context?.revert());
   opacity: 1;
   visibility: visible;
   cursor: pointer;
-  transition: 0.25s ease;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
 }
-.attendance-option:hover,
-.attendance-option.is-selected {
+.rsvp-section .attendance-option:hover,
+.rsvp-section .attendance-option.is-selected {
   border-color: rgba(166, 66, 72, 0.46);
   background: rgba(239, 180, 159, 0.12);
-  transform: translateY(-2px);
 }
-.attendance-option input,
-.preference-option input {
+.rsvp-section .attendance-option input,
+.rsvp-section .preference-option input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
-.attendance-option__icon {
+.rsvp-section .attendance-option__icon {
   flex: 0 0 auto;
   width: 42px;
   height: 42px;
@@ -595,14 +330,14 @@ onBeforeUnmount(() => context?.revert());
   border-radius: 50%;
   color: var(--rsvp-pomegranate);
 }
-.attendance-option__icon :deep(svg) {
+.rsvp-section .attendance-option__icon svg {
   width: 20px;
   height: 20px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.35;
 }
-.attendance-option strong {
+.rsvp-section .attendance-option strong {
   display: block;
   font-family: "Cormorant Garamond", serif;
   font-size: 1.35rem;
@@ -610,20 +345,20 @@ onBeforeUnmount(() => context?.revert());
   font-weight: 500;
   color: var(--rsvp-blue);
 }
-.attendance-option small {
+.rsvp-section .attendance-option small {
   display: block;
   margin-top: 0.2rem;
   font-family: "Manrope", sans-serif;
-  font-size: 0.67rem;
+  font-size: 0.8rem;
   line-height: 1.5;
-  color: rgba(36, 49, 58, 0.58);
+  color: #51616c;
 }
 
-.preference-grid {
+.rsvp-section .preference-grid {
   display: grid;
   gap: 0.75rem;
 }
-.preference-option {
+.rsvp-section .preference-option {
   position: relative;
   min-height: 50px;
   display: flex;
@@ -631,10 +366,10 @@ onBeforeUnmount(() => context?.revert());
   padding: 0.9rem 1rem 0.9rem 2.8rem;
   border: 1px solid rgba(40, 77, 103, 0.13);
   font-family: "Manrope", sans-serif;
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   cursor: pointer;
 }
-.preference-option::before {
+.rsvp-section .preference-option::before {
   content: "";
   position: absolute;
   left: 1rem;
@@ -642,13 +377,13 @@ onBeforeUnmount(() => context?.revert());
   height: 14px;
   border: 1px solid rgba(40, 77, 103, 0.4);
 }
-.preference-option:has(input:checked)::before {
+.rsvp-section .preference-option:has(input:checked)::before {
   border-color: var(--rsvp-pomegranate);
   background: var(--rsvp-pomegranate);
   box-shadow: inset 0 0 0 3px #fffaf5;
 }
 
-.form-consent {
+.rsvp-section .form-consent {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
@@ -657,36 +392,61 @@ onBeforeUnmount(() => context?.revert());
   line-height: 1.6;
   color: rgba(36, 49, 58, 0.63);
 }
-.form-consent input {
+.rsvp-section .form-consent input {
   margin-top: 0.22rem;
   accent-color: var(--rsvp-pomegranate);
 }
 
-.rsvp-submit {
+.rsvp-section .rsvp-submit {
   min-height: 58px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  border: 0;
+  border: 1px solid transparent;
   padding: 1rem 1.5rem;
   background: var(--rsvp-pomegranate);
   color: #fffaf5;
   font-family: "Manrope", sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
 }
-.rsvp-submit svg {
+.rsvp-section .rsvp-submit,
+.rsvp-section .rsvp-secondary {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.rsvp-section .rsvp-submit:hover:not(:disabled) {
+  background: var(--rsvp-blue);
+}
+.rsvp-section .rsvp-secondary:hover:not(:disabled) {
+  background: rgba(239, 180, 159, 0.18);
+}
+.rsvp-section .form-field input:focus-visible,
+.rsvp-section .form-field textarea:focus-visible,
+.rsvp-section .form-field select:focus-visible,
+.rsvp-section button:focus-visible,
+.rsvp-section [tabindex]:focus-visible {
+  outline: 2px solid var(--rsvp-pomegranate);
+  outline-offset: 4px;
+}
+.rsvp-section .attendance-option:has(input:disabled),
+.rsvp-section .preference-option:has(input:disabled) {
+  cursor: default;
+}
+.rsvp-section .rsvp-submit svg {
   width: 18px;
   height: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
 }
-.rsvp-form__note {
+.rsvp-section .rsvp-form__note {
   margin: -1rem 0 0;
   text-align: center;
   font-family: "Manrope", sans-serif;
@@ -718,8 +478,29 @@ onBeforeUnmount(() => context?.revert());
   .rsvp-section {
     padding-inline: 1rem;
   }
-  .attendance-options {
+  .rsvp-section .attendance-options {
     grid-template-columns: 1fr;
   }
+  .rsvp-card,
+  .rsvp-info {
+    padding: 1.25rem;
+  }
+  .rsvp-header h2 {
+    font-size: clamp(3rem, 16vw, 6rem);
+  }
 }
+@media (prefers-reduced-motion: reduce) {
+  .rsvp-header__eyebrow {
+    transform: none;
+  }
+  .rsvp-section .attendance-option {
+    transition: none;
+  }
+}
+
+.rsvp-contact { margin: 2rem auto 0; max-width: 36rem; padding-top: 1.5rem; border-top: 1px solid #efb49f55; color: #fffaf5; }
+.rsvp-contact p { font-size: .85rem; line-height: 1.7; }
+.rsvp-contact a { display: inline-flex; flex-direction: column; align-items: center; gap: .25rem; margin: .4rem .8rem; padding: .5rem; text-decoration: none; font-size: .8rem; }
+.rsvp-contact strong { color: #efc4ad; font-weight: 500; letter-spacing: .08em; text-decoration: underline; text-underline-offset: .25em; }
+.rsvp-contact a:focus-visible { outline: 2px solid #efc4ad; outline-offset: 3px; }
 </style>

@@ -1,0 +1,9 @@
+[
+  {
+    "group_label": "Dummy Four Seat Family — Local Test Only",
+    "invitation_type": "family",
+    "reserved_seats": 4,
+    "lookup_names": ["Dummy Family Contact"],
+    "updates_allowed": true
+  }
+]

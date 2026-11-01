@@ -4,5 +4,6 @@ import './assets/styles/variables.css'
 import './assets/styles/animations.css'
 import './assets/styles/global.css'
 import './assets/styles/motion.css'
+import './assets/styles/page-design.css'
 
 createApp(App).mount('#app')

@@ -1,12 +1,11 @@
 <template>
-  <section id="home" ref="heroRef" class="hero-section">
-    <div class="hero-section__background" aria-hidden="true"></div>
+  <section id="home" ref="heroRef" class="hero-section" aria-labelledby="hero-title">
     <div class="hero-section__overlay" aria-hidden="true"></div>
 
     <div class="hero-content">
       <p class="hero-content__eyebrow">Our story begins</p>
 
-      <div class="hero-names" aria-label="Micko and Christine">
+      <h1 id="hero-title" class="hero-names" aria-label="Micko and Christine" tabindex="-1">
         <span class="hero-name hero-name--first">
           <span
             v-for="(letter, index) in firstNameLetters"
@@ -17,7 +16,7 @@
           >
         </span>
 
-        <i class="hero-ampersand">&amp;</i>
+        <i class="hero-ampersand" aria-hidden="true">&amp;</i>
 
         <span class="hero-name hero-name--second">
           <span
@@ -28,7 +27,7 @@
             >{{ letter }}</span
           >
         </span>
-      </div>
+      </h1>
 
       <p class="hero-content__caption">are getting married</p>
 
@@ -43,7 +42,7 @@
         </p>
       </div>
 
-      <div class="countdown" aria-label="Wedding countdown">
+      <div class="countdown" role="timer" aria-live="off" aria-label="Wedding countdown">
         <div
           v-for="item in countdownItems"
           :key="item.label"
@@ -77,8 +76,9 @@ const countdown = reactive({
   minutes: "00",
   seconds: "00",
 });
-let timerId;
-let context;
+let timerId = null;
+let mediaContext;
+let animateEntrance;
 
 const pad = (value, length = 2) => String(value).padStart(length, "0");
 
@@ -91,12 +91,13 @@ const updateCountdown = () => {
       minutes: "00",
       seconds: "00",
     });
-    return;
+    return false;
   }
   countdown.days = pad(Math.floor(distance / 86_400_000), 3);
   countdown.hours = pad(Math.floor((distance / 3_600_000) % 24));
   countdown.minutes = pad(Math.floor((distance / 60_000) % 60));
   countdown.seconds = pad(Math.floor((distance / 1_000) % 60));
+  return true;
 };
 
 const countdownItems = computed(() => [
@@ -106,22 +107,31 @@ const countdownItems = computed(() => [
   { label: "Seconds", value: countdown.seconds },
 ]);
 
-onMounted(() => {
-  updateCountdown();
-  timerId = window.setInterval(updateCountdown, 1000);
+function stopCountdown() {
+  if (timerId !== null) window.clearInterval(timerId);
+  timerId = null;
+}
+function syncCountdown() {
+  stopCountdown();
+  if (!updateCountdown() || document.hidden) return;
+  timerId = window.setInterval(() => {
+    if (!updateCountdown()) stopCountdown();
+  }, 1000);
+}
 
-  context = gsap.context(() => {
+onMounted(() => {
+  syncCountdown();
+  document.addEventListener("visibilitychange", syncCountdown);
+  animateEntrance = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  mediaContext = gsap.matchMedia();
+  mediaContext.add("(prefers-reduced-motion: no-preference)", () => {
+    const context = gsap.context(() => {
     const firstLetters = gsap.utils.toArray(".hero-name--first .hero-letter");
     const secondLetters = gsap.utils.toArray(".hero-name--second .hero-letter");
 
     const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-    timeline
-      .from(".hero-section__background", {
-        scale: 1.08,
-        duration: 1.4,
-        ease: "power2.out",
-      })
+    if (animateEntrance) timeline
       .from(
         ".hero-content__eyebrow",
         { opacity: 0, y: 22, filter: "blur(5px)", duration: 0.75 },
@@ -191,17 +201,7 @@ onMounted(() => {
       )
       .from(".hero-scroll", { opacity: 0, y: 12, duration: 0.55 }, 2.08);
 
-    gsap.to(".hero-section__background", {
-      yPercent: 8,
-      ease: "none",
-      scrollTrigger: {
-        trigger: heroRef.value,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1,
-      },
-    });
-
+    animateEntrance = false;
     gsap.to(".hero-scroll i", {
       opacity: 0.25,
       scaleY: 0.55,
@@ -211,12 +211,17 @@ onMounted(() => {
       yoyo: true,
       ease: "sine.inOut",
     });
-  }, heroRef.value);
+
+    }, heroRef.value);
+    return () => context.revert();
+  });
+
 });
 
 onBeforeUnmount(() => {
-  if (timerId) window.clearInterval(timerId);
-  context?.revert();
+  stopCountdown();
+  document.removeEventListener("visibilitychange", syncCountdown);
+  mediaContext?.revert();
 });
 </script>
 
@@ -233,16 +238,7 @@ onBeforeUnmount(() => {
   text-align: center;
   background-color: #163246;
 }
-.hero-section__background {
-  position: absolute;
-  inset: -8% -4%;
-  z-index: -4;
-  background-color: #163246;
-  background-image: url("/images/hero/lafayette.png");
-  background-size: cover;
-  background-position: center;
-  will-change: transform;
-}
+
 .hero-section__overlay {
   position: absolute;
   inset: 0;
@@ -262,6 +258,7 @@ onBeforeUnmount(() => {
 }
 .hero-content {
   width: min(100%, 1000px);
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -274,8 +271,11 @@ onBeforeUnmount(() => {
   transform: rotate(-3deg);
 }
 .hero-names {
+  margin: 0;
+  font-weight: 400;
+  padding-block: .2em;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, .7fr) auto minmax(0, 1fr);
   align-items: center;
   width: 100%;
   font-family: "Imperial Script", serif;
@@ -286,7 +286,10 @@ onBeforeUnmount(() => {
 }
 .hero-name {
   display: inline-flex;
-  white-space: nowrap;
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  white-space: normal;
 }
 .hero-name--first {
   justify-self: end;
@@ -297,6 +300,7 @@ onBeforeUnmount(() => {
   transform: translateY(0.18em) rotate(-7deg);
 }
 .hero-letter {
+  flex: 0 0 auto;
   display: inline-block;
   will-change: transform, opacity, filter;
 }
@@ -397,10 +401,10 @@ onBeforeUnmount(() => {
 
 .countdown__item span {
   font-family: "Manrope", sans-serif;
-  font-size: 0.54rem;
+  font-size: 0.7rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 250, 245, 0.68);
+  color: rgba(255, 250, 245, 0.85);
 }
 .hero-scroll {
   display: inline-flex;
@@ -411,7 +415,7 @@ onBeforeUnmount(() => {
   color: rgba(255, 250, 245, 0.82);
   text-decoration: none;
   font-family: "Manrope", sans-serif;
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
 }
@@ -430,6 +434,7 @@ onBeforeUnmount(() => {
     padding-inline: 1rem;
   }
   .hero-names {
+    font-size: clamp(3rem, 14vw, 5.5rem);
     grid-template-columns: 1fr;
     justify-items: center;
     gap: 0.1rem;
@@ -437,13 +442,13 @@ onBeforeUnmount(() => {
   .hero-name--first,
   .hero-name--second {
     justify-self: center;
-    transform: rotate(-7deg);
+    transform: rotate(-4deg);
   }
   .hero-ampersand {
     margin: -0.15rem 0;
   }
   .countdown {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: min(100%, 420px);
     max-width: 100%;
   }
@@ -458,7 +463,7 @@ onBeforeUnmount(() => {
   }
 
   .countdown__item span {
-    font-size: clamp(0.42rem, 1.9vw, 0.5rem);
+    font-size: 0.7rem;
     letter-spacing: 0.12em;
   }
 
@@ -466,5 +471,14 @@ onBeforeUnmount(() => {
     top: 22%;
     bottom: 22%;
   }
+  .countdown__item:nth-child(2)::after { display: none; }
+}
+.hero-section__background, .hero-section__overlay { pointer-events: none; }
+.hero-names:focus-visible, .hero-scroll:focus-visible { outline: 2px solid #efb49f; outline-offset: 6px; }
+.hero-scroll { min-width: 44px; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-section__background, .hero-letter { will-change: auto; }
+  .hero-section__background, .hero-letter { transform: none !important; }
+  .hero-letter { opacity: 1 !important; filter: none !important; }
 }
 </style>

@@ -5,7 +5,7 @@
 
     <header class="entourage-header">
       <p class="entourage-header__eyebrow">Together with our loved ones</p>
-      <h2>Wedding Entourage</h2>
+      <h2 class="section-heading">Wedding Entourage</h2>
 
       <div class="entourage-header__ornament" aria-hidden="true">
         <span></span>
@@ -109,11 +109,10 @@
 </template>
 
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { gsap, ScrollTrigger } from '../plugins/gsap'
+import { ref } from 'vue'
+import { useGsapContext } from '../composables/useGsapContext.js'
 
 const sectionRef = ref(null)
-let context
 
 const parents = {
   groom: {
@@ -158,76 +157,65 @@ const flowerGirls = [
   }
 ]
 
-onMounted(async () => {
-  await nextTick()
+useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
+  gsap.from('.entourage-header > *', {
+    scrollTrigger: {
+      trigger: '.entourage-header',
+      start: 'top 84%',
+      once: true
+    },
+    opacity: 0,
+    y: 28,
+    filter: 'blur(4px)',
+    duration: 0.8,
+    stagger: 0.1,
+    ease: 'power3.out'
+  })
 
-  if (!sectionRef.value) return
+  gsap.utils.toArray('.credit-group').forEach(group => {
+    const headings = group.querySelectorAll('h3')
+    const names = group.querySelectorAll('p')
 
-  context = gsap.context(() => {
-    gsap.from('.entourage-header > *', {
+    gsap.from(headings, {
       scrollTrigger: {
-        trigger: '.entourage-header',
-        start: 'top 84%',
-        once: true
-      },
-      opacity: 0,
-      y: 28,
-      filter: 'blur(4px)',
-      duration: 0.8,
-      stagger: 0.1,
-      ease: 'power3.out'
-    })
-
-    gsap.utils.toArray('.credit-group').forEach(group => {
-      const headings = group.querySelectorAll('h3')
-      const names = group.querySelectorAll('p')
-
-      gsap.from(headings, {
-        scrollTrigger: {
-          trigger: group,
-          start: 'top 86%',
-          once: true
-        },
-        opacity: 0,
-        y: 18,
-        duration: 0.65,
-        stagger: 0.08,
-        ease: 'power3.out'
-      })
-
-      gsap.from(names, {
-        scrollTrigger: {
-          trigger: group,
-          start: 'top 82%',
-          once: true
-        },
-        opacity: 0,
-        y: 14,
-        duration: 0.55,
-        stagger: 0.055,
-        delay: 0.08,
-        ease: 'power3.out'
-      })
-    })
-
-    gsap.from('.entourage-footer', {
-      scrollTrigger: {
-        trigger: '.entourage-footer',
-        start: 'top 88%',
+        trigger: group,
+        start: 'top 86%',
         once: true
       },
       opacity: 0,
       y: 18,
-      duration: 0.7
+      duration: 0.65,
+      stagger: 0.08,
+      ease: 'power3.out'
     })
-  }, sectionRef.value)
 
-  ScrollTrigger.refresh()
+    gsap.from(names, {
+      scrollTrigger: {
+        trigger: group,
+        start: 'top 82%',
+        once: true
+      },
+      opacity: 0,
+      y: 14,
+      duration: 0.55,
+      stagger: 0.055,
+      delay: 0.08,
+      ease: 'power3.out'
+    })
+  })
+
+  gsap.from('.entourage-footer', {
+    scrollTrigger: {
+      trigger: '.entourage-footer',
+      start: 'top 88%',
+      once: true
+    },
+    opacity: 0,
+    y: 18,
+    duration: 0.7
+  })
 })
 
-onBeforeUnmount(() => {
-  context?.revert()
-})
 </script>
 
 <style scoped>
@@ -254,7 +242,7 @@ onBeforeUnmount(() => {
 
 .entourage-section__wash {
   position: absolute;
-  inset: 0;
+  inset: -48px 0;
   z-index: -1;
   pointer-events: none;
   background:
@@ -287,11 +275,7 @@ onBeforeUnmount(() => {
 
 .entourage-header h2 {
   margin: 0;
-  font-family: 'Cinzel Decorative', serif;
   font-size: clamp(3.6rem, 8vw, 6.6rem);
-  font-style: italic;
-  font-weight: bold;
-  line-height: 0.95;
   letter-spacing: -0.045em;
   color: var(--entourage-blue);
 }
@@ -329,7 +313,7 @@ onBeforeUnmount(() => {
 
 .credit-group h3 {
   margin: 0 0 0.55rem;
-  font-family: 'Cormorant Garamond', cursive;
+  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(1.7rem, 3vw, 2.4rem);
   font-weight: 700;
   line-height: 1.25;
@@ -358,6 +342,16 @@ onBeforeUnmount(() => {
   column-gap: clamp(1.5rem, 4vw, 2.5rem);
   row-gap: 0.08rem;
 }
+
+/* Both families share heading, father and mother rows, even when names wrap. */
+.credit-group--parents .paired-headings { grid-template-rows: auto auto auto; row-gap: .35rem; }
+.credit-group--parents .paired-headings > div { display: contents; }
+.credit-group--parents .paired-headings > div:first-child > * { grid-column: 1; }
+.credit-group--parents .paired-headings > div:last-child > * { grid-column: 2; }
+.credit-group--parents h3 { grid-row: 1; align-self: start; }
+.credit-group--parents p:first-of-type { grid-row: 2; }
+.credit-group--parents p:last-of-type { grid-row: 3; }
+.credit-group--parents p { min-width: 0; overflow-wrap: anywhere; align-self: start; }
 
 .name-grid--roles {
   width: min(100%, 470px);
@@ -396,7 +390,7 @@ onBeforeUnmount(() => {
   }
 
   .credit-group p {
-    font-size: 0.78rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -411,11 +405,11 @@ onBeforeUnmount(() => {
   }
 
   .credit-group h3 {
-    font-size: 0.72rem;
+    font-size: 1.2rem;
   }
 
   .credit-group p {
-    font-size: 0.7rem;
+    font-size: 0.875rem;
     line-height: 1.5;
   }
 }
@@ -425,4 +419,6 @@ onBeforeUnmount(() => {
     will-change: auto;
   }
 }
+.entourage-header, .credit-group, .credit-group h3, .credit-group p, .paired-headings > div { min-width: 0; overflow-wrap: anywhere; }
+.entourage-header__eyebrow { color: var(--entourage-pomegranate); }
 </style>

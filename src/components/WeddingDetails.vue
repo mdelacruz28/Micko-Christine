@@ -1,8 +1,9 @@
 <template>
-  <section id="details" ref="sectionRef" class="details-section">
+  <section id="details" ref="sectionRef" class="details-section" :class="{ 'has-reveals': revealsEnabled }" @focusin="revealFocused">
+    <div class="details-section__wash" aria-hidden="true"></div>
     <header class="details-header reveal-item">
       <p class="details-header__eyebrow">Save the moment</p>
-      <h2>Wedding Details</h2>
+      <h2 class="section-heading">Wedding Details</h2>
       <p class="details-header__intro">
         We would be honored to celebrate this meaningful day with you.
         Here are the details for our ceremony and reception.
@@ -14,12 +15,13 @@
         <div class="event-card__image">
           <img :src="event.image" :alt="event.imageAlt" loading="lazy" />
           <div class="event-card__image-overlay" aria-hidden="true"></div>
-          <span class="event-card__label">{{ event.type }}</span>
+
         </div>
 
         <div class="event-card__content">
-          <p class="event-card__date">{{ event.date }}</p>
-          <h4>{{ event.venue }}</h4>
+          <p class="event-card__occasion">{{ event.type }}</p>
+          <p v-if="event.date" class="event-card__date">{{ event.date }}</p>
+          <h3>{{ event.venue }}</h3>
           <p class="event-card__location">{{ event.location }}</p>
 
           <div class="event-card__meta">
@@ -61,7 +63,9 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const sectionRef = ref(null)
+const revealsEnabled = ref(false)
 let observer
+let motionQuery
 
 const events = [
   {
@@ -92,32 +96,49 @@ const events = [
   }
 ]
 
-onMounted(() => {
+function setupReveals() {
+  observer?.disconnect()
   const elements = sectionRef.value?.querySelectorAll('.reveal-item')
   if (!elements?.length) return
-
-  observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return
-        entry.target.classList.add('is-visible')
-        observer.unobserve(entry.target)
-      })
-    },
-    { threshold: 0.16, rootMargin: '0px 0px -8% 0px' }
-  )
-
+  if (motionQuery.matches || !('IntersectionObserver' in window)) {
+    revealsEnabled.value = false
+    elements.forEach(element => element.classList.add('is-visible'))
+    return
+  }
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return
+      entry.target.classList.add('is-visible')
+      observer.unobserve(entry.target)
+    })
+  }, { threshold: .16, rootMargin: '0px 0px -8% 0px' })
   elements.forEach((element, index) => {
-    element.style.setProperty('--reveal-delay', `${index * 100}ms`)
-    observer.observe(element)
+    element.style.setProperty('--reveal-delay', index * 100 + 'ms')
+    if (!element.classList.contains('is-visible')) observer.observe(element)
   })
+  revealsEnabled.value = true
+}
+function revealFocused(event) {
+  const item = event.target.closest('.reveal-item')
+  if (!item) return
+  item.classList.add('is-visible')
+  observer?.unobserve(item)
+}
+onMounted(() => {
+  motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+  setupReveals()
+  motionQuery.addEventListener('change', setupReveals)
 })
-
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  motionQuery?.removeEventListener('change', setupReveals)
+})
 </script>
 
 <style scoped>
+.details-section__wash { position: absolute; inset: -48px 0; z-index: -1; pointer-events: none; background: radial-gradient(circle at 12% 20%, rgba(239,180,159,.18), transparent 26rem), radial-gradient(circle at 90% 75%, rgba(40,77,103,.08), transparent 28rem); }
 .details-section {
+  isolation: isolate;
   --blue: #284d67;
   --melon: #efb49f;
   --pomegranate: #a64248;
@@ -146,10 +167,7 @@ onBeforeUnmount(() => observer?.disconnect())
 
 .details-header h2 {
   margin: 0;
-  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(3.8rem, 8vw, 7rem);
-  font-style: italic;
-  font-weight: 500;
   color: var(--blue);
 }
 
@@ -227,7 +245,7 @@ onBeforeUnmount(() => observer?.disconnect())
   color: var(--pomegranate); 
 }
 
-.event-card h4 { 
+.event-card h3 {
   margin: 0; 
   font-family: 'Cormorant Garamond', serif; 
   font-size: clamp(2.4rem, 4.2vw, 4rem); 
@@ -274,10 +292,41 @@ onBeforeUnmount(() => observer?.disconnect())
 .details-note__script { font-size: clamp(1.8rem, 3.6vw, 2.7rem); color: var(--blue); }
 .details-note > p:last-child { margin-top: .5rem; }
 
-.reveal-item { opacity: 0; transform: translateY(34px); transition: opacity .9s ease var(--reveal-delay, 0ms), transform .9s ease var(--reveal-delay, 0ms); }
-.reveal-item.is-visible { opacity: 1; transform: translateY(0); }
+.reveal-item { transition: opacity .9s ease var(--reveal-delay, 0ms), transform .9s ease var(--reveal-delay, 0ms); }
+.has-reveals .reveal-item:not(.is-visible) { opacity: 0; transform: translateY(24px); }
+.reveal-item:focus-within { opacity: 1; transform: none; transition: none; }
+.reveal-item.is-visible { opacity: 1; transform: none; }
 
 @media (max-width: 820px) { .details-grid { grid-template-columns: 1fr; max-width: 620px; } }
 @media (max-width: 480px) { .details-section { padding-inline: 1rem; } .event-card__content { padding: 1.5rem; } }
 @media (prefers-reduced-motion: reduce) { .reveal-item { opacity: 1; transform: none; transition: none; } }
+.details-header, .event-card, .event-card__content, .event-card__meta-item { min-width: 0; overflow-wrap: anywhere; }
+.details-header__eyebrow { color: var(--pomegranate); }
+.event-card__button { max-width: 100%; min-height: 44px; align-items: center; justify-content: center; text-align: center; }
+.event-card__button span { min-width: 0; }
+.event-card__meta-item span { color: var(--blue); font-size: .7rem; }
+.event-card__button:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+@media (max-width: 480px) {
+  .event-card__meta { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .event-card__meta-item + .event-card__meta-item { padding: 1rem 0 0; border-left: 0; border-top: 1px solid rgba(40,77,103,.14); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-card:hover .event-card__image img, .event-card__button:hover { transform: none; }
+  .event-card__image img, .event-card__button { transition: none; }
+}
+
+/* Paired keepsake cards, with an arched venue photograph. */
+.details-grid { max-width: 1040px; gap: clamp(1.5rem,4vw,3rem); align-items: stretch; }
+.event-card { padding: clamp(.8rem,2vw,1.25rem); border-radius: 180px 180px 12px 12px; border-color: rgba(120,97,75,.25); box-shadow: 0 14px 40px rgba(40,77,103,.07); display: flex; flex-direction: column; }
+.event-card__image { aspect-ratio: 1.65; border-radius: 160px 160px 6px 6px; }
+.event-card__image-overlay { background: linear-gradient(to top,rgba(40,77,103,.12),transparent); }
+.event-card__content { text-align: center; padding: 1.5rem clamp(.5rem,2vw,1.5rem) .75rem; display: flex; flex-direction: column; flex: 1; align-items: center; }
+.event-card__occasion { margin: 0 0 .9rem; color: var(--pomegranate); text-transform: uppercase; font: 500 .72rem 'Manrope',sans-serif; letter-spacing: .24em; }
+.event-card__content h3 { margin: 0; }
+.event-card__location { margin: .7rem 0 0; }
+.event-card__meta { width: 100%; margin: 1.3rem 0; padding: 1rem 0; border-block: 1px solid rgba(120,97,75,.2); }
+.event-card__button { margin-top: auto; border-radius: 40px; padding: .9rem 1.2rem; }
+@media(max-width:820px) { .details-grid { max-width: 520px; } }
+@media(max-width:480px) { .event-card__content { padding: 1.25rem .5rem .5rem; } }
+
 </style>
