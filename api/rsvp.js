@@ -33,7 +33,10 @@ export function createHandler({ service } = {}) {
       }
       const call = service || createRsvpService({ config: configuration(), database: postgresDatabase(getPool()) });
       return res.end(JSON.stringify(await call(body)));
-    } catch { return res.end(JSON.stringify(failure('TEMPORARY_FAILURE'))); }
+    } catch {
+      console.error('RSVP_CONFIGURATION_FAILURE', JSON.stringify({ databaseConfigured: Boolean(process.env.DATABASE_URL), secretConfigured: typeof process.env.HMAC_SECRET === 'string' && process.env.HMAC_SECRET.length >= 43, deadlineConfigured: process.env.RSVP_DEADLINE === '2026-11-15T23:59:59+08:00', enabled: process.env.RSVP_DISABLED === 'false' }));
+      return res.end(JSON.stringify(failure('TEMPORARY_FAILURE')));
+    }
   };
 }
 export default createHandler();
