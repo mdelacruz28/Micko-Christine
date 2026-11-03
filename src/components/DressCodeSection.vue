@@ -907,8 +907,13 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 
 @media (max-width: 520px) {
   .dress-section {
-    padding-inline: 1rem;
+    padding: 4rem 1rem;
   }
+  .dress-featured { gap: 1.5rem; }
+  .dress-card__content, .guest-card__content { padding: 1.4rem; }
+  .avoid-guide { margin-top: 3.5rem; }
+  .avoid-guide__heading { margin-bottom: 2rem; }
+  .dress-footer { margin-top: 3.5rem; }
 
   .dress-card__columns {
     grid-template-columns: 1fr;
@@ -970,4 +975,8 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 .guest-card:hover { box-shadow: none; }
 .guest-card__image { margin: 0; }
 .guest-card__content { min-width: 0; padding: clamp(2rem,5vw,3.5rem); background: rgba(255,250,245,.94); border: 1px solid rgba(40,77,103,.12); box-shadow: 0 16px 40px rgba(65,56,49,.07); }
+@media (max-width: 520px) {
+  .dress-featured :is(.dress-card__content, .guest-card__content) { padding: 1.4rem; }
+}
 </style>
+
