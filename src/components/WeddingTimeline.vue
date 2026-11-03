@@ -118,7 +118,7 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
 .timeline__progress { position: absolute; inset: 0; display: block; background: #a64248; transform-origin: top center; }
 .timeline-item { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 1.8rem; }
 .timeline-item:last-child { padding-bottom: 0; }
-.timeline-item__content { position: relative; z-index: 1; width: 100%; padding: 1rem 1.25rem 1.2rem; border: 1px solid rgba(40,77,103,.12); background: rgba(255,250,245,.94); box-shadow: 0 12px 32px rgba(47,48,46,.06); }
+.timeline-item__content { position: relative; z-index: 1; width: 100%; padding: .7rem .5rem 1rem; background: transparent; }
 .timeline-item__time { margin: 0 0 .45rem; font-family: 'Manrope',sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: .15em; line-height: 1.5; color: #92383e; }
 .timeline-card { min-width: 0; }
 .timeline-card__icon { display: block; width: clamp(104px, 9vw, 132px); height: auto; margin: .65rem auto .75rem; color: var(--timeline-bistre); }
