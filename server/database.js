@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 let pool;
 export function getPool(env = process.env) {
   if (!pool) {
-    const url = new URL(env.DATABASE_URL || '');
+    const url = new URL(env.RSVP_DATABASE_URL || env.DATABASE_URL || '');
     if (!['postgres:', 'postgresql:'].includes(url.protocol) || !url.hostname.endsWith('.neon.tech')) throw new Error('Invalid database configuration');
     for (const key of ['sslmode', 'sslcert', 'sslkey', 'sslrootcert']) url.searchParams.delete(key);
     pool = new Pool({ connectionString: url.href, ssl: { rejectUnauthorized: true }, max: 3,

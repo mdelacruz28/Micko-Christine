@@ -100,6 +100,10 @@ export function createRsvpService({ database, config, now = Date.now }) {
           throw error; // Roll back SQL failures; do not commit partial work.
         }
       });
-    } catch { return failure('TEMPORARY_FAILURE'); }
+    } catch (error) {
+      const safeCodes = new Set(['28P01','3D000','42P01','42501','53300','57P01','ECONNREFUSED','ENOTFOUND','ETIMEDOUT','ECONNRESET','SELF_SIGNED_CERT_IN_CHAIN','UNABLE_TO_VERIFY_LEAF_SIGNATURE','CERT_HAS_EXPIRED']);
+      console.error('RSVP_DATABASE_FAILURE', safeCodes.has(error.code) ? error.code : 'INTERNAL');
+      return failure('TEMPORARY_FAILURE');
+    }
   };
 }
