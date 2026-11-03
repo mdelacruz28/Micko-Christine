@@ -236,11 +236,8 @@ const avoidColors = [
 
 useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   const header = scope.querySelector('.dress-header')
-  const featuredCards = gsap.utils.toArray(
-    scope.querySelectorAll('.dress-card')
-  )
-  const guestCards = gsap.utils.toArray(
-    scope.querySelectorAll('.guest-card')
+  const attireCards = gsap.utils.toArray(
+    scope.querySelectorAll('.dress-featured > article')
   )
   const avoidHeading = scope.querySelector('.avoid-guide__heading')
   const avoidItems = gsap.utils.toArray(
@@ -265,10 +262,10 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   const mediaContext = gsap.matchMedia()
 
   mediaContext.add('(min-width: 761px)', () => {
-    featuredCards.forEach((card, index) => {
-      const imageWrap = card.querySelector('.dress-card__image')
+    attireCards.forEach((card, index) => {
+      const imageWrap = card.querySelector('.dress-card__image, .guest-card__image')
       const label = card.querySelector('.dress-card__label')
-      const content = card.querySelector('.dress-card__content')
+      const content = card.querySelector('.dress-card__content, .guest-card__content')
       const contentChildren = content.children
       const swatches = card.querySelectorAll('.swatch')
 
@@ -316,27 +313,25 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
           },
           '-=0.52'
         )
-        .from(
-          swatches,
-          {
-            opacity: 0,
-            scale: 0.96,
-            y: 10,
-            duration: 0.45,
-            stagger: 0.07,
-            ease: 'power2.out'
-          },
-          '-=0.38'
-        )
+      if (swatches.length) {
+        tl.from(swatches, {
+          opacity: 0,
+          scale: 0.96,
+          y: 10,
+          duration: 0.45,
+          stagger: 0.07,
+          ease: 'power2.out'
+        }, '-=0.38')
+      }
 
       // Keep the full attire illustration in frame; card entrance remains animated.
     })
   })
 
   mediaContext.add('(max-width: 760px)', () => {
-    featuredCards.forEach(card => {
-      const imageWrap = card.querySelector('.dress-card__image')
-      const contentChildren = card.querySelector('.dress-card__content').children
+    attireCards.forEach(card => {
+      const imageWrap = card.querySelector('.dress-card__image, .guest-card__image')
+      const contentChildren = card.querySelector('.dress-card__content, .guest-card__content').children
       const swatches = card.querySelectorAll('.swatch')
 
       const tl = gsap.timeline({
@@ -371,41 +366,15 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
           },
           '-=0.45'
         )
-        .from(
-          swatches,
-          {
-            opacity: 0,
-            scale: 0.96,
-            duration: 0.4,
-            stagger: 0.06
-          },
-          '-=0.32'
-        )
-    })
-  })
-
-  guestCards.forEach(card => {
-    const icon = card.querySelector('.guest-card__icon')
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 82%',
-        once: true
+      if (swatches.length) {
+        tl.from(swatches, {
+          opacity: 0,
+          scale: 0.96,
+          duration: 0.4,
+          stagger: 0.06
+        }, '-=0.32')
       }
     })
-
-    tl.from(card, {
-      opacity: 0,
-      y: 36,
-      scale: 0.96,
-      duration: 0.78,
-      ease: 'power3.out'
-    }).from(icon, {
-      rotate: -24,
-      scale: 0.96,
-      duration: 0.55,
-      ease: 'power2.out'
-    }, '-=0.45')
   })
 
   gsap.from(avoidHeading.children, {
@@ -533,12 +502,12 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(1rem, 2vw, 1.5rem);
+  align-items: stretch;
 }
 
-.dress-featured > article { display: flex; flex-direction: column; }
-.dress-featured :is(.dress-card__image, .guest-card__image) { flex-shrink: 0; }
+.dress-featured > article { display: grid; grid-template-rows: auto 1fr; }
+.dress-featured :is(.dress-card__image, .guest-card__image) { width: 100%; aspect-ratio: 3 / 2; margin: 0; }
 .dress-featured :is(.dress-card__content, .guest-card__content) {
-  flex: 1;
   padding: clamp(1.25rem, 2vw, 2rem);
 }
 .dress-featured .dress-card__columns { grid-template-columns: 1fr; gap: 1rem; }
