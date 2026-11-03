@@ -262,7 +262,7 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   const mediaContext = gsap.matchMedia()
 
   mediaContext.add('(min-width: 761px)', () => {
-    attireCards.forEach((card, index) => {
+    attireCards.forEach(card => {
       const imageWrap = card.querySelector('.dress-card__image, .guest-card__image')
       const label = card.querySelector('.dress-card__label')
       const content = card.querySelector('.dress-card__content, .guest-card__content')
@@ -281,7 +281,6 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
         .from(card, {
           opacity: 0,
           y: 48,
-          x: index === 0 ? -42 : 42,
           duration: 0.95,
           ease: 'power3.out'
         })
