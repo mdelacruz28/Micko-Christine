@@ -175,7 +175,8 @@ function returnToBeginning(event) {
   width: min(100%, 760px);
   margin: 0;
   font-size: clamp(3.2rem, 7.5vw, 6.5rem);
-  }
+  color: #284d67;
+}
 .closing-content__message {
   width: min(100%, 610px);
   margin: 1.8rem auto 0;
