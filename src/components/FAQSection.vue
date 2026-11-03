@@ -346,7 +346,12 @@ onMounted(() => {
 }
 
 .faq-list {
+  padding: clamp(1rem, 2.5vw, 2rem);
   border-top: 1px solid rgba(40, 77, 103, 0.16);
+  border-inline: 1px solid rgba(40, 77, 103, 0.12);
+  border-bottom: 1px solid rgba(40, 77, 103, 0.12);
+  background: rgba(255, 250, 245, 0.94);
+  box-shadow: 0 18px 48px rgba(47, 48, 46, 0.07);
 }
 .faq-item {
   border-bottom: 1px solid rgba(40, 77, 103, 0.16);
@@ -368,7 +373,7 @@ onMounted(() => {
   font-family: "Cormorant Garamond", serif;
   font-size: 1.35rem;
   font-style: italic;
-  color: rgba(40, 77, 103, 0.4);
+  color: #576b78;
 }
 .faq-item__question {
   font-family: "Cormorant Garamond", serif;
@@ -415,7 +420,7 @@ onMounted(() => {
   font-size: 0.9rem;
   font-weight: 300;
   line-height: 1.85;
-  color: rgba(36, 49, 58, 0.72);
+  color: #39454d;
 }
 .faq-item__answer-inner ul {
   margin: 1rem 0 0;
@@ -428,7 +433,7 @@ onMounted(() => {
   font-family: "Manrope", sans-serif;
   font-size: 0.82rem;
   line-height: 1.8;
-  color: rgba(36, 49, 58, 0.66);
+  color: #44515a;
 }
 .faq-item__answer-inner li::before {
   content: "·";
@@ -460,8 +465,9 @@ onMounted(() => {
 }
 @media (max-width: 620px) {
   .faq-section {
-    padding-inline: 1rem;
+    padding: 4.5rem 1rem;
   }
+  .faq-list { padding: .6rem 1rem; }
   .faq-item__answer-inner {
     padding-right: 0;
     padding-left: 2.6rem;
@@ -484,3 +490,4 @@ onMounted(() => {
   .faq-item__answer, .faq-item__icon i { transition: none; }
 }
 </style>
+
