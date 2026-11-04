@@ -774,7 +774,7 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   padding: clamp(.65rem, 2vw, 1.5rem);
   border: 1px solid rgba(120, 97, 75, .22);
   border-radius: 18px;
-  background: linear-gradient(145deg, rgba(255, 250, 245, .72), rgba(248, 239, 231, .69));
+  background: linear-gradient(145deg, rgba(255, 250, 245, .62), rgba(248, 239, 231, .59));
   box-shadow: 0 16px 42px rgba(47, 48, 46, .09);
 }
 
