@@ -74,6 +74,7 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
     </header>
 
     <div ref="timelineRef" class="timeline" role="list" aria-label="Wedding day schedule">
+      <span class="timeline__progress" aria-hidden="true"></span>
       <article v-for="(item, index) in timelineItems" :key="item.time" class="timeline-item" role="listitem">
         <div class="timeline-item__content">
           <p class="timeline-item__time">{{ item.time }}</p>
@@ -85,7 +86,6 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
           </div>
         </div>
         <span class="timeline-item__marker" aria-hidden="true"></span>
-        <span class="timeline-item__connector" aria-hidden="true"><span class="timeline__progress"></span></span>
       </article>
     </div>
 
@@ -112,31 +112,38 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
 .timeline-header__eyebrow { margin: 0 0 .6rem; color: var(--timeline-bistre); font-family: 'Allura',serif; }
 .timeline-header h2 { margin: 0; }
 .timeline-header__intro { margin: 1rem 0 0; font-size: .95rem; line-height: 1.7; color: #394b56; }
-.timeline { position: relative; max-width: 620px; margin: 0 auto; }
-.timeline-item__connector { position: absolute; bottom: 0; left: 50%; width: 1px; height: 1.4rem; background: #d6c5a7; }
-.timeline-item:last-child .timeline-item__connector { display: none; }
-.timeline__progress { position: absolute; inset: 0; display: block; background: #a64248; transform-origin: top center; }
-.timeline-item { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 1.8rem; }
-.timeline-item:last-child { padding-bottom: 0; }
-.timeline-item__content { position: relative; z-index: 1; width: 100%; padding: .7rem .5rem 1rem; background: transparent; }
-.timeline-item__time { margin: 0 0 .45rem; font-family: 'Manrope',sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: .15em; line-height: 1.5; color: #92383e; }
-.timeline-card { min-width: 0; }
-.timeline-card__icon { display: block; width: clamp(104px, 9vw, 132px); height: auto; margin: .65rem auto .75rem; color: var(--timeline-bistre); }
-.timeline-card h3 { margin: 0; font-family: 'Cormorant Garamond',serif; font-size: clamp(1.7rem,3vw,2.25rem); font-weight: 500; line-height: 1.2; overflow-wrap: anywhere; }
-.timeline-item__marker { position: relative; z-index: 2; display: block; width: 7px; height: 7px; background: var(--timeline-pomegranate); border: 1px solid var(--timeline-pomegranate); transform: rotate(45deg);  }
+.timeline { position: relative; max-width: 860px; margin: 0 auto; padding-block: .75rem; }
+.timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%); background: linear-gradient(180deg, transparent, #c4a986 5%, #e0cfb7 50%, #c4a986 95%, transparent); }
+
+
+.timeline__progress { position: absolute; z-index: 1; top: 0; bottom: 0; left: 50%; width: 3px; background: linear-gradient(180deg, #a64248, #d17e72 55%, #a64248); transform: translateX(-50%) scaleY(0); transform-origin: top center; }
+.timeline-item { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 2.75rem minmax(0,1fr); align-items: center; min-height: 116px; padding-block: .65rem; }
+
+.timeline-item__content { min-width: 0; width: 100%; padding: .25rem 1.25rem; }
+.timeline-item:nth-child(odd) .timeline-item__content { grid-column: 1; grid-row: 1; text-align: right; }
+.timeline-item:nth-child(even) .timeline-item__content { grid-column: 3; grid-row: 1; text-align: left; }
+.timeline-item__time { margin: 0 0 .2rem; font-family: 'Manrope',sans-serif; font-size: .72rem; font-weight: 600; letter-spacing: .16em; line-height: 1.5; color: #92383e; }
+.timeline-card { display: flex; align-items: center; gap: .8rem; min-width: 0; }
+.timeline-item:nth-child(odd) .timeline-card { flex-direction: row-reverse; }
+.timeline-card__icon { display: block; flex: 0 0 clamp(64px,8vw,88px); width: clamp(64px,8vw,88px); height: auto; margin: 0; color: var(--timeline-bistre); }
+.timeline-card h3 { min-width: 0; margin: 0; font-family: 'Cormorant Garamond',serif; font-size: clamp(1.35rem,2.3vw,1.85rem); font-weight: 500; line-height: 1.12; overflow-wrap: anywhere; }
+.timeline-item__marker { position: absolute; z-index: 2; left: 50%; top: 50%; width: 11px; height: 11px; border: 2px solid #a64248; border-radius: 50%; background: #fffaf5; box-shadow: 0 0 0 5px rgba(255,250,245,.78), 0 0 0 6px rgba(120,97,75,.28); transform: translate(-50%,-50%); }
 .timeline-footer { max-width: 650px; margin: clamp(2.5rem,5vw,4rem) auto 0; text-align: center; }
 .timeline-footer__script { margin: 0; font-family: 'Parisienne','Cormorant Garamond',serif; font-size: clamp(1.6rem,3vw,2.2rem); line-height: 1.4; }
 .timeline-footer__note { margin: .8rem 0 0; color: #394b56; font-size: .8rem; line-height: 1.7; }
 @media(max-width:520px) {
  .timeline-section { padding: 3.5rem 1rem; }
  .timeline-header { margin-bottom: 2rem; }
- .timeline-item__connector { height: .75rem; }
- .timeline-item { padding-bottom: 1.05rem; }
- .timeline-item__content { padding: .75rem 1rem .9rem; }
- .timeline-card__icon { width: 86px; margin: .3rem auto .45rem; }
- .timeline-item__time { font-size: .75rem; }
+
+ .timeline-item { grid-template-columns: minmax(0,1fr) 1.75rem minmax(0,1fr); min-height: 92px; padding-block: .5rem; }
+ .timeline-item__content { padding: .2rem .45rem; }
+ .timeline-card { gap: .3rem; }
+ .timeline-card__icon { flex-basis: 48px; width: 48px; margin: 0; }
+ .timeline-card h3 { font-size: clamp(1.1rem,5vw,1.38rem); }
+ .timeline-item__time { font-size: .66rem; letter-spacing: .1em; }
+ .timeline-item__marker { width: 9px; height: 9px; box-shadow: 0 0 0 4px rgba(255,250,245,.8),0 0 0 5px rgba(120,97,75,.28); }
  .timeline-footer { margin-top: 2.25rem; }
 }
-@media(prefers-reduced-motion:reduce) { .timeline__progress { transform: none !important; } }
+@media(prefers-reduced-motion:reduce) { .timeline__progress { transform: translateX(-50%) scaleY(1) !important; } }
 </style>
 
