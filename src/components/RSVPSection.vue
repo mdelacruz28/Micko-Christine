@@ -33,20 +33,19 @@
           </div>
 
           <div class="rsvp-info__block">
-            <p class="rsvp-info__label">For every invited guest</p>
-            <h3>Your Seat</h3>
-            <p>
-              Each invited guest has one reserved seat and responds individually.
-            </p>
-          </div>
-
-          <div class="rsvp-info__block">
             <p class="rsvp-info__label">A gentle request</p>
             <h3>Private Celebration</h3>
             <p>
               Please keep the event details private and avoid forwarding the
               invitation link.
             </p>
+          </div>
+          <div class="rsvp-info__block rsvp-contact">
+            <p class="rsvp-info__label">RSVP help</p>
+            <h3>Contact Us</h3>
+            <p>Questions about your RSVP? Please contact us.</p>
+            <a href="tel:+639499857805"><span>Micko Dela Cruz</span><strong>09499857805</strong></a>
+            <a href="tel:+639683238328"><span>Christine Ferrera</span><strong>09683238328</strong></a>
           </div>
         </aside>
 
@@ -59,11 +58,6 @@
         <p class="rsvp-footer__script">We can’t wait to celebrate with you.</p>
         <div class="rsvp-footer__ornament" aria-hidden="true">
           <span></span><i></i><span></span>
-        </div>
-        <div class="rsvp-contact">
-          <p>Questions about your RSVP? Please contact us.</p>
-          <a href="tel:+639499857805"><span>Micko Dela Cruz</span><strong>09499857805</strong></a>
-          <a href="tel:+639683238328"><span>Christine Ferrera</span><strong>09683238328</strong></a>
         </div>
       </footer>
     </div>
@@ -498,9 +492,8 @@ onBeforeUnmount(() => { rsvp.reset(); });
   }
 }
 
-.rsvp-contact { margin: 2rem auto 0; max-width: 36rem; padding-top: 1.5rem; border-top: 1px solid #efb49f55; color: #fffaf5; }
 .rsvp-contact p { font-size: .85rem; line-height: 1.7; }
-.rsvp-contact a { display: inline-flex; flex-direction: column; align-items: center; gap: .25rem; margin: .4rem .8rem; padding: .5rem; text-decoration: none; font-size: .8rem; }
+.rsvp-contact a { display: inline-flex; flex-direction: column; align-items: flex-start; gap: .25rem; margin: .4rem 1rem .4rem 0; padding: .25rem 0; text-decoration: none; font-size: .8rem; }
 .rsvp-contact strong { color: #efc4ad; font-weight: 500; letter-spacing: .08em; text-decoration: underline; text-underline-offset: .25em; }
 .rsvp-contact a:focus-visible { outline: 2px solid #efc4ad; outline-offset: 3px; }
 </style>
