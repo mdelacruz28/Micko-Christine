@@ -117,7 +117,7 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
 
 
 .timeline__progress { position: absolute; z-index: 1; top: 0; bottom: 0; left: 50%; width: 3px; background: linear-gradient(180deg, #a64248, #d17e72 55%, #a64248); transform: translateX(-50%) scaleY(0); transform-origin: top center; }
-.timeline-item { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 2.75rem minmax(0,1fr); align-items: center; min-height: 116px; padding-block: .65rem; }
+.timeline-item { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 2.75rem minmax(0,1fr); align-items: center; min-height: 88px; padding-block: .3rem; }
 
 .timeline-item__content { min-width: 0; width: 100%; padding: .25rem 1.25rem; }
 .timeline-item:nth-child(odd) .timeline-item__content { grid-column: 1; grid-row: 1; text-align: right; }
@@ -135,7 +135,7 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
  .timeline-section { padding: 3.5rem 1rem; }
  .timeline-header { margin-bottom: 2rem; }
 
- .timeline-item { grid-template-columns: minmax(0,1fr) 1.75rem minmax(0,1fr); min-height: 92px; padding-block: .5rem; }
+ .timeline-item { grid-template-columns: minmax(0,1fr) 1.75rem minmax(0,1fr); min-height: 72px; padding-block: .25rem; }
  .timeline-item__content { padding: .2rem .45rem; }
  .timeline-card { gap: .3rem; }
  .timeline-card__icon { flex-basis: 48px; width: 48px; margin: 0; }
