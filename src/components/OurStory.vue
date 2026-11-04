@@ -11,7 +11,7 @@ const chapters = [
     title: 'When our paths first crossed',
     description: 'What began as an ordinary moment slowly became something neither of us expected—a friendship filled with laughter, comfort, and a growing sense of home.',
     accent: 'A quiet hello became the start of everything.',
-    images: ["/images/story/Paths%20first%20cross/IMG_1546.webp","/images/story/Paths%20first%20cross/IMG_1573.webp","/images/story/Paths%20first%20cross/IMG_1694.webp","/images/story/Paths%20first%20cross/IMG_E0466.webp"],
+    images: ["/images/story/Paths%20first%20cross/IMG_1546.webp","/images/story/Paths%20first%20cross/IMG_1573.webp","/images/story/Paths%20first%20cross/IMG_1720.webp","/images/story/Paths%20first%20cross/IMG_E0462.webp","/images/story/Paths%20first%20cross/IMG_E0466.webp"],
     alt: 'Micko and Christine at the beginning of their story'
   },
   {
@@ -19,7 +19,7 @@ const chapters = [
     title: 'Growing side by side',
     description: 'Through changing seasons, long conversations, adventures, and everyday moments, we learned that love is not only found in grand gestures, but in choosing one another again and again.',
     accent: 'Together, even the ordinary became meaningful.',
-    images: ["/images/story/Growing%20SidebySide/IMG_1552.webp","/images/story/Growing%20SidebySide/IMG_E0462.webp","/images/story/Growing%20SidebySide/IMG_1563.webp","/images/story/Growing%20SidebySide/IMG_1602.webp","/images/story/Growing%20SidebySide/IMG_1651.webp","/images/story/Growing%20SidebySide/IMG_1720.webp","/images/story/Growing%20SidebySide/story2.png"],
+    images: ["/images/story/Growing%20SidebySide/IMG_1552.webp","/images/story/Growing%20SidebySide/IMG_1563.webp","/images/story/Growing%20SidebySide/IMG_1602.webp","/images/story/Growing%20SidebySide/IMG_1651.webp","/images/story/Growing%20SidebySide/story2.png"],
     alt: 'Micko and Christine sharing a meaningful moment together'
   },
   {
