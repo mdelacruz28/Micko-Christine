@@ -768,28 +768,27 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 
 .avoid-guide__items {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid rgba(40, 77, 103, 0.12);
+  background: rgba(255, 250, 245, 0.9);
+  box-shadow: 0 18px 48px rgba(47, 48, 46, 0.07);
 }
 
 .avoid-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  min-height: 120px;
-  padding: 1.3rem;
-  border: 1px solid rgba(40, 77, 103, 0.11);
-  background: rgba(255, 255, 255, 0.64);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  min-height: 112px;
+  padding: 1.2rem;
+  border: 0;
+  background: transparent;
 }
 
-.avoid-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px rgba(62, 56, 51, 0.08);
-}
 
+.avoid-item:nth-child(odd) { border-right: 1px solid rgba(40, 77, 103, 0.12); }
+.avoid-item:nth-child(-n+2) { border-bottom: 1px solid rgba(40, 77, 103, 0.12); }
 .avoid-item__color {
   flex: 0 0 auto;
   width: 42px;
