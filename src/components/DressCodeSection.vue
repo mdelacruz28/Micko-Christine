@@ -769,49 +769,55 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 .avoid-guide__items {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  padding: clamp(1rem, 3vw, 2rem);
-  border: 1px solid rgba(40, 77, 103, 0.12);
-  background: rgba(255, 250, 245, 0.9);
-  box-shadow: 0 18px 48px rgba(47, 48, 46, 0.07);
+  width: min(100%, 780px);
+  margin-inline: auto;
+  padding: clamp(.65rem, 2vw, 1.5rem);
+  border: 1px solid rgba(120, 97, 75, .22);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fffaf5, #f8efe7);
+  box-shadow: 0 16px 42px rgba(47, 48, 46, .09);
 }
 
 .avoid-item {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  min-height: 112px;
-  padding: 1.2rem;
-  border: 0;
-  background: transparent;
+  align-items: flex-start;
+  gap: clamp(.65rem, 2vw, 1.1rem);
+  padding: clamp(.8rem, 2.6vw, 1.55rem);
 }
 
+.avoid-item:nth-child(odd) {
+  border-inline-end: 1px solid rgba(120, 97, 75, .16);
+}
 
-.avoid-item:nth-child(odd) { border-right: 1px solid rgba(40, 77, 103, 0.12); }
-.avoid-item:nth-child(-n+2) { border-bottom: 1px solid rgba(40, 77, 103, 0.12); }
+.avoid-item:nth-child(-n+2) {
+  border-bottom: 1px solid rgba(120, 97, 75, .16);
+}
+
 .avoid-item__color {
   flex: 0 0 auto;
-  width: 42px;
-  height: 42px;
+  width: clamp(28px, 5vw, 42px);
+  aspect-ratio: 1;
   border: 1px solid;
   border-radius: 50%;
+  box-shadow: 0 0 0 3px #fffaf5, 0 0 0 4px rgba(120, 97, 75, .16);
 }
 
 .avoid-item strong {
+  display: block;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.35rem;
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
   font-style: italic;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1.12;
   color: var(--dress-blue);
 }
 
 .avoid-item p {
-  margin: 0.25rem 0 0;
+  margin: .4rem 0 0;
   font-family: 'Manrope', sans-serif;
-  font-size: 0.72rem;
-  font-weight: 300;
+  font-size: clamp(.78rem, 1.4vw, .88rem);
   line-height: 1.55;
-  color: rgba(36, 49, 58, 0.62);
+  color: #46535a;
 }
 
 .dress-footer {
