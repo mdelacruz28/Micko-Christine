@@ -774,7 +774,7 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   padding: clamp(.65rem, 2vw, 1.5rem);
   border: 1px solid rgba(120, 97, 75, .22);
   border-radius: 18px;
-  background: linear-gradient(145deg, rgba(255, 250, 245, .85), rgba(248, 239, 231, .82));
+  background: linear-gradient(145deg, rgba(255, 250, 245, .77), rgba(248, 239, 231, .74));
   box-shadow: 0 16px 42px rgba(47, 48, 46, .09);
 }
 
@@ -817,7 +817,7 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   font-family: 'Manrope', sans-serif;
   font-size: clamp(.78rem, 1.4vw, .88rem);
   line-height: 1.55;
-  color: #46535a;
+  color: #37454d;
 }
 
 .dress-footer {
