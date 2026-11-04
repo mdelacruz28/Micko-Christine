@@ -41,9 +41,7 @@
             </p>
           </div>
           <div class="rsvp-info__block rsvp-contact">
-            <p class="rsvp-info__label">RSVP help</p>
-            <h3>Contact Us</h3>
-            <p>Questions about your RSVP? Please contact us.</p>
+            <h3>Contact us if you have questions about your RSVP</h3>
             <a href="tel:+639499857805"><span>Micko Dela Cruz</span><strong>09499857805</strong></a>
             <a href="tel:+639683238328"><span>Christine Ferrera</span><strong>09683238328</strong></a>
           </div>
@@ -202,8 +200,8 @@ onBeforeUnmount(() => { rsvp.reset(); });
   transform: rotate(45deg);
 }
 .rsvp-info__block + .rsvp-info__block {
-  margin-top: 2rem;
-  padding-top: 2rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 .rsvp-info__block h3 {
@@ -492,7 +490,6 @@ onBeforeUnmount(() => { rsvp.reset(); });
   }
 }
 
-.rsvp-contact p { font-size: .85rem; line-height: 1.7; }
 .rsvp-contact a { display: inline-flex; flex-direction: column; align-items: flex-start; gap: .25rem; margin: .4rem 1rem .4rem 0; padding: .25rem 0; text-decoration: none; font-size: .8rem; }
 .rsvp-contact strong { color: #efc4ad; font-weight: 500; letter-spacing: .08em; text-decoration: underline; text-underline-offset: .25em; }
 .rsvp-contact a:focus-visible { outline: 2px solid #efc4ad; outline-offset: 3px; }
