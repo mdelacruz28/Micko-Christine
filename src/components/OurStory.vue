@@ -11,7 +11,7 @@ const chapters = [
     title: 'When our paths first crossed',
     description: 'What began as an ordinary moment slowly became something neither of us expected—a friendship filled with laughter, comfort, and a growing sense of home.',
     accent: 'A quiet hello became the start of everything.',
-    images: ["/images/story/Paths%20first%20cross/IMG_1546.webp","/images/story/Paths%20first%20cross/IMG_1573.webp","/images/story/Paths%20first%20cross/IMG_1720.webp","/images/story/Paths%20first%20cross/IMG_E0462.webp","/images/story/Paths%20first%20cross/IMG_E0466.webp"],
+    images: ["/images/story/Paths%20first%20cross/IMG_1546.webp","/images/story/Paths%20first%20cross/IMG_1573.webp","/images/story/Paths%20first%20cross/IMG_1720.webp","/images/story/Paths%20first%20cross/IMG_E0466.webp"],
     alt: 'Micko and Christine at the beginning of their story'
   },
   {
@@ -19,7 +19,7 @@ const chapters = [
     title: 'Growing side by side',
     description: 'Through changing seasons, long conversations, adventures, and everyday moments, we learned that love is not only found in grand gestures, but in choosing one another again and again.',
     accent: 'Together, even the ordinary became meaningful.',
-    images: ["/images/story/Growing%20SidebySide/IMG_1552.webp","/images/story/Growing%20SidebySide/IMG_1563.webp","/images/story/Growing%20SidebySide/IMG_1602.webp","/images/story/Growing%20SidebySide/IMG_1651.webp","/images/story/Growing%20SidebySide/story2.png"],
+    images: ["/images/story/Growing%20SidebySide/IMG_1552.webp","/images/story/Growing%20SidebySide/IMG_1563.webp","/images/story/Growing%20SidebySide/IMG_1602.webp","/images/story/Growing%20SidebySide/IMG_E1589.webp","/images/story/Growing%20SidebySide/story2.png"],
     alt: 'Micko and Christine sharing a meaningful moment together'
   },
   {
@@ -27,7 +27,7 @@ const chapters = [
     title: 'Choosing forever',
     description: 'With grateful hearts and faith in the life ahead, we said yes to a new chapter—one built on love, commitment, growth, and the promise to walk through every season together.',
     accent: 'This is where forever begins.',
-    images: ["/images/story/Choosing%20Forever/DCJN2842.JPG","/images/story/Choosing%20Forever/IMG_1824.webp","/images/story/Choosing%20Forever/IMG_1828.webp","/images/story/Choosing%20Forever/IMG_E1589.webp","/images/story/Choosing%20Forever/story3.jpg"],
+    images: ["/images/story/Choosing%20Forever/DCJN2842.JPG","/images/story/Choosing%20Forever/story3.jpg"],
     alt: 'Micko and Christine celebrating their engagement'
   }
 ]

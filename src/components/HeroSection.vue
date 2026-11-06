@@ -3,8 +3,6 @@
     <div class="hero-section__overlay" aria-hidden="true"></div>
 
     <div class="hero-content">
-      <p class="hero-content__eyebrow">Our story begins</p>
-
       <h1 id="hero-title" class="hero-names" aria-label="Micko and Christine" tabindex="-1">
         <span class="hero-name hero-name--first">
           <span
@@ -36,10 +34,7 @@
       </div>
 
       <div class="hero-details">
-        <p class="hero-details__date">January 17, 2027</p>
-        <p class="hero-details__venue">
-         Baguio City
-        </p>
+        <p class="hero-details__date">January 17, 2027 <span aria-hidden="true"> • </span> Baguio City</p>
       </div>
 
       <div class="countdown" role="timer" aria-live="off" aria-label="Wedding countdown">
@@ -132,11 +127,6 @@ onMounted(() => {
     const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
 
     if (animateEntrance) timeline
-      .from(
-        ".hero-content__eyebrow",
-        { opacity: 0, y: 22, filter: "blur(5px)", duration: 0.75 },
-        0.12,
-      )
       .fromTo(
         firstLetters,
         { opacity: 0, y: 42, filter: "blur(10px)", rotate: -7 },
@@ -263,13 +253,6 @@ onBeforeUnmount(() => {
   flex-direction: column;
   align-items: center;
 }
-.hero-content__eyebrow {
-  margin: 0 0 clamp(1.3rem, 3vw, 2rem);
-  font-family: "Allura", cursive;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
-  color: #efb49f;
-  transform: rotate(-3deg);
-}
 .hero-names {
   margin: 0;
   font-weight: 400;
@@ -336,8 +319,7 @@ onBeforeUnmount(() => {
   border: 1px solid #efb49f;
   transform: rotate(45deg);
 }
-.hero-details__date,
-.hero-details__venue {
+.hero-details__date {
   margin: 0;
 }
 .hero-details__date {
@@ -346,14 +328,6 @@ onBeforeUnmount(() => {
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-}
-.hero-details__venue {
-  margin-top: 0.7rem;
-  font-family: "Manrope", sans-serif;
-  font-size: clamp(0.7rem, 1.2vw, 0.86rem);
-  font-weight: 300;
-  letter-spacing: 0.11em;
-  color: rgba(255, 250, 245, 0.74);
 }
 .countdown {
   display: grid;
