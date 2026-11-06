@@ -261,11 +261,11 @@ onBeforeUnmount(() => {
   grid-template-columns: minmax(0, .7fr) auto minmax(0, 1fr);
   align-items: center;
   width: 100%;
-  font-family: "Imperial Script", serif;
+  font-family: "Parisienne", cursive;
   font-size: clamp(4rem, 10vw, 8.8rem);
-  font-style: italic;
+  font-style: normal;
   line-height: 0.82;
-  letter-spacing: -0.05em;
+  letter-spacing: normal;
 }
 .hero-name {
   display: inline-flex;
