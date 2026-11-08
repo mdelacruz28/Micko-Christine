@@ -42,9 +42,9 @@
       </a>
     </div>
 
-    <div class="closing-footer">
+    <!-- <div class="closing-footer">
       <p>Made with love for Micko &amp; Christine</p>
-    </div>
+    </div> -->
   </footer>
 </template>
 
