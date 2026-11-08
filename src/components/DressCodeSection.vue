@@ -16,6 +16,7 @@
         v-for="group in featuredGroups"
         :key="group.title"
         class="dress-card"
+        :aria-labelledby="group.id"
       >
         <div class="dress-card__image">
           <img v-show="!failedImages.has(group.image)" :src="group.image" :alt="group.imageAlt" loading="lazy" decoding="async" @error="failedImages.add(group.image)" />
@@ -25,7 +26,7 @@
         </div>
 
         <div class="dress-card__content">
-          <h3>{{ group.title }}</h3>
+          <h3 :id="group.id">{{ group.title }}</h3>
 
           <div class="dress-card__columns">
             <div
@@ -33,10 +34,15 @@
               :key="detail.heading"
               class="dress-card__column"
             >
-              <p class="dress-card__heading">{{ detail.heading }}</p>
+              <h4 class="dress-card__heading">{{ detail.heading }}</h4>
               <p class="dress-card__copy">{{ detail.copy }}</p>
+              <ul v-if="detail.items" class="dress-card__list">
+                <li v-for="item in detail.items" :key="item">{{ item }}</li>
+              </ul>
             </div>
           </div>
+
+          <p v-if="group.note" class="dress-card__note">{{ group.note }}</p>
 
           <div
             v-if="group.swatches?.length"
@@ -57,29 +63,6 @@
           </div>
         </div>
       </article>
-        <article
-          v-for="guide in guestGuides"
-          :key="guide.title"
-          class="guest-card"
-        >
-          <div class="guest-card__image">
-            <img v-if="!failedImages.has(guide.image)" :src="guide.image" :alt="guide.imageAlt" loading="lazy" decoding="async" @error="failedImages.add(guide.image)" />
-            <p v-else role="img" :aria-label="guide.imageAlt">{{ guide.imageAlt }}</p>
-            <span class="dress-card__label">{{ guide.imageLabel }}</span>
-          </div>
-          <div class="guest-card__content">
-          <div class="guest-card__icon" v-html="guide.icon" aria-hidden="true"></div>
-          <p class="guest-card__label">{{ guide.label }}</p>
-          <h3>{{ guide.title }}</h3>
-          <p>{{ guide.description }}</p>
-
-          <ul>
-            <li v-for="item in guide.items" :key="item">
-              {{ item }}
-            </li>
-          </ul>
-          </div>
-        </article>
     </div>
 
     <section class="avoid-guide">
@@ -136,11 +119,11 @@ import { useGsapContext } from '../composables/useGsapContext.js'
 const sectionRef = ref(null)
 const failedImages = reactive(new Set())
 
-
 const featuredGroups = [
   {
-    label: 'Principal Sponsors',
-    title: 'Formal & Distinguished',
+    id: 'sponsor-attire-title',
+    label: 'Main Sponsors',
+    title: 'Ninong & Ninang',
     image: '/images/main%20sponsor.png',
     imageAlt: 'Formal attire inspiration for principal sponsors',
     details: [
@@ -161,52 +144,26 @@ const featuredGroups = [
       { name: 'Glazed Apricot', color: '#e8a078' },
       { name: 'Soft Bistre', color: '#b49b7a' }
     ]
-  }
-]
-
-const guestGuides = [
-  {
-    label: 'Ladies',
-    imageLabel: 'Guest Attire for Ladies',
-    image: '/images/lads.png',
-    imageAlt: 'Garden wedding dress inspiration for ladies',
-    title: 'Romantic & Refined',
-    description:
-      'Choose a polished silhouette that moves beautifully and feels comfortable throughout the celebration.',
-    items: [
-      'Midi, cocktail, or floor-length dress',
-      'Floral prints or elegant solid colors',
-      'Flowing or structured silhouettes',
-      'Semi-formal or smart-casual footwear'
-    ],
-    icon: `
-      <svg viewBox="0 0 24 24">
-        <path d="M9 4h6l1 4-2 3 3 9H7l3-9-2-3 1-4Z"/>
-        <path d="M10 4c0 1.4.8 2.2 2 2.2S14 5.4 14 4"/>
-      </svg>
-    `
   },
   {
-    label: 'Gentlemen',
-    imageLabel: 'Guest Attire for Men',
-    image: '/images/gents.png',
-    imageAlt: 'Garden wedding shirt and trouser inspiration for gentlemen',
-    title: 'Polished & Relaxed',
-    description:
-      'A clean, well-fitted look is perfect for the garden setting and the cool Baguio atmosphere.',
-    items: [
-      'Tucked-in polo or button-down shirt',
-      'Long or short sleeves are welcome',
-      'Tailored trousers or polished chinos',
-      'Semi-formal or smart-casual footwear'
+    id: 'guest-attire-title',
+    label: 'Guest Attire',
+    title: 'Ladies & Gentlemen',
+    image: '/images/guest%20attire.png',
+    imageAlt: 'Garden wedding attire inspiration for ladies and gentlemen in dresses, shirts, and trousers',
+    details: [
+      {
+        heading: 'Ladies',
+        copy: 'Choose a polished silhouette that moves beautifully and feels comfortable throughout the celebration.',
+        items: ['Midi, cocktail, or floor-length dress', 'Floral prints or elegant solid colors', 'Flowing or structured silhouettes']
+      },
+      {
+        heading: 'Gentlemen',
+        copy: 'A clean, well-fitted look is perfect for the garden setting and the cool Baguio atmosphere.',
+        items: ['Tucked-in polo or button-down shirt', 'Long or short sleeves are welcome', 'Tailored trousers or polished chinos']
+      }
     ],
-    icon: `
-      <svg viewBox="0 0 24 24">
-        <path d="m8 5 4 3 4-3 3 3-2 3v9H7v-9L5 8l3-3Z"/>
-        <path d="M12 8v12"/>
-        <path d="m9 4 3 4 3-4"/>
-      </svg>
-    `
+    note: 'For all guests: semi-formal or smart-casual footwear.'
   }
 ]
 
@@ -263,9 +220,9 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 
   mediaContext.add('(min-width: 761px)', () => {
     attireCards.forEach(card => {
-      const imageWrap = card.querySelector('.dress-card__image, .guest-card__image')
+      const imageWrap = card.querySelector('.dress-card__image')
       const label = card.querySelector('.dress-card__label')
-      const content = card.querySelector('.dress-card__content, .guest-card__content')
+      const content = card.querySelector('.dress-card__content')
       const contentChildren = content.children
       const swatches = card.querySelectorAll('.swatch')
 
@@ -329,8 +286,8 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 
   mediaContext.add('(max-width: 760px)', () => {
     attireCards.forEach(card => {
-      const imageWrap = card.querySelector('.dress-card__image, .guest-card__image')
-      const contentChildren = card.querySelector('.dress-card__content, .guest-card__content').children
+      const imageWrap = card.querySelector('.dress-card__image')
+      const contentChildren = card.querySelector('.dress-card__content').children
       const swatches = card.querySelectorAll('.swatch')
 
       const tl = gsap.timeline({
@@ -499,14 +456,14 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   width: min(100%, 1120px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(1rem, 2vw, 1.5rem);
   align-items: stretch;
 }
 
 .dress-featured > article { display: grid; grid-template-rows: auto 1fr; }
-.dress-featured :is(.dress-card__image, .guest-card__image) { width: 100%; aspect-ratio: 3 / 2; margin: 0; }
-.dress-featured :is(.dress-card__content, .guest-card__content) {
+.dress-featured .dress-card__image { width: 100%; aspect-ratio: 3 / 2; margin: 0; }
+.dress-featured .dress-card__content {
   padding: clamp(1.25rem, 2vw, 2rem);
 }
 .dress-featured .dress-card__columns { grid-template-columns: 1fr; gap: 1rem; }
@@ -514,10 +471,6 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   padding: 1rem 0 0;
   border-left: 0;
   border-top: 1px solid rgba(40, 77, 103, 0.13);
-}
-.dress-featured .guest-card h3 { font-size: clamp(1.8rem, 2.5vw, 2.4rem); }
-@media (min-width: 761px) and (max-width: 900px) {
-  .dress-featured { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 .dress-card {
@@ -680,92 +633,6 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   color: var(--dress-blue);
 }
 
-.guest-card {
-  padding: clamp(2rem, 5vw, 3.5rem);
-  border: 1px solid rgba(40, 77, 103, 0.12);
-  background: rgba(255, 255, 255, 0.68);
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.guest-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 22px 48px rgba(62, 56, 51, 0.1);
-}
-
-.guest-card__icon {
-  width: 56px;
-  height: 56px;
-  display: grid;
-  place-items: center;
-  margin-bottom: 1.3rem;
-  border: 1px solid rgba(40, 77, 103, 0.18);
-  border-radius: 50%;
-  color: var(--dress-pomegranate);
-}
-
-.guest-card__icon :deep(svg) {
-  width: 27px;
-  height: 27px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.guest-card__label {
-  margin: 0 0 0.55rem;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--dress-melon);
-}
-
-.guest-card h3 {
-  margin: 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.2rem, 4vw, 3.5rem);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--dress-blue);
-}
-
-.guest-card__content > p:not(.guest-card__label) {
-  margin: 1rem 0 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.86rem;
-  font-weight: 300;
-  line-height: 1.75;
-  color: rgba(36, 49, 58, 0.68);
-}
-
-.guest-card ul {
-  margin: 1.3rem 0 0;
-  padding: 1.2rem 0 0;
-  border-top: 1px solid rgba(40, 77, 103, 0.12);
-  list-style: none;
-}
-
-.guest-card li {
-  position: relative;
-  padding-left: 1.2rem;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.82rem;
-  line-height: 1.8;
-  color: rgba(36, 49, 58, 0.72);
-}
-
-.guest-card li::before {
-  content: '·';
-  position: absolute;
-  left: 0;
-  color: var(--dress-pomegranate);
-}
-
 .avoid-guide__items {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -883,7 +750,7 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
     padding: 4rem 1rem;
   }
   .dress-featured { gap: 1.5rem; }
-  .dress-card__content, .guest-card__content { padding: 1.4rem; }
+  .dress-card__content { padding: 1.4rem; }
   .avoid-guide { margin-top: 3.5rem; }
   .avoid-guide__heading { margin-bottom: 2rem; }
   .dress-footer { margin-top: 3.5rem; }
@@ -912,18 +779,17 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 @media (prefers-reduced-motion: reduce) {
   .dress-card,
   .dress-card__image img,
-  .guest-card,
   .avoid-item {
     transition: none;
   }
 }
-.dress-header, .dress-card, .dress-card__content, .dress-card__column, .guest-card, .avoid-item { min-width: 0; overflow-wrap: anywhere; }
+.dress-header, .dress-card, .dress-card__content, .dress-card__column, .avoid-item { min-width: 0; overflow-wrap: anywhere; }
 .dress-header__eyebrow { color: var(--dress-bistre); }
 .dress-section h2, .dress-section h3 { min-width: 0; overflow-wrap: anywhere; }
 .dress-card__image-fallback { position: absolute; inset: 0; display: grid; place-content: center; margin: 0; padding: 1.5rem 1.5rem 4rem; text-align: center; color: var(--dress-blue); font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 3vw, 1.7rem); line-height: 1.4; }
 .dress-card__overlay { pointer-events: none; }
 @media (prefers-reduced-motion: reduce) {
-  .dress-card:hover, .guest-card:hover, .avoid-item:hover { transform: none; }
+  .dress-card:hover, .avoid-item:hover { transform: none; }
   .dress-card:hover .dress-card__image img { scale: 1; }
   .dress-card__image img { will-change: auto; }
 }
@@ -934,22 +800,23 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 .dress-card:hover .dress-card__image img { scale: 1; }
 .dress-card__overlay { display: none; }
 .dress-card__label { left: .5rem; right: .5rem; bottom: .4rem; color: var(--dress-blue); text-align: center; }
-.guest-card__image { position: relative; margin: 0 0 1.25rem; aspect-ratio: 3 / 2; background: transparent; overflow: hidden; }
-.guest-card__image img { width: 100%; height: 100%; object-fit: contain; padding: .5rem .5rem 1.75rem; }
-.guest-card__image p { padding: 1rem; color: var(--dress-blue); }
 
 /* Sponsor illustrations float above the readable cream information panel. */
 .dress-card { background: transparent; border: 0; box-shadow: none; }
 .dress-card:hover { box-shadow: none; }
 .dress-card__content { background: rgba(255,250,245,.94); border: 1px solid rgba(40,77,103,.12); box-shadow: 0 16px 40px rgba(65,56,49,.07); }
 
-/* Guest illustrations share the sponsor cards' transparent upper area. */
-.guest-card { padding: 0; border: 0; background: transparent; }
-.guest-card:hover { box-shadow: none; }
-.guest-card__image { margin: 0; }
-.guest-card__content { min-width: 0; padding: clamp(2rem,5vw,3.5rem); background: rgba(255,250,245,.94); border: 1px solid rgba(40,77,103,.12); box-shadow: 0 16px 40px rgba(65,56,49,.07); }
 @media (max-width: 520px) {
-  .dress-featured :is(.dress-card__content, .guest-card__content) { padding: 1.4rem; }
+  .dress-featured .dress-card__content { padding: 1.4rem; }
 }
-</style>
 
+.dress-card__list,
+.dress-card__note {
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.84rem;
+  line-height: 1.8;
+  color: var(--dress-ink);
+}
+.dress-card__list { margin: 0.75rem 0 0; padding-left: 1.2rem; }
+.dress-card__note { margin: 1.5rem 0 0; padding-top: 1rem; border-top: 1px solid rgba(40, 77, 103, 0.13); }
+</style>
