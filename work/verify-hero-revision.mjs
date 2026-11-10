@@ -36,7 +36,7 @@ try {
       await button.click();
       await page.locator('#hero-title').waitFor({state:'visible'});
       await page.waitForTimeout(3500);
-      assert.equal(await page.locator('.hero-content__eyebrow').innerText(), 'Sa wakas! Ikakasal na sila');
+      assert.equal(await page.locator('.hero-content__eyebrow').innerText(), 'Sa wakas!\nIkakasal na sila');
       assert.equal(await page.locator('.hero-details__date').textContent(), '17 Enero 2027');
       assert.equal(await page.locator('.hero-details__venue').textContent(), 'Baguio City');
       assert.equal(await page.locator('.hero-content__caption, .hero-scroll').count(), 0);

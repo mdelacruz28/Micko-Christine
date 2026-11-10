@@ -3,7 +3,7 @@
     <div class="hero-section__overlay" aria-hidden="true"></div>
 
     <div class="hero-content">
-      <p class="hero-content__eyebrow">Sa wakas! Ikakasal na sila</p>
+      <p class="hero-content__eyebrow">Sa wakas!<br />Ikakasal na sila</p>
       <h1 id="hero-title" class="hero-names" aria-label="Micko and Christine" tabindex="-1">
         <span class="hero-name hero-name--first">
           <span
