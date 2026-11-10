@@ -29,7 +29,7 @@
           />
         </div>
         <button class="intro-button" type="button" :disabled="isOpening" @click="openInvitation">
-          <span>{{ isOpening ? 'Opening Invitation' : 'Open the Invitation' }}</span>
+          <span>{{ isOpening ? 'Opening Invitation' : 'BUKSAN AND IMBITASYON' }}</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
         </button>
       </div>

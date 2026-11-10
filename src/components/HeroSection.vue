@@ -3,6 +3,7 @@
     <div class="hero-section__overlay" aria-hidden="true"></div>
 
     <div class="hero-content">
+      <p class="hero-content__eyebrow">Sa wakas! Ikakasal na sila</p>
       <h1 id="hero-title" class="hero-names" aria-label="Micko and Christine" tabindex="-1">
         <span class="hero-name hero-name--first">
           <span
@@ -27,14 +28,14 @@
         </span>
       </h1>
 
-      <p class="hero-content__caption">are getting married</p>
 
       <div class="hero-content__ornament" aria-hidden="true">
         <span></span><i></i><span></span>
       </div>
 
       <div class="hero-details">
-        <p class="hero-details__date">January 17, 2027 <span aria-hidden="true"> • </span> Baguio City</p>
+        <p class="hero-details__date">17 Enero 2027</p>
+        <p class="hero-details__venue">Baguio City</p>
       </div>
 
       <div class="countdown" role="timer" aria-live="off" aria-label="Wedding countdown">
@@ -48,10 +49,6 @@
         </div>
       </div>
 
-      <a class="hero-scroll" href="#story">
-        <span>Discover our story</span>
-        <i aria-hidden="true"></i>
-      </a>
     </div>
   </section>
 </template>
@@ -165,7 +162,7 @@ onMounted(() => {
         0.78,
       )
       .from(
-        ".hero-content__caption",
+        ".hero-content__eyebrow",
         { opacity: 0, y: 18, duration: 0.65 },
         1.35,
       )
@@ -188,19 +185,9 @@ onMounted(() => {
         ".countdown__item",
         { opacity: 0, y: 20, scale: 0.94, duration: 0.6, stagger: 0.09 },
         1.82,
-      )
-      .from(".hero-scroll", { opacity: 0, y: 12, duration: 0.55 }, 2.08);
+      );
 
     animateEntrance = false;
-    gsap.to(".hero-scroll i", {
-      opacity: 0.25,
-      scaleY: 0.55,
-      transformOrigin: "top",
-      duration: 0.9,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
 
     }, heroRef.value);
     return () => context.revert();
@@ -295,12 +282,11 @@ onBeforeUnmount(() => {
   color: #efb49f;
   transform: rotate(-8deg);
 }
-.hero-content__caption {
-  margin: clamp(1rem, 3vw, 1.7rem) 0 0;
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(1.3rem, 2.5vw, 2rem);
-  font-style: italic;
-  letter-spacing: 0.08em;
+.hero-content__eyebrow {
+  margin: 0 0 clamp(1.2rem, 3vw, 2rem);
+  font-family: "Parisienne", cursive;
+  font-size: clamp(1.5rem, 3vw, 2.3rem);
+  line-height: 1.4;
 }
 .hero-content__ornament {
   display: flex;
@@ -328,6 +314,12 @@ onBeforeUnmount(() => {
   font-weight: 500;
   letter-spacing: 0.3em;
   text-transform: uppercase;
+}
+.hero-details__venue {
+  margin: .65rem 0 0;
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(.78rem, 1.4vw, .96rem);
+  letter-spacing: .12em;
 }
 .countdown {
   display: grid;
@@ -380,29 +372,6 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   color: rgba(255, 250, 245, 0.85);
 }
-.hero-scroll {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: clamp(2.5rem, 6vw, 4rem);
-  color: rgba(255, 250, 245, 0.82);
-  text-decoration: none;
-  font-family: "Manrope", sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-}
-.hero-scroll i {
-  width: 1px;
-  height: 42px;
-  display: block;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.85),
-    transparent
-  );
-}
 @media (max-width: 760px) {
   .hero-section {
     padding-inline: 1rem;
@@ -448,8 +417,7 @@ onBeforeUnmount(() => {
   .countdown__item:nth-child(2)::after { display: none; }
 }
 .hero-section__background, .hero-section__overlay { pointer-events: none; }
-.hero-names:focus-visible, .hero-scroll:focus-visible { outline: 2px solid #efb49f; outline-offset: 6px; }
-.hero-scroll { min-width: 44px; }
+.hero-names:focus-visible { outline: 2px solid #efb49f; outline-offset: 6px; }
 @media (prefers-reduced-motion: reduce) {
   .hero-section__background, .hero-letter { will-change: auto; }
   .hero-section__background, .hero-letter { transform: none !important; }

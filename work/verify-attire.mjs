@@ -28,7 +28,7 @@ try {
         return route.continue();
       });
       await page.goto(url, { waitUntil: 'networkidle' });
-      await page.getByRole('button', { name: 'Open the Invitation', exact: true }).click();
+      await page.getByRole('button', { name: 'BUKSAN AND IMBITASYON', exact: true }).click();
       const section = page.locator('#dress-code');
       await section.scrollIntoViewIfNeeded();
       const cards = section.locator('.dress-card');
