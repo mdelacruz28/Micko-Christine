@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
 .hero-photo__note { position: absolute; left: -3%; bottom: 4%; padding: .65rem 1.4rem; background: rgba(255, 253, 248, .72); color: #48594f; font: 400 clamp(1.45rem, 2.5vw, 2rem)/.95 'Parisienne', cursive; transform: rotate(-5deg); box-shadow: 0 8px 24px rgba(30, 40, 35, .09); }
 .hero-countdown { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 2.4rem; padding: 1.1rem 0 .4rem;  }
 .hero-countdown > p { flex: 1; margin: 0; font: 500 .65rem/1.5 'Manrope', sans-serif; letter-spacing: .18em; text-transform: uppercase; color: rgba(255, 250, 245, .72); }
-.countdown { flex: 1; display: flex; justify-content: space-around; align-items: center; gap: 1rem; }
+.countdown { flex: 1; display: flex; justify-content: center; align-items: center; gap: 1rem; }
 .countdown__item { min-width: 3rem; display: grid; gap: .2rem; text-align: center; }
 .countdown__item strong { font: 400 2.2rem/1 'Cormorant Garamond', Georgia, serif; }
 .countdown__item span { font: 500 .6rem/1.4 'Manrope', sans-serif; letter-spacing: .12em; text-transform: uppercase; color: rgba(255, 250, 245, .72); }
