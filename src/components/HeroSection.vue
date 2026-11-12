@@ -29,7 +29,7 @@
         </figure>
       </div>
       <div class="hero-countdown">
-        <p>Kaunting tulog na lang</p>
+
         <div class="countdown" role="timer" aria-live="off" aria-label="Bilang ng oras bago ang kasal">
           <div v-for="item in countdownItems" :key="item.label" class="countdown__item">
             <strong>{{ item.value }}</strong><span>{{ item.label }}</span>
