@@ -12,30 +12,31 @@
         M<span>&amp;</span>C
       </div>
 
-      <p class="closing-content__eyebrow">With grateful hearts</p>
-      <h2 class="section-heading">Thank you for being part of our story.</h2>
+      <p class="closing-content__eyebrow">Buong pusong nagpapasalamat</p>
+      <h2 class="section-heading">Salamat sa pagiging bahagi ng aming kuwento.</h2>
 
       <p class="closing-content__message">
-        Your love, prayers, and presence mean more to us than words can say. We
-        cannot wait to celebrate this beautiful beginning with you.
+        Higit pa sa kayang sabihin ng mga salita para sa amin ang inyong
+        pagmamahal, panalangin, at presensya. Sabik na kaming ipagdiwang ang magandang
+        bagong simula kasama kayo.
       </p>
 
       <div class="closing-content__names" aria-label="Micko and Christine">
         <span>Micko</span><i>&amp;</i><span>Christine</span>
       </div>
 
-      <p class="closing-content__date">January 17, 2027</p>
+      <p class="closing-content__date">17 Enero 2027</p>
 
       <div class="closing-content__ornament" aria-hidden="true">
         <span></span><i></i><span></span>
       </div>
 
       <p class="closing-content__privacy">
-        Kindly keep our wedding details and invitation link private.
+        Pakiusap, panatilihing pribado ang mga detalye ng aming kasal at ang link ng imbitasyon.
       </p>
 
       <a class="closing-content__top" href="#home" @click="returnToBeginning">
-        <span>Back to the beginning</span>
+        <span>Bumalik sa simula</span>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 19V5M6 11l6-6 6 6" />
         </svg>
