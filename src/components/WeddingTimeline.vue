@@ -16,31 +16,31 @@ const timelineIcons = [
 const timelineItems = [
   {
     "time": "2:00 PM",
-    "title": "Guest Arrival"
+    "title": "Pagdating ng mga Bisita"
   },
   {
     "time": "2:30 PM",
-    "title": "Wedding Ceremony"
+    "title": "Seremonya ng Kasal"
   },
   {
     "time": "4:00 PM",
-    "title": "Cocktail Hour"
+    "title": "Cocktail Hours"
   },
   {
     "time": "5:00 PM",
-    "title": "Grand Reception"
+    "title": "Oras ng Salu-salo"
   },
   {
     "time": "6:45 PM",
-    "title": "Wine, Cake & Speeches"
+    "title": "Mga Talumpati"
   },
   {
     "time": "7:45 PM",
-    "title": "Music & After Party"
+    "title": "Kantahan at Kasiyahan sa Gabi"
   },
   {
     "time": "9:00 PM",
-    "title": "A Grateful Farewell"
+    "title": "Pasasalamat at Paalam"
   }
 ]
 
@@ -68,12 +68,12 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
   <section id="timeline" ref="sectionRef" class="timeline-section" aria-labelledby="timeline-heading">
     <div class="timeline-section__wash" aria-hidden="true"></div>
     <header class="timeline-header">
-      <p class="timeline-header__eyebrow">The celebration unfolds</p>
-      <h2 id="timeline-heading" class="section-heading">Wedding Day Timeline</h2>
-      <p class="timeline-header__intro">From the first welcome to the last dance.</p>
+      <p class="timeline-header__eyebrow">Daloy ng ating pagdiriwang</p>
+      <h2 id="timeline-heading" class="section-heading">Araw ng Kasal</h2>
+      <p class="timeline-header__intro">Mula sa unang pagsalubong hanggang sa huling sayaw.</p>
     </header>
 
-    <div ref="timelineRef" class="timeline" role="list" aria-label="Wedding day schedule">
+    <div ref="timelineRef" class="timeline" role="list" aria-label="Iskedyul sa araw ng kasal">
       <span class="timeline__progress" aria-hidden="true"></span>
       <article v-for="(item, index) in timelineItems" :key="item.time" class="timeline-item" role="listitem">
         <div class="timeline-item__content">
@@ -90,8 +90,8 @@ useGsapContext(sectionRef, ({ gsap, scope }) => {
     </div>
 
     <footer class="timeline-footer">
-      <p class="timeline-footer__script">Come for the vows, stay for the celebration.</p>
-      <p class="timeline-footer__note">Event schedule may be adjusted slightly on the day.</p>
+      <p class="timeline-footer__script">Makisaksi sa aming pangako at makisaya sa pagdiriwang.</p>
+      <p class="timeline-footer__note">Maaaring bahagyang magbago ang iskedyul sa araw ng kasal.</p>
     </footer>
   </section>
 </template>

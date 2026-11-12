@@ -1,30 +1,10 @@
 <template>
   <section id="faq" ref="sectionRef" class="faq-section">
-    <div class="faq-section__wash" aria-hidden="true"></div>
-
-    <header class="faq-header">
-      <p class="faq-header__eyebrow">A few helpful notes</p>
-      <h2 class="section-heading">Frequently Asked Questions</h2>
-      <p class="faq-header__intro">
-        We gathered the details you may need so you can arrive relaxed,
-        prepared, and ready to celebrate with us.
-      </p>
-    </header>
-
     <div class="faq-layout">
       <aside class="faq-aside">
-        <p class="faq-aside__label">Need a quick answer?</p>
-        <h3>Everything in one place</h3>
-        <p>
-          Tap any question to view the answer. Please check this section before
-          reaching out.
-        </p>
-
-        <div class="faq-aside__ornament" aria-hidden="true">
-          <span></span><i></i><span></span>
-        </div>
-        <p class="faq-aside__script">
-          Thank you for helping us keep things simple.
+        <h2>May tanong?<br /><em>Heto ang sagot.</em></h2>
+        <p class="faq-aside__intro">
+          Para relaxed at handa ka sa pagpunta, pinagsama-sama na namin dito ang mga detalyeng maaaring kailanganin mo.
         </p>
       </aside>
 
@@ -64,9 +44,7 @@
             <div class="faq-item__answer-clip">
               <div class="faq-item__answer-inner">
                 <p>{{ item.answer }}</p>
-                <ul v-if="item.points?.length">
-                  <li v-for="point in item.points" :key="point">{{ point }}</li>
-                </ul>
+                <p v-if="item.followUp">{{ item.followUp }}</p>
               </div>
             </div>
           </div>
@@ -74,14 +52,6 @@
       </div>
     </div>
 
-    <footer class="faq-footer">
-      <div class="faq-footer__ornament" aria-hidden="true">
-        <span></span><i></i><span></span>
-      </div>
-      <p class="faq-footer__script">
-        We’re grateful for your thoughtfulness and cooperation.
-      </p>
-    </footer>
   </section>
 </template>
 
@@ -91,68 +61,54 @@ import { useGsapContext } from '../composables/useGsapContext.js';
 import { ScrollTrigger } from '../plugins/gsap';
 
 const sectionRef = ref(null);
-const openIndex = ref(0);
+const openIndex = ref(-1);
 
 const faqs = [
   {
-    question: "Can I bring a plus one?",
+    question: "Puwede ba akong magsama ng plus-one?",
     answer:
-      "Each invited guest has their own invitation and one reserved seat. Plus-ones and additional guests are not included.",
-    points: [
-      "Please submit your own individual RSVP.",
-      "Please contact the couple directly with any questions.",
-    ],
+      "Bawat inimbitahang bisita ay may sariling paanyaya at isang nakalaang upuan. Hindi kasama ang plus-one o dagdag na bisita.",
+    followUp: "Pakikumpleto ang sarili mong RSVP. Kung may tanong tungkol sa imbitasyon, kausapin lang kami.",
   },
   {
-    question: "Are children invited?",
+    question: "Kasama ba sa imbitasyon ang mga bata?",
     answer:
-      "As much as we love your little ones, we kindly ask that our wedding be an adults-only celebration, with the exception of children who are part of the ceremony. Thank you for your understanding.",
+      "Mahal namin ang inyong mga chikiting, pero adults-only muna ang ating selebrasyon, maliban sa mga batang bahagi ng seremonya. Salamat sa pag-unawa.",
   },
   {
-    question: "Where should we park?",
+    question: "Saan puwedeng mag-park?",
     answer:
-      "Parking availability may vary by venue. We recommend arriving early and following the instructions of venue staff and coordinators.",
+      "Depende sa venue ang availability ng parking. Mas mabuting dumating nang maaga at sundin ang gabay ng venue staff at coordinators pagdating ninyo.",
   },
   {
-    question: "Is the ceremony unplugged?",
+    question: "Unplugged ba ang ceremony?",
     answer:
-      "We kindly encourage an unplugged ceremony so everyone can be fully present.",
+      "Oo, pakiusap naming itabi muna ang inyong phones at cameras habang ginaganap ang seremonya. Gusto naming lubos nating maramdaman at mapagsaluhan ang espesyal naming araw.",
   },
   {
-    question: "What should I know about Baguio weather?",
+    question: "Ano ang dapat dalhin para sa panahon sa Baguio?",
     answer:
-      "Baguio can be cool and breezy, with occasional rain, especially in the late afternoon and evening. We kindly encourage you to bring an umbrella and a jacket or shawl to stay warm and comfortable, as January can be particularly chilly.",
+      "Maaaring malamig at mahangin, lalo na sa hapon at gabi, at posible rin ang ulan. Magdala ng payong at jacket o shawl para komportable kayo. Asahan ang mababang temperature sa Baguio sa buwan ng Enero.",
   },
   {
-    question: "Do you have a gift preference?",
+    question: "May gusto ba kayong matanggap na regalo?",
     answer:
-      "Your presence at our wedding is already a wonderful gift. If you wish to give us something more, we would be grateful for a monetary gift to help us begin our new chapter together.",
+      "Regalo na sa amin ang pagpunta at pakikisaya ninyo. Kung nais pa ninyong magbigay, buong pasasalamat naming tatanggapin ang monetary gift bilang tulong sa pagsisimula ng aming buhay bilang mag asawa.",
   },
   {
-    question: "Can I change my RSVP after submitting?",
+    question: "Puwede ko bang baguhin ang aking RSVP?",
     answer:
-      "Please review your answers carefully before submission. Changes may no longer be accommodated without confirmation.",
+      "Pakisuri muna ang inyong mga sagot bago i-submit. Kung may kailangang baguhin, makipag-ugnayan muna sa amin para makumpirma kung maaari pa itong ma-adjust.",
   },
   {
-    question: "Can I share the invitation link?",
-    answer: "Please keep the website and event details private.",
+    question: "Puwede bang i-share ang invitation link?",
+    answer: "Para sa mga inimbitahan lamang ang ating selebrasyon. Kami ay lubos na nakikiusap na panatilihing pribado ang website at mga detalye ng kasal, at huwag ipasa ang link. Salamat sa pag-iingat nito kasama namin.",
   },
 ];
 
 useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
-  const header = scope.querySelector(".faq-header");
   const aside = scope.querySelector(".faq-aside");
   const items = gsap.utils.toArray(".faq-item");
-  const footer = scope.querySelector(".faq-footer");
-
-  gsap.from(header.children, {
-    scrollTrigger: { trigger: header, start: "top 84%", once: true },
-    opacity: 0,
-    y: 38,
-    filter: "blur(5px)",
-    duration: 0.95,
-    stagger: 0.12,
-  });
 
   gsap.from(aside, {
     scrollTrigger: { trigger: aside, start: "top 80%", once: true },
@@ -170,13 +126,6 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
     stagger: 0.07,
   });
 
-  gsap.from(footer.children, {
-    scrollTrigger: { trigger: footer, start: "top 86%", once: true },
-    opacity: 0,
-    y: 28,
-    duration: 0.8,
-    stagger: 0.12,
-  });
 });
 
 let refreshFrame;
@@ -218,140 +167,64 @@ onMounted(() => {
 <style scoped>
 .faq-section {
   --faq-blue: #284d67;
-  --faq-melon: #efb49f;
-  --faq-pomegranate: #a64248;
+  --faq-gold: #987853;
   --faq-ink: #24313a;
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding: clamp(6rem, 10vw, 10rem) clamp(1.25rem, 5vw, 5rem);
-  background: linear-gradient(180deg, #f8f2eb, #fffaf6 50%, #f5ede5);
+  padding: clamp(5rem, 8vw, 8rem) clamp(1.25rem, 5vw, 5rem);
+  background: rgba(255, 250, 245, .76);
   color: var(--faq-ink);
 }
-
-.faq-section__wash {
-  position: absolute;
-  inset: -48px 0;
-  z-index: -1;
-  background:
-    radial-gradient(
-      circle at 12% 18%,
-      rgba(239, 180, 159, 0.2),
-      transparent 24rem
-    ),
-    radial-gradient(
-      circle at 92% 76%,
-      rgba(40, 77, 103, 0.12),
-      transparent 28rem
-    );
-}
-.faq-header {
-  width: min(100%, 820px);
-  margin: 0 auto clamp(4.5rem, 8vw, 7rem);
-  text-align: center;
-}
-.faq-header__eyebrow {
-  margin: 0 0 0.75rem;
-  font-family: "Allura", cursive;
-  font-size: clamp(1.7rem, 3vw, 2.5rem);
-  color: var(--faq-melon);
-  transform: rotate(-3deg);
-}
-.faq-header h2 {
-  margin: 0;
-  font-size: clamp(3.5rem, 7.5vw, 6.6rem);
-  color: var(--faq-blue);
-}
-.faq-header__intro {
-  width: min(100%, 620px);
-  margin: 1.7rem auto 0;
-  font-family: "Manrope", sans-serif;
-  font-size: clamp(0.92rem, 1.5vw, 1.05rem);
-  font-weight: 300;
-  line-height: 1.9;
-  color: rgba(36, 49, 58, 0.72);
-}
+:global(#app .site-shell #faq.faq-section) { background: rgba(255, 250, 245, .76); }
 
 .faq-layout {
-  width: min(100%, 1160px);
+  width: min(100%, 1110px);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1.5fr);
-  gap: clamp(2rem, 6vw, 5rem);
+  grid-template-columns: minmax(240px, 0.95fr) minmax(0, 1.4fr);
+  gap: clamp(3rem, 7vw, 6rem);
   align-items: start;
 }
 .faq-aside {
   position: sticky;
-  top: 2rem;
-  padding: clamp(1.8rem, 4vw, 3rem);
-  border: 1px solid rgba(40, 77, 103, 0.12);
-  background: rgba(255, 255, 255, 0.66);
-  box-shadow: 0 24px 65px rgba(62, 56, 51, 0.08);
+  top: 0;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px solid rgba(40, 77, 103, .12);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(65, 56, 49, .07);
 }
-.faq-aside__label {
-  margin: 0 0 0.55rem;
-  font-family: "Manrope", sans-serif;
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--faq-pomegranate);
-}
-.faq-aside h3 {
+:global(#app .site-shell #faq .faq-aside) { background: rgba(255, 250, 245, .94); }
+.faq-aside h2 {
   margin: 0;
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(2.3rem, 4vw, 3.6rem);
-  font-style: italic;
-  font-weight: 500;
-  line-height: 1;
+  font-size: clamp(3rem, 4vw, 4rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 0.98;
   color: var(--faq-blue);
 }
-.faq-aside > p:not(.faq-aside__label):not(.faq-aside__script) {
-  margin: 1rem 0 0;
+.faq-aside h2 em { color: var(--faq-gold); font-weight: 400; }
+@media (min-width: 901px) {
+  #faq .faq-aside h2 { font-size: 3.5rem; }
+  .faq-aside h2 em { font-size: .82em; white-space: nowrap; }
+}
+.faq-aside__intro {
+  max-width: 330px;
+  margin: 1.8rem 0 0;
   font-family: "Manrope", sans-serif;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 300;
-  line-height: 1.8;
-  color: rgba(36, 49, 58, 0.68);
-}
-.faq-aside__ornament,
-.faq-footer__ornament {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7rem;
-}
-.faq-aside__ornament {
-  margin: 2rem 0 1.2rem;
-}
-.faq-aside__ornament span,
-.faq-footer__ornament span {
-  width: clamp(2rem, 6vw, 4rem);
-  height: 1px;
-  background: rgba(120, 97, 75, 0.32);
-}
-.faq-aside__ornament i,
-.faq-footer__ornament i {
-  width: 6px;
-  height: 6px;
-  border: 1px solid var(--faq-melon);
-  transform: rotate(45deg);
-}
-.faq-aside__script {
-  margin: 0;
-  text-align: center;
-  font-family: "Allura", cursive;
-  font-size: clamp(1.7rem, 3vw, 2.4rem);
-  color: var(--faq-blue);
+  line-height: 1.75;
+  color: rgba(36, 49, 58, 0.7);
 }
 
 .faq-list {
-  padding: clamp(1rem, 2.5vw, 2rem);
-  border-top: 1px solid rgba(40, 77, 103, 0.16);
-  border-inline: 1px solid rgba(40, 77, 103, 0.12);
-  border-bottom: 1px solid rgba(40, 77, 103, 0.12);
-  background: rgba(255, 250, 245, 0.94);
-  box-shadow: 0 18px 48px rgba(47, 48, 46, 0.07);
+  padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1rem, 2.5vw, 2rem);
+  background: rgba(255, 250, 245, .94);
+  border: 1px solid rgba(40, 77, 103, .12);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(65, 56, 49, .07);
 }
 .faq-item {
   border-bottom: 1px solid rgba(40, 77, 103, 0.16);
@@ -361,25 +234,25 @@ onMounted(() => {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.4rem;
   border: 0;
-  padding: 1.55rem 0;
+  padding: 1.35rem 0;
   background: transparent;
   text-align: left;
   color: inherit;
   cursor: pointer;
 }
 .faq-item__number {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.35rem;
-  font-style: italic;
-  color: #576b78;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.7rem;
+  color: var(--faq-gold);
 }
 .faq-item__question {
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(1.6rem, 3vw, 2.35rem);
-  font-style: italic;
-  font-weight: 500;
+  font-size: clamp(1.45rem, 2vw, 1.85rem);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.2;
   color: var(--faq-blue);
 }
 .faq-item__icon {
@@ -393,7 +266,7 @@ onMounted(() => {
   left: 50%;
   width: 14px;
   height: 1px;
-  background: var(--faq-pomegranate);
+  background: var(--faq-gold);
   transition: transform 0.3s ease;
 }
 .faq-item__icon i:first-child {
@@ -412,7 +285,7 @@ onMounted(() => {
   transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .faq-item__answer-inner {
-  padding: 0 3.2rem 1.7rem 3.7rem;
+  padding: 0 2rem 1.5rem 2.6rem;
 }
 .faq-item__answer-inner p {
   margin: 0;
@@ -422,37 +295,7 @@ onMounted(() => {
   line-height: 1.85;
   color: #39454d;
 }
-.faq-item__answer-inner ul {
-  margin: 1rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-.faq-item__answer-inner li {
-  position: relative;
-  padding-left: 1.2rem;
-  font-family: "Manrope", sans-serif;
-  font-size: 0.82rem;
-  line-height: 1.8;
-  color: #44515a;
-}
-.faq-item__answer-inner li::before {
-  content: "·";
-  position: absolute;
-  left: 0;
-  color: var(--faq-pomegranate);
-}
-
-.faq-footer {
-  width: min(100%, 760px);
-  margin: clamp(5rem, 9vw, 8rem) auto 0;
-  text-align: center;
-}
-.faq-footer__script {
-  margin: 1.1rem 0 0;
-  font-family: "Allura", cursive;
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
-  color: var(--faq-blue);
-}
+.faq-item__answer-inner p + p { margin-top: 1rem; }
 
 @media (max-width: 900px) {
   .faq-layout {
@@ -467,18 +310,15 @@ onMounted(() => {
   .faq-section {
     padding: 4.5rem 1rem;
   }
-  .faq-list { padding: .6rem 1rem; }
   .faq-item__answer-inner {
     padding-right: 0;
-    padding-left: 2.6rem;
+    padding-left: 1.8rem;
   }
 }
 .faq-item.is-open .faq-item__answer { grid-template-rows: 1fr; }
 .faq-item__answer-clip { min-height: 0; overflow: hidden; }
-.faq-header, .faq-aside, .faq-list, .faq-item, .faq-item__question { min-width: 0; overflow-wrap: anywhere; }
-.faq-header h2 { font-size: clamp(2.6rem, 7.5vw, 6.6rem); }
-.faq-aside h3 { font-size: clamp(2rem, 3.2vw, 3.1rem); }
-.faq-header__eyebrow { color: var(--faq-pomegranate); }
+.faq-aside, .faq-list, .faq-item, .faq-item__question { min-width: 0; overflow-wrap: anywhere; }
+.faq-aside h2 { font-size: clamp(3rem, 7vw, 4.25rem); }
 .faq-item__button { min-height: 44px; }
 .faq-item__button:focus-visible { outline: 2px solid var(--faq-blue); outline-offset: 4px; }
 .faq-item:focus-within { opacity: 1 !important; transform: none !important; }

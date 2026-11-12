@@ -7,28 +7,28 @@ import { useCarouselAutoplay } from '../composables/useCarouselAutoplay.js'
 
 const chapters = [
   {
-    year: 'The Beginning',
-    title: 'When our paths first crossed',
-    description: 'What began as an ordinary moment slowly became something neither of us expected—a friendship filled with laughter, comfort, and a growing sense of home.',
-    accent: 'A quiet hello became the start of everything.',
+    year: 'Ang simula',
+    title: 'Noong nagtagpo ang ating mga landas.',
+    description: 'Nagsimula sa isang simpleng pagkakakilala. Hindi na namalayan na ang mga kwentuhan at tawanan ay naging isang pagkakaibigang may dalang saya, kapanatagan, at pakiramdam na nasa tahanan',
+    accent: 'Sa isang simpleng "Hello", nag simula ang lahat',
     images: ["/images/story/Paths%20first%20cross/IMG_1546.webp","/images/story/Paths%20first%20cross/IMG_1573.webp","/images/story/Paths%20first%20cross/IMG_1720.webp","/images/story/Paths%20first%20cross/IMG_E0466.webp"],
-    alt: 'Micko and Christine at the beginning of their story'
+    alt: 'Sina Micko at Christine sa simula ng kanilang kuwento'
   },
   {
-    year: 'The Journey',
-    title: 'Growing side by side',
-    description: 'Through changing seasons, long conversations, adventures, and everyday moments, we learned that love is not only found in grand gestures, but in choosing one another again and again.',
-    accent: 'Together, even the ordinary became meaningful.',
+    year: 'Bawat kabanata',
+    title: 'Araw-araw pinipiliin ang isa’t-isa',
+    description: 'Sa lahat ng panahon, bawat kwentuhan, bawat lugar na napuntahan at pupuntahan, unti unting natutunan na hindi lang sa malalaking bagay nasusukat ang pag-ibig. Kung hindi sa araw-araw na pagpili sa isa’t isa',
+    accent: 'Ang ordinaryong araw ang nagiging espesyal kapag kasama ka',
     images: ["/images/story/Growing%20SidebySide/IMG_1552.webp","/images/story/Growing%20SidebySide/IMG_1563.webp","/images/story/Growing%20SidebySide/IMG_1602.webp","/images/story/Growing%20SidebySide/IMG_E1589.webp","/images/story/Growing%20SidebySide/story2.png"],
-    alt: 'Micko and Christine sharing a meaningful moment together'
+    alt: 'Sina Micko at Christine na magkasama sa kanilang paglalakbay'
   },
   {
-    year: 'The Promise',
-    title: 'Choosing forever',
-    description: 'With grateful hearts and faith in the life ahead, we said yes to a new chapter—one built on love, commitment, growth, and the promise to walk through every season together.',
-    accent: 'This is where forever begins.',
+    year: 'Ang pangako',
+    title: 'Magkasama, sa habangbuhay.',
+    description: 'Pinili na simulan ang bagong kabanata na puno ng pasasalamat at pananampalataya. Pangakong mamahalin at pipiliin sa lahat ng panahon at bawat hamon ng buhay.',
+    accent: 'Dito magsisimula ang ating habangbuhay.',
     images: ["/images/story/Choosing%20Forever/DCJN2842.JPG","/images/story/Choosing%20Forever/story3.jpg"],
-    alt: 'Micko and Christine celebrating their engagement'
+    alt: 'Isang larawan nina Micko at Christine para sa bagong kabanata ng kanilang pagsasama'
   }
 ]
 
@@ -43,7 +43,7 @@ const transitioning = ref(false)
 const reducedMotion = ref(false)
 const autoplay = useCarouselAutoplay({ sectionRef, carouselRef, activeIndex, transitioning, reducedMotion, advance: () => goTo(activeIndex.value + 1, 1) })
 const { paused: autoplayPaused, running: autoplayRunning } = autoplay
-const announcement = computed(() => (activeIndex.value + 1) + ' of ' + chapters.length + ': ' + chapters[activeIndex.value].year + ' — ' + chapters[activeIndex.value].title)
+const announcement = computed(() => 'Kabanata ' + (activeIndex.value + 1) + ' sa ' + chapters.length + ': ' + chapters[activeIndex.value].year + ' — ' + chapters[activeIndex.value].title)
 let mediaContext
 let motionQuery
 let transition
@@ -140,16 +140,16 @@ onBeforeUnmount(() => {
   <section id="story" ref="sectionRef" class="story-section">
     <div class="story-section__wash" aria-hidden="true"></div>
     <header class="story-header">
-      <p class="story-header__eyebrow">A journey written in grace</p>
-      <h2 class="section-heading" id="story-title">Our Story</h2>
-      <p class="story-header__intro">From simple beginnings to a lifetime we now choose to share, every chapter has led us here.</p>
+      <p class="story-header__eyebrow">Ang aming paglalakbay</p>
+      <h2 class="section-heading" id="story-title">Ang Kwento naming Dalawa</h2>
+      <p class="story-header__intro">Mula sa simpleng simula hanggang sa panghabang buhay na sabay naming tatahakin</p>
     </header>
 
     <div class="story-depth">
     <div ref="carouselRef" class="story-carousel" role="region" aria-roledescription="carousel" aria-labelledby="story-title" aria-describedby="story-instructions" tabindex="0" @keydown="onKeydown" @pointerenter="autoplay.pointerEnter" @pointerleave="autoplay.pointerLeave" @focusin="autoplay.focusIn" @focusout="autoplay.focusOut" @touchstart.passive="autoplay.touchStart" @touchend.passive="autoplay.touchEnd" @touchcancel.passive="autoplay.touchEnd">
       <p id="story-instructions" class="story-sr-only">Use the previous and next buttons, swipe left or right, or use the left and right arrow keys while this carousel is focused. Home goes to the first chapter; End goes to the last.</p>
       <div id="story-slides" class="story-slides" @touchstart.passive="onTouchStart" @touchmove.passive="onTouchMove" @touchend.passive="onTouchEnd" @touchcancel.passive="cancelGesture">
-        <article v-for="(chapter, index) in chapters" :key="chapter.title" class="story-chapter" :class="{ 'is-active': index === activeIndex, 'is-leaving': index === leavingIndex }" role="group" aria-roledescription="slide" :aria-label="(index + 1) + ' of ' + chapters.length + ': ' + chapter.year" :aria-hidden="index !== activeIndex" :inert="index !== activeIndex">
+        <article v-for="(chapter, index) in chapters" :key="chapter.title" class="story-chapter" :class="{ 'is-active': index === activeIndex, 'is-leaving': index === leavingIndex }" role="group" aria-roledescription="slide" :aria-label="'Kabanata ' + (index + 1) + ' sa ' + chapters.length + ': ' + chapter.year" :aria-hidden="index !== activeIndex" :inert="index !== activeIndex">
           <figure class="story-chapter__media">
             <StoryPhotoCarousel :images="chapter.images" :alt="chapter.alt" :playing="index === activeIndex && autoplayRunning && !transitioning" @photo-touch-start="autoplay.touchStart" @photo-touch-end="autoplay.touchEnd" />
             <figcaption class="story-chapter__number" aria-hidden="true">{{ String(index + 1).padStart(2, '0') }}</figcaption>
@@ -168,7 +168,7 @@ onBeforeUnmount(() => {
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5m6 6-6-6 6-6" /></svg><span>Previous</span>
         </button>
         <div class="story-pagination" role="group" aria-label="Choose a story chapter">
-          <button v-for="(chapter, index) in chapters" :key="chapter.title" type="button" class="story-dot" :aria-label="'Go to chapter ' + (index + 1) + ': ' + chapter.year" :aria-current="index === activeIndex ? 'true' : undefined" :aria-disabled="transitioning" aria-controls="story-slides" @click="goTo(index)"><span aria-hidden="true"></span></button>
+          <button v-for="(chapter, index) in chapters" :key="chapter.title" type="button" class="story-dot" :aria-label="'Pumunta sa kabanata ' + (index + 1) + ': ' + chapter.year" :aria-current="index === activeIndex ? 'true' : undefined" :aria-disabled="transitioning" aria-controls="story-slides" @click="goTo(index)"><span aria-hidden="true"></span></button>
         </div>
         <button type="button" class="story-arrow" aria-label="Next story chapter" aria-controls="story-slides" :aria-disabled="transitioning" @click="goTo(activeIndex + 1, 1)">
           <span>Next</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
     </div>
 
     <footer class="story-ending">
-      <p class="story-ending__script">And the best is yet to come.</p>
+      <p class="story-ending__script">Magkasamang bubuo ng magagandang alaala</p>
       <div class="story-ending__ornament" aria-hidden="true"><span></span><i></i><span></span></div>
     </footer>
   </section>

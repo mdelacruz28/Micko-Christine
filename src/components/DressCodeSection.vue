@@ -3,11 +3,10 @@
     <div class="dress-section__wash" aria-hidden="true"></div>
 
     <header class="dress-header">
-      <p class="dress-header__eyebrow">Dressed for the occasion</p>
-      <h2 class="section-heading">Wedding Attire</h2>
+      <p class="dress-header__eyebrow">Para sa ating pagdiriwang</p>
+      <h2 class="section-heading">Kasuotan sa Kasal</h2>
       <p class="dress-header__intro">
-        We would love for everyone to feel comfortable, polished, and beautifully
-        part of our garden celebration.
+        Magsuot ng damit na maayos, komportable, at bagay sa ating pagdiriwang sa Baguio.
       </p>
     </header>
 
@@ -35,21 +34,18 @@
               class="dress-card__column"
             >
               <h4 class="dress-card__heading">{{ detail.heading }}</h4>
+              <p class="dress-card__detail-title">{{ detail.title }}</p>
               <p class="dress-card__copy">{{ detail.copy }}</p>
-              <ul v-if="detail.items" class="dress-card__list">
-                <li v-for="item in detail.items" :key="item">{{ item }}</li>
-              </ul>
             </div>
           </div>
-
-          <p v-if="group.note" class="dress-card__note">{{ group.note }}</p>
 
           <div
             v-if="group.swatches?.length"
             class="dress-card__swatches"
             role="group"
-            aria-label="Suggested colors"
+            :aria-label="`Mga kulay para sa ${group.title}`"
           >
+            <p class="dress-card__swatches-title">Mga mungkahing kulay</p>
             <span
               v-for="swatch in group.swatches"
               :key="swatch.name"
@@ -65,50 +61,18 @@
       </article>
     </div>
 
-    <section class="avoid-guide">
-      <div class="avoid-guide__heading">
-        <p>A gentle request</p>
-        <h3>Please avoid</h3>
-      </div>
-
+    <section class="avoid-guide" aria-label="Mga paalala sa kasuotan">
       <div class="avoid-guide__items">
-        <div
-          v-for="item in avoidColors"
-          :key="item.name"
-          class="avoid-item"
-        >
-          <span
-            class="avoid-item__color"
-            aria-hidden="true"
-            :style="{
-              background: item.background,
-              borderColor: item.border || 'transparent'
-            }"
-          ></span>
-
-          <div>
-            <strong>{{ item.name }}</strong>
-            <p>{{ item.reason }}</p>
-          </div>
+        <div class="avoid-item">
+          <h3>Kaunting pakiusap para sa mga bisita</h3>
+          <p>Iwasan muna ang blue, puti at ivory, itim, at neon. Piliin ang warm at eleganteng garden shades. Ang puti at ivory ay nakalaan para sa bride at bridal details.</p>
+        </div>
+        <div class="avoid-item">
+          <h3>Komportableng lakad, komportableng gabi</h3>
+          <p>Semi-formal o smart-casual na sapatos ang bagay sa selebrasyon. Magdala rin ng jacket o shawl para sa lamig ng Baguio.</p>
         </div>
       </div>
     </section>
-
-    <footer class="dress-footer">
-      <div class="dress-footer__ornament" aria-hidden="true">
-        <span></span>
-        <i></i>
-        <span></span>
-      </div>
-
-      <p class="dress-footer__script">
-        Come as your most elegant and comfortable self.
-      </p>
-
-      <p class="dress-footer__note">
-        Please consider bringing a light layer for the cool Baguio weather.
-      </p>
-    </footer>
   </section>
 </template>
 
@@ -122,20 +86,22 @@ const failedImages = reactive(new Set())
 const featuredGroups = [
   {
     id: 'sponsor-attire-title',
-    label: 'Main Sponsors',
-    title: 'Ninong & Ninang',
+    label: 'Ninong at Ninang',
+    title: 'Ninong at Ninang',
     image: '/images/main%20sponsor.png',
-    imageAlt: 'Formal attire inspiration for principal sponsors',
+    imageAlt: 'Mga Ninong na nakabarong at mga Ninang na nakasuot ng makukulay na gown',
     details: [
       {
-        heading: 'Ladies',
+        heading: 'Para sa mga babae',
+        title: 'Para sa aming mga Ninang.',
         copy:
-          'Long gown or Filipiniana-inspired attire in any lighter shade of the wedding palette.'
+          'Mahabang gown o Filipiniana-inspired na kasuotan sa mas mapusyaw na kulay ng wedding palette. Puwedeng gawing inspirasyon ang mga kulay sa ibaba.'
       },
       {
-        heading: 'Gentlemen',
+        heading: 'Para sa mga lalaki',
+        title: 'Para sa aming mga Ninong.',
         copy:
-          'Classic Barong Tagalog in a light or traditional cream tone, paired with formal trousers.'
+          'Klasikong Barong Tagalog sa light o tradisyonal na cream na kulay, na ipinares sa formal na pantalon.'
       }
     ],
     swatches: [
@@ -147,47 +113,27 @@ const featuredGroups = [
   },
   {
     id: 'guest-attire-title',
-    label: 'Guest Attire',
-    title: 'Ladies & Gentlemen',
+    label: 'Para sa mga bisita',
+    title: 'Mga Bisita',
     image: '/images/guest%20attire.png',
-    imageAlt: 'Garden wedding attire inspiration for ladies and gentlemen in dresses, shirts, and trousers',
+    imageAlt: 'Mga bisitang nakasuot ng pastel na damit, floral na gown, polo, at pantalon',
     details: [
       {
-        heading: 'Ladies',
-        copy: 'Choose a polished silhouette that moves beautifully and feels comfortable throughout the celebration.',
-        items: ['Midi, cocktail, or floor-length dress', 'Floral prints or elegant solid colors', 'Flowing or structured silhouettes']
+        heading: 'Para sa mga babae',
+        title: 'Damit na bagay sa iyo.',
+        copy: 'Puwedeng midi, cocktail, o mahabang dress. Welcome ang floral prints at eleganteng solid colors, sa flowing o structured na silhouette na komportable ka.'
       },
       {
-        heading: 'Gentlemen',
-        copy: 'A clean, well-fitted look is perfect for the garden setting and the cool Baguio atmosphere.',
-        items: ['Tucked-in polo or button-down shirt', 'Long or short sleeves are welcome', 'Tailored trousers or polished chinos']
+        heading: 'Para sa mga lalaki',
+        title: 'Simple at pulidong porma.',
+        copy: 'Tucked-in polo o button-down, long o short sleeves, na may maayos na slacks o chinos. Bagay ang malinis at sakto sa sukat na damit sa ating garden setting.'
       }
     ],
-    note: 'For all guests: semi-formal or smart-casual footwear.'
-  }
-]
-
-const avoidColors = [
-  {
-    name: 'Blue shades',
-    reason: 'Please choose warm, muted wedding colors instead.',
-    background: 'linear-gradient(135deg, #9fbfd1, #284d67)'
-  },
-  {
-    name: 'White & ivory',
-    reason: 'Reserved for the bride and bridal details.',
-    background: '#fffdf8',
-    border: '#d9d1c7'
-  },
-  {
-    name: 'Black',
-    reason: 'We encourage warm, celebratory garden shades.',
-    background: '#1c1c1c'
-  },
-  {
-    name: 'Neon colors',
-    reason: 'Please choose soft, muted, or elegant tones instead.',
-    background: 'linear-gradient(135deg, #dfff00, #ff4fd8)'
+    swatches: [
+      { name: 'Light Melon', color: '#efb49f' },
+      { name: 'Glazed Apricot', color: '#e8a078' },
+      { name: 'Soft Bistre', color: '#b49b7a' }
+    ]
   }
 ]
 
@@ -196,11 +142,9 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   const attireCards = gsap.utils.toArray(
     scope.querySelectorAll('.dress-featured > article')
   )
-  const avoidHeading = scope.querySelector('.avoid-guide__heading')
   const avoidItems = gsap.utils.toArray(
     scope.querySelectorAll('.avoid-item')
   )
-  const footer = scope.querySelector('.dress-footer')
 
   gsap.from(header.children, {
     scrollTrigger: {
@@ -333,18 +277,6 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
     })
   })
 
-  gsap.from(avoidHeading.children, {
-    scrollTrigger: {
-      trigger: avoidHeading,
-      start: 'top 84%',
-      once: true
-    },
-    opacity: 0,
-    y: 28,
-    duration: 0.8,
-    stagger: 0.1
-  })
-
   gsap.from(avoidItems, {
     scrollTrigger: {
       trigger: '.avoid-guide__items',
@@ -357,31 +289,6 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
     duration: 0.68,
     stagger: 0.1,
     ease: 'power3.out'
-  })
-
-  gsap.from('.avoid-item__color', {
-    scrollTrigger: {
-      trigger: '.avoid-guide__items',
-      start: 'top 80%',
-      once: true
-    },
-    rotate: -18,
-    scale: 0.96,
-    duration: 0.5,
-    stagger: 0.09,
-    ease: 'power2.out'
-  })
-
-  gsap.from(footer.children, {
-    scrollTrigger: {
-      trigger: footer,
-      start: 'top 86%',
-      once: true
-    },
-    opacity: 0,
-    y: 28,
-    duration: 0.8,
-    stagger: 0.12
   })
 
   return () => mediaContext.revert()
@@ -464,9 +371,11 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 .dress-featured > article { display: grid; grid-template-rows: auto 1fr; }
 .dress-featured .dress-card__image { width: 100%; aspect-ratio: 3 / 2; margin: 0; }
 .dress-featured .dress-card__content {
+  display: flex;
+  flex-direction: column;
   padding: clamp(1.25rem, 2vw, 2rem);
 }
-.dress-featured .dress-card__columns { grid-template-columns: 1fr; gap: 1rem; }
+.dress-featured .dress-card__columns { grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.8rem; }
 .dress-featured .dress-card__column + .dress-card__column {
   padding: 1rem 0 0;
   border-left: 0;
@@ -577,13 +486,32 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   color: rgba(36, 49, 58, 0.7);
 }
 
+.dress-card__detail-title {
+  margin: 0 0 0.55rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 2.5vw, 1.9rem);
+  line-height: 1.15;
+  color: var(--dress-blue);
+}
+
 .dress-card__swatches {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1.8rem;
+  gap: 0.75rem 1rem;
+  margin-top: auto;
   padding-top: 1.4rem;
   border-top: 1px solid rgba(40, 77, 103, 0.12);
+}
+
+.dress-card__swatches-title {
+  flex-basis: 100%;
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dress-bistre);
 }
 
 .swatch {
@@ -593,8 +521,9 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 }
 
 .swatch i {
-  width: 18px;
-  height: 18px;
+  width: 21px;
+  height: 21px;
+  flex: 0 0 auto;
   display: block;
   border: 1px solid rgba(36, 49, 58, 0.1);
   border-radius: 50%;
@@ -603,136 +532,43 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
 
 .swatch small {
   font-family: 'Manrope', sans-serif;
-  font-size: 0.63rem;
+  font-size: 0.72rem;
   color: rgba(36, 49, 58, 0.62);
 }
 
 .avoid-guide {
   width: min(100%, 1120px);
-  margin: clamp(6rem, 10vw, 9rem) auto 0;
-}
-
-.avoid-guide__heading {
-  margin-bottom: clamp(2.5rem, 5vw, 4rem);
-  text-align: center;
-}
-
-.avoid-guide__heading > p {
-  margin: 0 0 0.55rem;
-  font-family: 'Allura', cursive;
-  font-size: clamp(1.45rem, 2.8vw, 2.1rem);
-  color: var(--dress-melon);
-}
-
-.avoid-guide__heading h3 {
-  margin: 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.8rem, 5vw, 4.8rem);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--dress-blue);
+  margin: clamp(3.5rem, 6vw, 5rem) auto 0;
 }
 
 .avoid-guide__items {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: min(100%, 780px);
-  margin-inline: auto;
-  padding: clamp(.65rem, 2vw, 1.5rem);
-  border: 1px solid rgba(120, 97, 75, .22);
-  border-radius: 18px;
-  background: linear-gradient(145deg, rgba(255, 250, 245, .62), rgba(248, 239, 231, .59));
-  box-shadow: 0 16px 42px rgba(47, 48, 46, .09);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(120, 97, 75, .25);
 }
 
 .avoid-item {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(.65rem, 2vw, 1.1rem);
-  padding: clamp(.8rem, 2.6vw, 1.55rem);
+  min-width: 0;
 }
 
-.avoid-item:nth-child(odd) {
-  border-inline-end: 1px solid rgba(120, 97, 75, .16);
-}
-
-.avoid-item:nth-child(-n+2) {
-  border-bottom: 1px solid rgba(120, 97, 75, .16);
-}
-
-.avoid-item__color {
-  flex: 0 0 auto;
-  width: clamp(28px, 5vw, 42px);
-  aspect-ratio: 1;
-  border: 1px solid;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px #fffaf5, 0 0 0 4px rgba(120, 97, 75, .16);
-}
-
-.avoid-item strong {
-  display: block;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.25rem, 2.5vw, 1.65rem);
-  font-style: italic;
+.avoid-item h3 {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  font-size: 0.68rem;
   font-weight: 600;
-  line-height: 1.12;
-  color: var(--dress-blue);
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--dress-bistre);
 }
-
 .avoid-item p {
-  margin: .4rem 0 0;
+  margin: .7rem 0 0;
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(.78rem, 1.4vw, .88rem);
-  line-height: 1.55;
+  font-size: 0.84rem;
+  line-height: 1.7;
   color: #37454d;
-}
-
-.dress-footer {
-  width: min(100%, 720px);
-  margin: clamp(5rem, 9vw, 8rem) auto 0;
-  text-align: center;
-}
-
-.dress-footer__ornament {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.dress-footer__ornament span {
-  width: clamp(2rem, 7vw, 5rem);
-  height: 1px;
-  background: rgba(120, 97, 75, 0.38);
-}
-
-.dress-footer__ornament i {
-  width: 6px;
-  height: 6px;
-  border: 1px solid var(--dress-melon);
-  transform: rotate(45deg);
-}
-
-.dress-footer__script {
-  margin: 1.15rem 0 0;
-  font-family: 'Allura', cursive;
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
-  color: var(--dress-blue);
-}
-
-.dress-footer__note {
-  margin: 0.45rem 0 0;
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.76rem;
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  color: rgba(36, 49, 58, 0.58);
-}
-
-@media (max-width: 940px) {
-  .avoid-guide__items {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 760px) {
@@ -752,8 +588,6 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   .dress-featured { gap: 1.5rem; }
   .dress-card__content { padding: 1.4rem; }
   .avoid-guide { margin-top: 3.5rem; }
-  .avoid-guide__heading { margin-bottom: 2rem; }
-  .dress-footer { margin-top: 3.5rem; }
 
   .dress-card__columns {
     grid-template-columns: 1fr;
@@ -767,12 +601,7 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   }
 
   .avoid-guide__items {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .avoid-item {
-    flex-direction: column;
-    align-items: flex-start;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -810,13 +639,4 @@ useGsapContext(sectionRef, ({ gsap, ScrollTrigger, scope }) => {
   .dress-featured .dress-card__content { padding: 1.4rem; }
 }
 
-.dress-card__list,
-.dress-card__note {
-  font-family: 'Manrope', sans-serif;
-  font-size: 0.84rem;
-  line-height: 1.8;
-  color: var(--dress-ink);
-}
-.dress-card__list { margin: 0.75rem 0 0; padding-left: 1.2rem; }
-.dress-card__note { margin: 1.5rem 0 0; padding-top: 1rem; border-top: 1px solid rgba(40, 77, 103, 0.13); }
 </style>

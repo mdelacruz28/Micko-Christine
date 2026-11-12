@@ -16,9 +16,6 @@
 #app .site-shell :is(.story-section__wash, .details-section__wash, .timeline-section__wash, .entourage-section__wash, .dress-section__wash, .faq-section__wash) { opacity: .35; }
 #app .rsvp-section__overlay { background: linear-gradient(135deg, rgba(20,42,57,.7), rgba(29,55,72,.65) 52%, rgba(47,38,36,.7)); }
 #app .closing-section__overlay { background: linear-gradient(180deg, rgba(12,29,40,.58), rgba(10,24,34,.78)); }
-/* Hero is secondary to the distinct Intro script names, with a calm mobile scale. */
-#app .hero-names { font-size: clamp(3.25rem, 8vw, 7rem); }
-@media (max-width: 620px) { #app .hero-names { font-size: clamp(2.75rem, 11vw, 4rem); } }
 
 #app .site-shell :is(.story-header__eyebrow, .details-header__eyebrow, .timeline-header__eyebrow, .entourage-header__eyebrow, .dress-header__eyebrow, .rsvp-header__eyebrow, .faq-header__eyebrow, .closing-content__eyebrow) { font-size: clamp(1.25rem, 2.2vw, 1.8rem); }
 

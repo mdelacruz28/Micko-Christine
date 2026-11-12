@@ -34,7 +34,7 @@ const options = [
           <input ref="focusTarget" v-model="lookupName" name="lookup-name" type="text" autocomplete="name" maxlength="120" required :disabled="busy" />
         </label>
       </div>
-      <button class="rsvp-submit" type="submit" :disabled="busy">Continue</button>
+      <button class="rsvp-submit" type="submit" :disabled="busy">Mag-RSVP sa imbitasyon</button>
     </form>
 
     <div v-else-if="stage === 'recorded'" class="rsvp-form">
@@ -210,8 +210,8 @@ input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-
 .rsvp-form--invitation .preference-option { border-radius: .65rem; background: #fffdf970; font-size: .8rem; line-height: 1.7; }
 .rsvp-form--invitation .preference-option:has(input:checked) { background: #efb49f20; border-color: #a6424855; }
 .rsvp-form--invitation .rsvp-final-note { padding: 1rem 1.1rem; border-left: 2px solid #cdbb97; background: #ede6db40; font-size: .75rem; line-height: 1.8; }
-.rsvp-form--invitation .rsvp-submit { border-radius: 999px; min-height: 56px; background: #284d67; color: #fffaf5; box-shadow: 0 8px 22px #284d6718; letter-spacing: .16em; }
-.rsvp-form--invitation .rsvp-submit:hover:not(:disabled) { background: #203e54; }
+.rsvp-form--invitation .rsvp-submit { border-radius: 999px; min-height: 56px; background: #527260; color: #fffaf5; box-shadow: 0 8px 22px #52726018; letter-spacing: .16em; }
+.rsvp-form--invitation .rsvp-submit:hover:not(:disabled) { background: #405b4c; }
 .rsvp-form--invitation .rsvp-secondary { border: 0; background: transparent; font-size: .75rem; text-decoration: underline; text-underline-offset: .3em; }
 @media(max-width:620px) {
  .rsvp-form--invitation .rsvp-verified { border-radius: 3rem 3rem .8rem .8rem; }

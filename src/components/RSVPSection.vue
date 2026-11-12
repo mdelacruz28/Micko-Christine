@@ -4,19 +4,18 @@
 
     <div class="rsvp-shell">
       <header class="rsvp-header">
-        <p class="rsvp-header__eyebrow">Kindly respond</p>
-        <h2 class="section-heading">RSVP</h2>
+        <p class="rsvp-header__eyebrow">06 / May upuan kami para sa iyo</p>
+        <h2 class="section-heading">Makakasama ka ba namin?</h2>
         <p class="rsvp-header__intro">
-          We hope you can celebrate with us. Please confirm your attendance on
-          or before {{ deadlineDate }}.
+          Mas magiging masaya ang araw na ito kung kasama ka. Pakikumpirma ang iyong pagdalo sa o bago ang {{ deadlineSentence }}.
         </p>
       </header>
 
       <div class="rsvp-layout">
         <aside class="rsvp-info">
           <div class="rsvp-info__date">
-            <span>Reply by</span>
-            <strong><time :datetime="approvedDeadline">{{ deadlineDate }}</time></strong>
+            <span>Pakisagot hanggang</span>
+            <strong><time :datetime="approvedDeadline">{{ deadlineDisplay }}</time></strong>
           </div>
 
           <div class="rsvp-info__divider" aria-hidden="true">
@@ -24,26 +23,20 @@
           </div>
 
           <div class="rsvp-info__block">
-            <p class="rsvp-info__label">Reserved seats</p>
-            <h3>Invitation Only</h3>
+            <p class="rsvp-info__label">Paanyaya</p>
+            <h3>Para sa mga inimbitahan.</h3>
             <p>
-              Kindly refer to your invitation for the number of seats reserved
-              in your name.
+              May isang nakalaang upuan para sa bawat inimbitahang bisita. Pakikumpleto ang sariling RSVP at huwag munang ipasa ang invitation link.
             </p>
           </div>
 
           <div class="rsvp-info__block">
-            <p class="rsvp-info__label">A gentle request</p>
-            <h3>Private Celebration</h3>
-            <p>
-              Please keep the event details private and avoid forwarding the
-              invitation link.
-            </p>
+            <h3>May tanong sa RSVP?</h3>
+            <p>Isang tawag lang kami.</p>
           </div>
           <div class="rsvp-info__block rsvp-contact">
-            <h3>Contact us if you have questions about your RSVP</h3>
-            <a href="tel:+639499857805"><span>Micko Dela Cruz</span><strong>09499857805</strong></a>
-            <a href="tel:+639683238328"><span>Christine Ferrera</span><strong>09683238328</strong></a>
+            <a href="tel:+639499857805"><span>Micko Dela Cruz</span><strong>0949 985 7805</strong></a>
+            <a href="tel:+639683238328"><span>Christine Ferrera</span><strong>0968 323 8328</strong></a>
           </div>
         </aside>
 
@@ -53,7 +46,7 @@
       </div>
 
       <footer class="rsvp-footer">
-        <p class="rsvp-footer__script">We can’t wait to celebrate with you.</p>
+        <p class="rsvp-footer__script">Sana makasama ka namin sa pagdiriwang.</p>
         <div class="rsvp-footer__ornament" aria-hidden="true">
           <span></span><i></i><span></span>
         </div>
@@ -63,8 +56,11 @@
 </template>
 
 <script setup>
-import { RSVP_DEADLINE as approvedDeadline, formatDeadlineDate } from '../config/rsvp.js';
-const deadlineDate = formatDeadlineDate();
+import { RSVP_DEADLINE as approvedDeadline } from '../config/rsvp.js';
+const deadlineParts = new Intl.DateTimeFormat('fil-PH', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Manila' }).formatToParts(new Date(approvedDeadline));
+const deadlinePart = type => deadlineParts.find(part => part.type === type).value;
+const deadlineDisplay = `${deadlinePart('day')} ${deadlinePart('month')} ${deadlinePart('year')}`;
+const deadlineSentence = `${deadlinePart('month')} ${deadlinePart('day')}, ${deadlinePart('year')}`;
 import { onBeforeUnmount, ref } from 'vue';
 import { useGsapContext } from '../composables/useGsapContext.js';
 import InvitationRsvpForm from './InvitationRsvpForm.vue';
@@ -397,7 +393,7 @@ onBeforeUnmount(() => { rsvp.reset(); });
   gap: 0.8rem;
   border: 1px solid transparent;
   padding: 1rem 1.5rem;
-  background: var(--rsvp-pomegranate);
+  background: #527260;
   color: #fffaf5;
   font-family: "Manrope", sans-serif;
   font-size: 0.8rem;
@@ -414,7 +410,7 @@ onBeforeUnmount(() => { rsvp.reset(); });
   line-height: 1.6;
 }
 .rsvp-section .rsvp-submit:hover:not(:disabled) {
-  background: var(--rsvp-blue);
+  background: #405b4c;
 }
 .rsvp-section .rsvp-secondary:hover:not(:disabled) {
   background: rgba(239, 180, 159, 0.18);
